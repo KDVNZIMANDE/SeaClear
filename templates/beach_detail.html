@@ -1,0 +1,65 @@
+{% extends "base.html" %} {% block title %}Beach Details{% endblock %} {% block
+content %}
+<div class="container mt-5">
+  <h2>{{ beach.name }}</h2>
+  <p><strong>Location:</strong> {{ beach.location }}</p>
+  <p><strong>Date:</strong> {{ beach.date }}</p>
+  <p><strong>Enterococci Count:</strong> {{ beach.entrocciticount }}</p>
+  <p><strong>Grade:</strong> {{ beach.grade }}</p>
+  <p><strong>Temperature:</strong> {{ beach.temperature }}</p>
+  <p><strong>Wind Speed:</strong> {{ beach.wind_speed }}</p>
+  <p><strong>Wind Direction:</strong> {{ beach.wind_direction }}</p>
+  <p><strong>Status:</strong> {{ beach.status }}</p>
+  <img
+    src="{{ url_for('static', filename='uploads/' + map_image) }}"
+    alt="Map Image"
+    class="img-fluid mt-3"
+  />
+
+  <div class="mt-5">
+    <h4>Comments</h4>
+    {% if current_user.is_authenticated %}
+    <form method="POST" action="{{ url_for('post') }}">
+      <div class="form-group">
+        <label for="content">Add a Comment</label>
+        <textarea
+          id="content"
+          name="content"
+          class="form-control"
+          rows="3"
+          required
+        ></textarea>
+      </div>
+      <input type="hidden" name="beach_id" value="{{ beach._id }}" />
+      <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+    {% else %}
+    <p>
+      You must be logged in to post a comment.
+      <a href="{{ url_for('login') }}">Log in here</a>.
+    </p>
+    {% endif %}
+
+    <div class="mt-4">
+      {% for comment in comments %}
+      <div class="list-group-item">
+        <small class="text-muted"
+          >{{ comment.timestamp }}</small
+        >
+        <p>{{ comment.content }}</p>
+        <small>Posted by: {{ comment.username }}</small>
+        <div class="mt-2">
+          <a
+            href="{{ url_for('like', post_id=comment._id) }}"
+            class="btn btn-primary btn-sm"
+          >
+            Like
+            <span>{{ comment.likes }}</span>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
