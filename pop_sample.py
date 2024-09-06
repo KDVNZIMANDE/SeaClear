@@ -52,13 +52,13 @@ users = [
     {
         "email": "user1@example.com",
         "password": generate_password_hash("password123", method="pbkdf2:sha256", salt_length=8),
-        "user_name": "User One",
+        "username": "User One",
         "role": "user"
     },
     {
         "email": "admin@example.com",
         "password": generate_password_hash("adminpass", method="pbkdf2:sha256", salt_length=8),
-        "user_name": "Admin User",
+        "username": "Admin User",
         "role": "admin"
     }
 ]
