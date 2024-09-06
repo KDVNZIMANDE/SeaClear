@@ -12,67 +12,6 @@ class User(UserMixin):
         self.username = user_data['username']
         self.role = user_data['role']
 
-class Beach:
-    def __init__(self, beach_data):
-        self.id = str(beach_data['_id'])
-        self.name = beach_data['name']
-        self.location = beach_data['location']
-        self.date = beach_data['date']
-        self.entrocciticount = beach_data['entrocciticount']
-        self.grade = beach_data['grade']
-        self.temperature = beach_data['temperature']
-        self.wind_speed = beach_data['wind_speed']
-        self.wind_direction = beach_data['wind_direction']
-        self.status = beach_data['status']
-        self.map_image = beach_data.get('map_image', 'default_beach.jpg')
-
-    @classmethod
-    def from_db(cls, beach_data):
-        return cls(beach_data)
-
-    def to_dict(self):
-        return {
-            'name': self.name,
-            'location': self.location,
-            'date': self.date,
-            'entrocciticount': self.entrocciticount,
-            'grade': self.grade,
-            'temperature': self.temperature,
-            'wind_speed': self.wind_speed,
-            'wind_direction': self.wind_direction,
-            'status': self.status,
-            'map_image': self.map_image
-        }
-    
-    def get(self, attr, default=None):
-        return getattr(self, attr, default)
-
-class Post:
-    def __init__(self, post_data):
-        self.id = str(post_data['_id'])
-        self.beach_id = str(post_data['beach_id'])
-        self.user_id = post_data['user_id']
-        self.username = post_data['username']
-        self.timestamp = post_data['timestamp']
-        self.content = post_data['content']
-        self.status = post_data['status']
-        self.likes = post_data['likes']
-
-    @classmethod
-    def from_db(cls, post_data):
-        return cls(post_data)
-
-    def to_dict(self):
-        return {
-            'beach_id': ObjectId(self.beach_id),
-            'user_id': self.user_id,
-            'username': self.username,
-            'timestamp': self.timestamp,
-            'content': self.content,
-            'status': self.status,
-            'likes': self.likes
-        }
-
 class SeaClearApp:
     def __init__(self):
         self.app = Flask(__name__)
@@ -122,7 +61,16 @@ class SeaClearApp:
             return None
 
     def home(self):
-        beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
+        beaches = list(self.beaches_collection.find())
+        for beach in beaches:
+            if 'Date' in beach and isinstance(beach['Date'], datetime):
+                beach['Date'] = beach['Date'].strftime('%Y-%m-%d')
+            elif 'Date' not in beach:
+                beach['Date'] = 'N/A'
+            
+            if 'image' not in beach:
+                beach['image'] = 'default_beach.jpg'
+        
         return render_template('home.html', beaches=beaches)
 
     def about(self):
@@ -135,43 +83,42 @@ class SeaClearApp:
         return render_template('map.html')
 
     def beach_detail(self, beach_id):
-        beach_data = self.beaches_collection.find_one({'_id': ObjectId(beach_id)})
-        if not beach_data:
+        beach = self.beaches_collection.find_one({'_id': ObjectId(beach_id)})
+        if not beach:
             flash('Beach not found.', 'danger')
             return redirect(url_for('home'))
-        beach = Beach.from_db(beach_data)
-        comments = [Post.from_db(post) for post in self.posts_collection.find({'beach_id': ObjectId(beach_id), 'status': 'approved'})]
-        return render_template('beach_detail.html', beach=beach, comments=comments)
+        comments = self.posts_collection.find({'beach_id': ObjectId(beach_id), 'status': 'approved'})
+        map_image = beach.get('map_image', 'default_beach.jpg')
+        return render_template('beach_detail.html', beach=beach, comments=comments, map_image=map_image)
 
     @login_required
     def post(self):
         content = request.form['content']
         beach_id = request.form['beach_id']
-        new_post = Post({
-            '_id': ObjectId(),
+        new_post = {
             'beach_id': ObjectId(beach_id),
             'user_id': current_user.id,
             'username': current_user.username,
-            'timestamp': datetime.utcnow(),
+            'timestamp': datetime.utcnow(), #should try find a different way to make timestamps
             'content': content,
             'status': 'pending',
             'likes': 0
-        })
-        self.posts_collection.insert_one(new_post.to_dict())
+        }
+        self.posts_collection.insert_one(new_post)
         return redirect(url_for('beach_detail', beach_id=beach_id))
 
     @login_required
     def like(self, post_id):
         self.posts_collection.update_one({'_id': ObjectId(post_id)}, {'$inc': {'likes': 1}})
-        post_data = self.posts_collection.find_one({'_id': ObjectId(post_id)})
-        post = Post.from_db(post_data)
-        return redirect(url_for('beach_detail', beach_id=post.beach_id))
+        post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
+        return redirect(url_for('beach_detail', beach_id=post['beach_id']))
 
     @login_required
     def admin_dashboard(self):
         if current_user.role != "admin":
             flash('You do not have permission to access this page.', 'danger')
             return redirect(url_for('home'))
+        # Order Posts for the admin to view
         pipeline = [
             {
                 "$addFields": {
@@ -188,8 +135,8 @@ class SeaClearApp:
             },
             {"$sort": {"sort_order": 1}}
         ]
-        posts = [Post.from_db(post) for post in self.posts_collection.aggregate(pipeline)]
-        beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
+        posts = list(self.posts_collection.aggregate(pipeline))
+        beaches = self.beaches_collection.find()
         return render_template('admin.html', posts=posts, beaches=beaches)
 
     @login_required
@@ -220,11 +167,9 @@ class SeaClearApp:
 
     @login_required
     def edit_beach(self, beach_id):
-        beach_data = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
-        beach = Beach.from_db(beach_data)
+        beach = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
         if request.method == 'POST':
-            updated_data = Beach({
-                "_id": ObjectId(beach_id),
+            updated_data = {
                 "name": request.form['name'],
                 "location": request.form['location'],
                 "date": request.form['date'],
@@ -234,14 +179,13 @@ class SeaClearApp:
                 "wind_speed": request.form['wind_speed'],
                 "wind_direction": request.form['wind_direction'],
                 "status": request.form['status'],
-                "map_image": beach.map_image
-            })
+            }
             if 'map_image' in request.files:
                 map_image = request.files['map_image']
                 if map_image.filename != '':
-                    updated_data.map_image = map_image.filename
+                    updated_data['map_image'] = map_image.filename
                     map_image.save(f"static/uploads/{map_image.filename}")
-            self.beaches_collection.update_one({"_id": ObjectId(beach_id)}, {"$set": updated_data.to_dict()})
+            self.beaches_collection.update_one({"_id": ObjectId(beach_id)}, {"$set": updated_data})
             flash('Beach updated successfully!', 'success')
             return redirect(url_for('edit_beach', beach_id=beach_id))
         return render_template('edit_beach.html', beach=beach)
@@ -265,8 +209,7 @@ class SeaClearApp:
     @login_required
     def add_beach(self):
         if request.method == 'POST':
-            new_beach = Beach({
-                "_id": ObjectId(),
+            beach_data = {
                 "name": request.form.get('name', ''),
                 "location": request.form.get('location', ''),
                 "date": request.form.get('date', ''),
@@ -277,8 +220,8 @@ class SeaClearApp:
                 "wind_direction": request.form.get('wind_direction', ''),
                 "status": request.form.get('status', ''),
                 "map_image": 'default_beach.jpg'
-            })
-            self.beaches_collection.insert_one(new_beach.to_dict())
+            }
+            self.beaches_collection.insert_one(beach_data)
             flash('Beach added successfully!', 'success')
             return redirect(url_for('admin_dashboard'))
         return render_template('add_beach.html')
@@ -309,18 +252,18 @@ class SeaClearApp:
         return render_template('sign_up.html')
 
     def login(self):
-            if request.method == 'POST':
-                email = request.form['email']
-                password = request.form['password']
-                user = self.users_collection.find_one({'email': email})
-                if user and check_password_hash(user['password'], password):
-                    user_obj = User(user)
-                    login_user(user_obj)
-                    flash('Logged in successfully.', 'success')
-                    return redirect(url_for('home'))
-                else:
-                    flash('Invalid email or password', 'error')
-            return render_template('login.html')
+        if request.method == 'POST':
+            email = request.form['email']
+            password = request.form['password']
+            user = self.users_collection.find_one({'email': email})
+            if user and check_password_hash(user['password'], password):
+                user_obj = User(user)
+                login_user(user_obj)
+                flash('Logged in successfully.', 'success')
+                return redirect(url_for('home'))
+            else:
+                flash('Invalid email or password', 'error')
+        return render_template('login.html')
 
     @login_required
     def logout(self):
@@ -328,14 +271,9 @@ class SeaClearApp:
         flash('Logged out successfully.', 'success')
         return redirect(url_for('home'))
 
-    def search(self):
+    def search(self):   # needs to be adjusted for better search
         query = request.args.get('query', '')
-        beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find(
-            {"$or": [
-                {"name": {"$regex": query, "$options": "i"}},
-                {"location": {"$regex": query, "$options": "i"}}
-            ]}
-        )]
+        beaches = list(self.beaches_collection.find())
         return render_template('search_results.html', query=query, beaches=beaches)
 
     def run(self):

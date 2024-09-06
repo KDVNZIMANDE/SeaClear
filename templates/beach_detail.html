@@ -11,7 +11,7 @@ content %}
   <p><strong>Wind Direction:</strong> {{ beach.wind_direction }}</p>
   <p><strong>Status:</strong> {{ beach.status }}</p>
   <img
-    src="{{ url_for('static', filename='uploads/' + map_image) }}"
+    src="{{ url_for('static', filename='uploads/' + beach.map_image) }}"
     alt="Map Image"
     class="img-fluid mt-3"
   />
@@ -30,7 +30,7 @@ content %}
           required
         ></textarea>
       </div>
-      <input type="hidden" name="beach_id" value="{{ beach._id }}" />
+      <input type="hidden" name="beach_id" value="{{ beach.id }}" />
       <button type="submit" class="btn btn-primary">Post Comment</button>
     </form>
     {% else %}
@@ -43,14 +43,12 @@ content %}
     <div class="mt-4">
       {% for comment in comments %}
       <div class="list-group-item">
-        <small class="text-muted"
-          >{{ comment.timestamp }}</small
-        >
+        <small class="text-muted">{{ comment.timestamp }}</small>
         <p>{{ comment.content }}</p>
         <small>Posted by: {{ comment.username }}</small>
         <div class="mt-2">
           <a
-            href="{{ url_for('like', post_id=comment._id) }}"
+            href="{{ url_for('like', post_id=comment.id) }}"
             class="btn btn-primary btn-sm"
           >
             Like
