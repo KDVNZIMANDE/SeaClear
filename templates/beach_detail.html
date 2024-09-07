@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}
+Beach Details
+{% endblock %}
+
+{% block extra_css %}
+<!-- Link to custom beach CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/beach.css') }}">
+
+<!-- Link to Font Awesome icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<!-- Main container for the beach details and chat section -->
+<div id="chat-section" class="container">
+  <div class="layout">
+    
+    <!-- Left Column: Beach Details -->
+    <div class="left-column">
+      <div class="card">
+        <!-- Beach Image -->
+        <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" alt="Beach Image">
+        
+        <!-- Favorite Pin Icon -->
+        <div class="pin-favorite">
+          <a href="#" class="favorite-pin" id="pinIcon">
+            <i class="fa fa-thumbtack"></i> <!-- FontAwesome pin icon -->
+          </a>
+        </div>
+        
+        <!-- Card Content -->
+        <div class="card-content">
+          <h2>{{ beach.name }} (Cape Town)</h2>
+          <!-- Status Indicator -->
+          <div class="status">
+            <i class="fa fa-swimmer"></i> SAFE
+          </div>
+        </div>
+        
+        <!-- Real-time Weather Information -->
+        <div class="weather-info">
+          <p>Temperature: 20°C</p>
+          <p>Weather: Cloudy</p>
+          <p>Wind Speed: 7 m/s</p>
+        </div>
+      </div>
+      
+      <!-- Amenities Section -->
+      <div class="amenities">
+        <div class="amenity-box"><i class="fa fa-toilet"></i> Restrooms</div>
+        <div class="amenity-box"><i class="fa fa-life-ring"></i> Lifeguard</div>
+        <div class="amenity-box"><i class="fa fa-shower"></i> Showers</div>
+        <div class="amenity-box"><i class="fa fa-swimming-pool"></i> Swimming Pools</div>
+        <div class="amenity-box"><i class="fa fa-shield-alt"></i> Police Station</div>
+        <div class="amenity-box"><i class="fa fa-bicycle"></i> Bike Rentals</div>
+      </div>
+    </div>
+    
+    <!-- Right Column: Community Chat -->
+    <div class="right-column">
+      <div class="chat-card">
+        <!-- Chat Header -->
+        <div class="chat-header">
+          <h3>Community Chat</h3>
+        </div>
+        
+        <!-- Scrollable Chat Messages -->
+        <div class="chat-messages">
+          {% for comment in comments %}
+          <div class="message">
+            <span class="author">{{ comment.username }}</span>
+            <span class="time text-muted float-right">{{ comment.timestamp }}</span>
+            <p>{{ comment.content }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        
+        <!-- Chat Input -->
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('post') }}">
+          <div class="chat-input">
+            <textarea id="content" name="content" class="form-control" rows="1" placeholder="Type a message..." required></textarea>
+            <input type="hidden" name="beach_id" value="{{ beach._id }}">
+            <button type="submit" class="btn btn-primary">Send</button>
+          </div>
+        </form>
+        {% else %}
+        <p>You must be logged in to send messages. <a href="{{ url_for('login') }}">Log in here</a>.</p>
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Link to custom scripts -->
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+{% endblock %}
