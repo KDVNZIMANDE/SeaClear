@@ -18,6 +18,7 @@ class Beach:
         self.name = beach_data['name']
         self.location = beach_data['location']
         self.date = beach_data['date']
+        self.description = beach_data['description']
         self.entrocciticount = beach_data['entrocciticount']
         self.grade = beach_data['grade']
         self.temperature = beach_data['temperature']
@@ -35,6 +36,7 @@ class Beach:
             'name': self.name,
             'location': self.location,
             'date': self.date,
+            'description': self.description,
             'entrocciticount': self.entrocciticount,
             'grade': self.grade,
             'temperature': self.temperature,
@@ -57,6 +59,7 @@ class Post:
         self.content = post_data['content']
         self.status = post_data['status']
         self.likes = post_data['likes']
+        self.beach = post_data['beach']
 
     @classmethod
     def from_db(cls, post_data):
@@ -70,7 +73,8 @@ class Post:
             'timestamp': self.timestamp,
             'content': self.content,
             'status': self.status,
-            'likes': self.likes
+            'likes': self.likes,
+            'beach': self.beach
         }
 
 class SeaClearApp:
@@ -147,6 +151,7 @@ class SeaClearApp:
     def post(self):
         content = request.form['content']
         beach_id = request.form['beach_id']
+        beach_name = request.form['beach_name']
         new_post = Post({
             '_id': ObjectId(),
             'beach_id': ObjectId(beach_id),
@@ -155,7 +160,8 @@ class SeaClearApp:
             'timestamp': datetime.utcnow(),
             'content': content,
             'status': 'pending',
-            'likes': 0
+            'likes': 0,
+            'beach': beach_name
         })
         self.posts_collection.insert_one(new_post.to_dict())
         return redirect(url_for('beach_detail', beach_id=beach_id))
@@ -228,6 +234,7 @@ class SeaClearApp:
                 "name": request.form['name'],
                 "location": request.form['location'],
                 "date": request.form['date'],
+                "description": request.form['description'],
                 "entrocciticount": request.form['entrocciticount'],
                 "grade": request.form['grade'],
                 "temperature": request.form['temperature'],

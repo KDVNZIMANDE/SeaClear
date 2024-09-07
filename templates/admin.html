@@ -10,20 +10,24 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>Post ID</th>
+            <th>User</th>
+            <th>Timestamp</th>
             <th>Content</th>
             <th>Status</th>
             <th>Likes</th>
+            <th>Beach</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {% for post in posts %}
           <tr>
-            <td>{{ post.id }}</td>
+            <td>{{ post.username }}</td>
+            <td>{{ post.timestamp }}</td>
             <td>{{ post.content }}</td>
             <td>{{ post.status }}</td>
             <td>{{ post.likes }}</td>
+            <td>{{ post.beach }}</td>
             <td>
               {% if post.status != 'approved' %}
               <a
@@ -59,20 +63,30 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>Beach ID</th>
             <th>Name</th>
-            <th>Location</th>
+            <th>Last Updated</th>
             <th>Description</th>
+            <th>Enterococci (per 100ml)</th>
+            <th>Grade</th>
+            <th>Temperature</th>
+            <th>Wind Speed</th>
+            <th>Wind Direction</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {% for beach in beaches %}
           <tr>
-            <td>{{ beach.id }}</td>
             <td>{{ beach.name }}</td>
-            <td>{{ beach.location }}</td>
+            <td>{{ beach.date }}</td>
             <td>{{ beach.description }}</td>
+            <td>{{ beach.entrocciticount }}</td>
+            <td>{{ beach.grade }}</td>
+            <td>{{ beach.temperature }}</td>
+            <td>{{ beach.wind_speed }}</td>
+            <td>{{ beach.wind_direction }}</td>
+            <td>{{ beach.status }}</td>
             <td>
               <a
                 href="{{ url_for('edit_beach', beach_id=beach.id) }}"
