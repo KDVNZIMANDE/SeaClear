@@ -107,6 +107,7 @@ class SeaClearApp:
         self.app.add_url_rule('/like/<post_id>', 'like', self.like)
         self.app.add_url_rule('/admin', 'admin_dashboard', self.admin_dashboard)
         self.app.add_url_rule('/admin/approve/<post_id>', 'approve_post', self.approve_post)
+        self.app.add_url_rule('/admin/approve_all_posts', 'approve_all_posts', self.approve_all_posts, methods=['POST'])
         self.app.add_url_rule('/admin/deny/<post_id>', 'deny_post', self.deny_post)
         self.app.add_url_rule('/admin/delete_post/<post_id>', 'delete_post', self.delete_post)
         self.app.add_url_rule('/admin/edit_beach/<beach_id>', 'edit_beach', self.edit_beach, methods=['GET', 'POST'])
@@ -157,7 +158,7 @@ class SeaClearApp:
             'beach_id': ObjectId(beach_id),
             'user_id': current_user.id,
             'username': current_user.username,
-            'timestamp': datetime.utcnow(),
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M"),
             'content': content,
             'status': 'pending',
             'likes': 0,
@@ -203,6 +204,28 @@ class SeaClearApp:
         if current_user.role != "admin":
             return redirect(url_for('home'))
         self.posts_collection.update_one({'_id': ObjectId(post_id)}, {'$set': {'status': 'approved'}})
+        return redirect(url_for('admin_dashboard'))
+    
+
+    @login_required
+    def approve_all_posts(self):
+        if current_user.role != "admin":
+            flash('You do not have permission to perform this action.', 'danger')
+            return redirect(url_for('admin_dashboard'))
+        
+        try:
+            result = self.posts_collection.update_many(
+                {'status': 'pending'},
+                {'$set': {'status': 'approved'}}
+            )
+            
+            if result.modified_count > 0:
+                flash(f'{result.modified_count} pending posts approved successfully', 'success')
+            else:
+                flash('No pending posts to approve', 'info')
+        except Exception as e:
+            flash(f'An error occurred: {str(e)}', 'danger')
+        
         return redirect(url_for('admin_dashboard'))
 
     @login_required
@@ -277,6 +300,7 @@ class SeaClearApp:
                 "name": request.form.get('name', ''),
                 "location": request.form.get('location', ''),
                 "date": request.form.get('date', ''),
+                "description": request.form.get('description', ''),
                 "entrocciticount": request.form.get('entrocciticount', ''),
                 "grade": request.form.get('grade', ''),
                 "temperature": request.form.get('temperature', ''),
