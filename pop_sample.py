@@ -14,6 +14,7 @@ beaches = [
         "name": "Clifton 4th Beach",
         "location": "Cape Town",
         "date": datetime.now().strftime("%Y-%m-%d"),
+        "description": "temp",
         "entrocciticount": "0",
         "grade": "A",
         "temperature": "22°C",
@@ -26,6 +27,7 @@ beaches = [
         "name": "Muizenberg Beach",
         "location": "Cape Town",
         "date": datetime.now().strftime("%Y-%m-%d"),
+        "description": "temp",
         "entrocciticount": "5",
         "grade": "B",
         "temperature": "20°C",
@@ -38,6 +40,7 @@ beaches = [
         "name": "Bloubergstrand",
         "location": "Cape Town",
         "date": datetime.now().strftime("%Y-%m-%d"),
+        "description": "temp",
         "entrocciticount": "1",
         "grade": "A",
         "temperature": "23°C",
@@ -52,13 +55,13 @@ users = [
     {
         "email": "user1@example.com",
         "password": generate_password_hash("password123", method="pbkdf2:sha256", salt_length=8),
-        "user_name": "User One",
+        "username": "User One",
         "role": "user"
     },
     {
         "email": "admin@example.com",
         "password": generate_password_hash("adminpass", method="pbkdf2:sha256", salt_length=8),
-        "user_name": "Admin User",
+        "username": "Admin User",
         "role": "admin"
     }
 ]
