@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file, Response
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
+from gridfs import GridFS
+from io import BytesIO
 from datetime import datetime
 
 class User(UserMixin):
@@ -88,6 +90,7 @@ class SeaClearApp:
         self.beaches_collection = self.db['beaches']
         self.users_collection = self.db['users']
         self.posts_collection = self.db['posts']
+        self.fs = GridFS(self.db)   #for images
 
         # Flask-Login setup
         self.login_manager = LoginManager()
@@ -117,6 +120,7 @@ class SeaClearApp:
         self.app.add_url_rule('/login', 'login', self.login, methods=['GET', 'POST'])
         self.app.add_url_rule('/logout', 'logout', self.logout)
         self.app.add_url_rule('/search', 'search', self.search)
+        self.app.add_url_rule('/images/<file_id>', 'get_image', self.get_image)  # Route for serving images
 
     def setup_login_manager(self):
         @self.login_manager.user_loader
@@ -249,9 +253,12 @@ class SeaClearApp:
 
     @login_required
     def edit_beach(self, beach_id):
+        # Fetch the existing beach data
         beach_data = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
         beach = Beach.from_db(beach_data)
+
         if request.method == 'POST':
+            # Create updated beach data from the form
             updated_data = Beach({
                 "_id": ObjectId(beach_id),
                 "name": request.form['name'],
@@ -264,16 +271,27 @@ class SeaClearApp:
                 "wind_speed": request.form['wind_speed'],
                 "wind_direction": request.form['wind_direction'],
                 "status": request.form['status'],
-                "map_image": beach.map_image
+                "map_image": beach.map_image  # Use existing image unless updated
             })
+
+            # Check if a new image is uploaded
             if 'map_image' in request.files:
                 map_image = request.files['map_image']
                 if map_image.filename != '':
-                    updated_data.map_image = map_image.filename
-                    map_image.save(f"static/uploads/{map_image.filename}")
+                    # Delete the old image from GridFS if it exists
+                    if beach.map_image and ObjectId.is_valid(beach.map_image):
+                        self.fs.delete(ObjectId(beach.map_image))
+
+                    # Save the new image to GridFS
+                    map_image_id = self.fs.put(map_image, filename=map_image.filename)
+                    updated_data.map_image = str(map_image_id)  # Store GridFS file ID
+
+            # Update the beach document in MongoDB
             self.beaches_collection.update_one({"_id": ObjectId(beach_id)}, {"$set": updated_data.to_dict()})
+
             flash('Beach updated successfully!', 'success')
             return redirect(url_for('edit_beach', beach_id=beach_id))
+
         return render_template('edit_beach.html', beach=beach)
 
     @login_required
@@ -368,6 +386,15 @@ class SeaClearApp:
             ]}
         )]
         return render_template('search_results.html', query=query, beaches=beaches)
+    
+    # Serve the image from GridFS
+    def get_image(self, file_id):
+        try:
+            image_file = self.fs.get(ObjectId(file_id))  # Fetch the image using GridFS file ID
+            return send_file(BytesIO(image_file.read()), mimetype='image/jpeg')  # Adjust MIME type as needed
+        except Exception as e:
+            flash(f"Image not found: {str(e)}", "danger")
+            return redirect(url_for('home'))
 
     def run(self):
         self.app.run(debug=True)
