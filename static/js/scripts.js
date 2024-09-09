@@ -1,11 +1,11 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var pinIcon = document.getElementById('pinIcon');
+// document.addEventListener('DOMContentLoaded', function() {
+//     var pinIcon = document.getElementById('pinIcon');
   
-    pinIcon.addEventListener('click', function(event) {
-      event.preventDefault(); // Prevent the default action (if any)
-      pinIcon.classList.toggle('active'); // Toggle the 'active' class
-    });
-  });
+//     pinIcon.addEventListener('click', function(event) {
+//       event.preventDefault(); // Prevent the default action (if any)
+//       pinIcon.classList.toggle('active'); // Toggle the 'active' class
+//     });
+//   });
   
   document.addEventListener('DOMContentLoaded', function() {
     const replyButtons = document.querySelectorAll('.btn-reply');
@@ -127,4 +127,83 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Function to scroll to the bottom of the chat messages container
+  function scrollToBottom() {
+    const chatMessages = document.querySelector('.chat-messages');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Scroll to bottom on page load
+  scrollToBottom();
+
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Function to format date and time
+  function formatDateTime(dateTimeString) {
+    const date = new Date(dateTimeString);
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+    return date.toLocaleString('en-US', options).replace(',', ''); // Remove the comma between date and time
+  }
+
+  // Apply formatting to all timestamps
+  document.querySelectorAll('.time').forEach(function(element) {
+    element.textContent = formatDateTime(element.textContent);
+  });
+});
+
+function toggleReplies(replyId) {
+  var repliesDiv = document.getElementById(replyId);
+  if (repliesDiv.style.display === "none" || repliesDiv.style.display === "") {
+    repliesDiv.style.display = "block";  // Show the replies
+  } else {
+    repliesDiv.style.display = "none";   // Hide the replies
+  }
+}
+
+function toggleReplyForm(commentId) {
+  var replyForm = document.getElementById('reply-form-' + commentId);
+  if (replyForm.style.display === "none" || replyForm.style.display === "") {
+    replyForm.style.display = "block";  // Show the reply form
+  } else {
+    replyForm.style.display = "none";   // Hide the reply form
+  }
+}
+
+// scripts.js
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize the emoji picker
+  const picker = new EmojiButton();
+
+  // Get the emoji button and textarea
+  const emojiButton = document.getElementById('emoji-picker-btn');
+  const textarea = document.querySelector('#content');
+
+  // Show the emoji picker when the button is clicked
+  emojiButton.addEventListener('click', () => {
+    picker.togglePicker(emojiButton);
+  });
+
+  // Add emoji to the textarea when an emoji is selected
+  picker.on('emoji', emoji => {
+    textarea.value += emoji; // Append the emoji to the current text
+  });
+
+  // Handle reply form emoji picker
+  const replyEmojiButton = document.getElementById('emoji-picker-bt');
+  const replyTextarea = document.querySelector('#content1');
+
+  replyEmojiButton.addEventListener('click', () => {
+    picker.togglePicker(replyEmojiButton);
+  });
+
+  picker.on('emoji', emoji => {
+    replyTextarea.value += emoji; // Append the emoji to the current text
+  });
+});
+
 

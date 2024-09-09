@@ -21,7 +21,9 @@ beaches = [
         "wind_speed": "15 km/h",
         "wind_direction": "SE",
         "status": "Open",
-        "map_image": "clifton_4th.jpg"
+        "map_image": "clifton_4th.jpg",
+        "latitude": "33.9360",
+        "altitude": "18.3778"
     },
     {
         "name": "Muizenberg Beach",
@@ -34,7 +36,9 @@ beaches = [
         "wind_speed": "20 km/h",
         "wind_direction": "SW",
         "status": "Open",
-        "map_image": "muizenberg.jpg"
+        "map_image": "muizenberg.jpg",
+        "latitude": "33.9360",
+        "altitude": "18.3778"
     },
     {
         "name": "Bloubergstrand",
@@ -47,7 +51,9 @@ beaches = [
         "wind_speed": "25 km/h",
         "wind_direction": "NW",
         "status": "Open",
-        "map_image": "bloubergstrand.jpg"
+        "map_image": "bloubergstrand.jpg",
+        "latitude": "33.9360",
+        "altitude": "18.3778"
     }
 ]
 

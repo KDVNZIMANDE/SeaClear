@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, send_file, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file, Response, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -13,6 +13,8 @@ class User(UserMixin):
         self.email = user_data['email']
         self.username = user_data['username']
         self.role = user_data['role']
+        self.favorites = user_data.get('favorites', [])
+        
 
 class Beach:
     def __init__(self, beach_data):
@@ -28,6 +30,8 @@ class Beach:
         self.wind_direction = beach_data['wind_direction']
         self.status = beach_data['status']
         self.map_image = beach_data.get('map_image', 'default_beach.jpg')
+        self.latitude = beach_data['latitude']
+        self.altitude = beach_data['altitude']
 
     @classmethod
     def from_db(cls, beach_data):
@@ -45,7 +49,9 @@ class Beach:
             'wind_speed': self.wind_speed,
             'wind_direction': self.wind_direction,
             'status': self.status,
-            'map_image': self.map_image
+            'map_image': self.map_image,
+            'latitude': self.latitude,
+            'altitude': self.altitude
         }
     
     def get(self, attr, default=None):
@@ -62,6 +68,7 @@ class Post:
         self.status = post_data['status']
         self.likes = post_data['likes']
         self.beach = post_data['beach']
+        self.replies = post_data.get('replies', [])
 
     @classmethod
     def from_db(cls, post_data):
@@ -76,8 +83,27 @@ class Post:
             'content': self.content,
             'status': self.status,
             'likes': self.likes,
-            'beach': self.beach
+            'beach': self.beach,
+            'replies': self.replies
         }
+
+class Reply:
+    def __init__(self, reply_data):
+        self.user_id = reply_data['user_id']
+        self.username = reply_data['username']
+        self.timestamp = reply_data['timestamp']
+        self.content = reply_data['content']
+        self.likes = reply_data.get('likes', 0)
+
+    def to_dict(self):
+        return {
+            'user_id': self.user_id,
+            'username': self.username,
+            'timestamp': self.timestamp,
+            'content': self.content,
+            'likes': self.likes
+        }
+
 
 class SeaClearApp:
     def __init__(self):
@@ -107,7 +133,10 @@ class SeaClearApp:
         self.app.add_url_rule('/map', 'map', self.map)
         self.app.add_url_rule('/beach/<beach_id>', 'beach_detail', self.beach_detail, methods=['GET', 'POST'])
         self.app.add_url_rule('/post', 'post', self.post, methods=['POST'])
+        self.app.add_url_rule('/add_reply', 'add_reply', self.add_reply, methods=['POST'])
         self.app.add_url_rule('/like/<post_id>', 'like', self.like)
+        self.app.add_url_rule('/like_reply/<post_id>/<reply_index>', 'like_reply', self.like_reply)
+        self.app.add_url_rule('/favorites/<beach_id>', 'favorites', self.favorites)
         self.app.add_url_rule('/admin', 'admin_dashboard', self.admin_dashboard)
         self.app.add_url_rule('/admin/approve/<post_id>', 'approve_post', self.approve_post)
         self.app.add_url_rule('/admin/approve_all_posts', 'approve_all_posts', self.approve_all_posts, methods=['POST'])
@@ -150,7 +179,7 @@ class SeaClearApp:
             return redirect(url_for('home'))
         beach = Beach.from_db(beach_data)
         comments = [Post.from_db(post) for post in self.posts_collection.find({'beach_id': ObjectId(beach_id), 'status': 'approved'})]
-        return render_template('beach_detail.html', beach=beach, comments=comments)
+        return render_template('beach_detail.html', beach=beach, comments=comments) 
 
     @login_required
     def post(self):
@@ -172,11 +201,109 @@ class SeaClearApp:
         return redirect(url_for('beach_detail', beach_id=beach_id))
 
     @login_required
+    def add_reply(self):
+        content = request.form['content']
+        post_id = request.form['post_id']
+        post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
+        
+        if not post:
+            flash('Post not found.', 'danger')
+            return redirect(url_for('home'))
+
+        new_reply = Reply({
+            'user_id': current_user.id,
+            'username': current_user.username,
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M"),
+            'content': content,
+            'likes': 0
+        })
+
+        self.posts_collection.update_one(
+            {'_id': ObjectId(post_id)},
+            {'$push': {'replies': new_reply.to_dict()}}
+        )
+
+        return redirect(url_for('beach_detail', beach_id=post['beach_id']))
+
+    @login_required
+    def like_reply(self, post_id, reply_index):
+        # Assuming `session` contains user_id of the currently logged-in user
+        user_id = current_user.id
+        reply_index = int(reply_index)
+        post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
+
+        if not post:
+            flash('Post not found.', 'danger')
+            return redirect(url_for('home'))
+
+        replies = post.get('replies', [])
+        if reply_index >= len(replies):
+            flash('Reply not found.', 'danger')
+            return redirect(url_for('beach_detail', beach_id=post['beach_id']))
+
+        reply = replies[reply_index]
+        
+        if user_id in reply.get('liked_users', []):
+            # Unlike the reply
+            self.posts_collection.update_one(
+                {'_id': ObjectId(post_id)},
+                {'$inc': {'replies.$.likes': -1}, '$pull': {'replies.$.liked_users': user_id}}
+            )
+        else:
+            # Like the reply
+            self.posts_collection.update_one(
+                {'_id': ObjectId(post_id)},
+                {'$inc': {f'replies.{reply_index}.likes': 1}}
+            )
+
+        return redirect(url_for('beach_detail', beach_id=post['beach_id']))
+
+
+    @login_required
     def like(self, post_id):
-        self.posts_collection.update_one({'_id': ObjectId(post_id)}, {'$inc': {'likes': 1}})
+    # Assuming `session` contains user_id of the currently logged-in user
+        user_id = session.get('user_id')
+        post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
+        # Check if user has already liked the post
+        if user_id in post.get('liked_users', []):
+            # Handle case where user has already liked the post
+            self.posts_collection.update_one(
+            {'_id': ObjectId(post_id)},{'$inc': {'likes': -1}, '$pull': {'liked_users': user_id}}
+            )
+            return redirect(url_for('beach_detail', beach_id=post.get('beach_id')))
+        
+        # Update the post with a new like
+        self.posts_collection.update_one(
+            {'_id': ObjectId(post_id)}, {'$inc': {'likes': 1},'$push': {'liked_users': user_id} })
+        
         post_data = self.posts_collection.find_one({'_id': ObjectId(post_id)})
         post = Post.from_db(post_data)
         return redirect(url_for('beach_detail', beach_id=post.beach_id))
+
+    
+    @login_required
+    def favorites(self, beach_id):
+        user_id = current_user.id
+        beach = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
+        
+        # Check if the beach is already in the user's favorites
+        if beach_id in current_user.favorites:
+            # Remove from favorites
+            self.users_collection.update_one(
+                {'_id': ObjectId(user_id)},
+                {'$pull': {'favorites': beach_id}}
+            )
+            flash(f'Removed {beach["name"]} from your favorites.', 'success')
+        else:
+            # Add to favorites
+            self.users_collection.update_one(
+                {'_id': ObjectId(user_id)},
+                {'$push': {'favorites': beach_id}}
+            )
+            flash(f'Added {beach["name"]} to your favorites!', 'success')
+
+        return redirect(url_for('beach_detail', beach_id=beach_id))
+
 
     @login_required
     def admin_dashboard(self):
@@ -271,7 +398,10 @@ class SeaClearApp:
                 "wind_speed": request.form['wind_speed'],
                 "wind_direction": request.form['wind_direction'],
                 "status": request.form['status'],
-                "map_image": beach.map_image  # Use existing image unless updated
+                "map_image": beach.map_image,  # Use existing image unless updated
+                "latitude": request.form['latitude'],
+                "altitude": request.form['altitude']
+
             })
 
             # Check if a new image is uploaded
@@ -325,7 +455,9 @@ class SeaClearApp:
                 "wind_speed": request.form.get('wind_speed', ''),
                 "wind_direction": request.form.get('wind_direction', ''),
                 "status": request.form.get('status', ''),
-                "map_image": 'default_beach.jpg'
+                "map_image": 'default_beach.jpg',
+                "latitude": request.form['latitude'],
+                "altitude": request.form['altitude']
             })
             self.beaches_collection.insert_one(new_beach.to_dict())
             flash('Beach added successfully!', 'success')
