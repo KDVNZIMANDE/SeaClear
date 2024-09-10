@@ -98,6 +98,14 @@ class Reply:
             'content': self.content,
             'likes': self.likes
         }
+    
+class Report:
+    def __init__(self, report_data):
+        self.date = report_data['date']
+
+    @classmethod
+    def from_db(cls, beach_data):
+        return cls(beach_data)
 
 class SeaClearApp:
     def __init__(self):
@@ -110,6 +118,7 @@ class SeaClearApp:
         self.beaches_collection = self.db['beaches']
         self.users_collection = self.db['users']
         self.posts_collection = self.db['posts']
+        self.reports_collection = self.db['reports']
         self.fs = GridFS(self.db)   #for images
 
         # Flask-Login setup
@@ -139,6 +148,9 @@ class SeaClearApp:
         self.app.add_url_rule('/admin/edit_beach/<beach_id>', 'edit_beach', self.edit_beach, methods=['GET', 'POST'])
         self.app.add_url_rule('/admin/delete_beach/<beach_id>', 'delete_beach', self.delete_beach)
         self.app.add_url_rule('/admin/add_beach', 'add_beach', self.add_beach, methods=['GET', 'POST'])
+        self.app.add_url_rule('/admin/edit_report/<report_id>', 'edit_report', self.edit_report, methods=['GET', 'POST'])
+        self.app.add_url_rule('/admin/delete_report/<report_id>', 'delete_report', self.delete_report)
+        self.app.add_url_rule('/admin/add_report', 'add_report', self.add_report, methods=['GET', 'POST'])
         self.app.add_url_rule('/sign_up', 'sign_up', self.sign_up, methods=['GET', 'POST'])
         self.app.add_url_rule('/login', 'login', self.login, methods=['GET', 'POST'])
         self.app.add_url_rule('/logout', 'logout', self.logout)
@@ -333,7 +345,8 @@ class SeaClearApp:
         ]
         posts = [Post.from_db(post) for post in self.posts_collection.aggregate(pipeline)]
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
-        return render_template('admin.html', posts=posts, beaches=beaches)
+        reports = [Report.from_db(report) for report in self.reports_collection.find()]
+        return render_template('admin.html', posts=posts, beaches=beaches, reports=reports)
 
     @login_required
     def approve_post(self, post_id):
@@ -463,7 +476,19 @@ class SeaClearApp:
             flash('Beach added successfully!', 'success')
             return redirect(url_for('admin_dashboard'))
         return render_template('add_beach.html')
-
+    
+    @login_required
+    def edit_report(self, report_id):
+        return redirect(url_for('admin_dashboard'))
+    
+    @login_required
+    def delete_report(self, report_id):
+        return redirect(url_for('admin_dashboard'))
+    
+    @login_required
+    def add_report(self, report_id):
+        return redirect(url_for('admin_dashboard'))
+    
     def sign_up(self):
         if request.method == 'POST':
             email = request.form.get('email')
