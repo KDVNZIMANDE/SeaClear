@@ -101,6 +101,7 @@ class Reply:
     
 class Report:
     def __init__(self, report_data):
+        self.id = str(report_data['_id'])
         self.beach = report_data['beach']
         self.date = report_data['date']
         self.enterococcicount = report_data['enterococcicount']
@@ -108,6 +109,13 @@ class Report:
     @classmethod
     def from_db(cls, report_data):
         return cls(report_data)
+    
+    def to_dict(self):
+        return{
+            'beach' : self.beach,
+            'date' : self.date,
+            'enterococcicount' : self.enterococcicount
+        }
 
 class SeaClearApp:
     def __init__(self):
@@ -481,7 +489,27 @@ class SeaClearApp:
     
     @login_required
     def edit_report(self, report_id):
-        return redirect(url_for('admin_dashboard'))
+        # Fetch the existing beach data
+        report_data = self.reports_collection.find_one({"_id": ObjectId(report_id)})
+        report = Report.from_db(report_data)
+
+        if request.method == 'POST':
+            # Create updated report data from the form
+            updated_data = Report({
+                "_id": ObjectId(report_id),
+                "beach": request.form['beach'],
+                "date": request.form['date'],
+                "enterococcicount": request.form['enterococcicount']
+
+            })
+
+            # Update the beach document in MongoDB
+            self.reports_collection.update_one({"_id": ObjectId(report_id)}, {"$set": updated_data.to_dict()})
+
+            flash('Report updated successfully!', 'success')
+            return redirect(url_for('admin_dashboard'))
+
+        return render_template('edit_report.html', report=report)
     
     @login_required
     def delete_report(self, report_id):
