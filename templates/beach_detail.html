@@ -61,7 +61,7 @@ block extra_css %}
           <p><i class="fa fa-cloud"></i> Cloudy</p>
           <p><i class="fa fa-wind"></i> 7 m/s</p>
           <a
-            href="{{ url_for('beach_detail', beach_id=beach.get('_id', '')) }}"
+            href="{{ url_for('beach_detail', beach_id=beach.id) }}"
             class="btn btn-primary"
             >Weekend forecast ></a
           >

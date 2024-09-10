@@ -168,12 +168,26 @@ class SeaClearApp:
 
     def beach_detail(self, beach_id):
         beach_data = self.beaches_collection.find_one({'_id': ObjectId(beach_id)})
+        weather_api_key = "e4f0bddc1fc2079118ed71df7a9fa6d7"
+        latitude = beach_data.get('latitude')
+        longitude = beach_data.get('longitude')
+        
         if not beach_data:
             flash('Beach not found.', 'danger')
             return redirect(url_for('home'))
+        
+        # Fetch weather data
+        
+        weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={weather_api_key}"
+        weather_data = None
+        try:
+            weather_data = requests.get(weather_url).json()
+        except:
+            weather_data = {"main": {"temp": "N/A"}, "weather": [{"description": "N/A"}], "wind": {"speed": "N/A"}}
+
         beach = Beach.from_db(beach_data)
         comments = [Post.from_db(post) for post in self.posts_collection.find({'beach_id': ObjectId(beach_id), 'status': 'approved'})]
-        return render_template('beach_detail.html', beach=beach, comments=comments)
+        return render_template('beach_detail.html', beach=beach, comments=comments, weather=weather_data) 
 
     @login_required
     def post(self):
