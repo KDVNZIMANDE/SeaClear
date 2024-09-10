@@ -21,9 +21,7 @@ beaches = [
         "wind_speed": "15 km/h",
         "wind_direction": "SE",
         "status": "Open",
-        "map_image": "clifton_4th.jpg",
-        "latitude": "33.9360",
-        "altitude": "18.3778"
+        "map_image": "clifton_4th.jpg"
     },
     {
         "name": "Muizenberg Beach",
@@ -36,9 +34,7 @@ beaches = [
         "wind_speed": "20 km/h",
         "wind_direction": "SW",
         "status": "Open",
-        "map_image": "muizenberg.jpg",
-        "latitude": "33.9360",
-        "altitude": "18.3778"
+        "map_image": "muizenberg.jpg"
     },
     {
         "name": "Bloubergstrand",
@@ -51,9 +47,7 @@ beaches = [
         "wind_speed": "25 km/h",
         "wind_direction": "NW",
         "status": "Open",
-        "map_image": "bloubergstrand.jpg",
-        "latitude": "33.9360",
-        "altitude": "18.3778"
+        "map_image": "bloubergstrand.jpg"
     }
 ]
 
@@ -103,5 +97,4 @@ print(f"Inserted {len(user_result.inserted_ids)} users")
 posts = generate_posts(beach_result.inserted_ids, user_result.inserted_ids)
 post_result = post_collection.insert_many(posts)
 print(f"Inserted {len(post_result.inserted_ids)} posts")
-
 print("Sample data insertion complete!")
