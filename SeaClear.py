@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, send_file, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file, Response, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -13,6 +13,7 @@ class User(UserMixin):
         self.email = user_data['email']
         self.username = user_data['username']
         self.role = user_data['role']
+        self.favorites = user_data.get('favorites', [])
 
 class Beach:
     def __init__(self, beach_data):
@@ -107,7 +108,10 @@ class SeaClearApp:
         self.app.add_url_rule('/map', 'map', self.map)
         self.app.add_url_rule('/beach/<beach_id>', 'beach_detail', self.beach_detail, methods=['GET', 'POST'])
         self.app.add_url_rule('/post', 'post', self.post, methods=['POST'])
+        self.app.add_url_rule('/add_reply', 'add_reply', self.add_reply, methods=['POST'])
         self.app.add_url_rule('/like/<post_id>', 'like', self.like)
+        self.app.add_url_rule('/like_reply/<post_id>/<reply_index>', 'like_reply', self.like_reply)
+        self.app.add_url_rule('/favorites/<beach_id>', 'favorites', self.favorites)
         self.app.add_url_rule('/admin', 'admin_dashboard', self.admin_dashboard)
         self.app.add_url_rule('/admin/approve/<post_id>', 'approve_post', self.approve_post)
         self.app.add_url_rule('/admin/approve_all_posts', 'approve_all_posts', self.approve_all_posts, methods=['POST'])
@@ -170,13 +174,108 @@ class SeaClearApp:
         })
         self.posts_collection.insert_one(new_post.to_dict())
         return redirect(url_for('beach_detail', beach_id=beach_id))
+    
+    @login_required
+    def add_reply(self):
+        content = request.form['content']
+        post_id = request.form['post_id']
+        post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
+        
+        if not post:
+            flash('Post not found.', 'danger')
+            return redirect(url_for('home'))
+
+        new_reply = Reply({
+            'user_id': current_user.id,
+            'username': current_user.username,
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M"),
+            'content': content,
+            'likes': 0
+        })
+
+        self.posts_collection.update_one(
+            {'_id': ObjectId(post_id)},
+            {'$push': {'replies': new_reply.to_dict()}}
+        )
+
+        return redirect(url_for('beach_detail', beach_id=post['beach_id']))
 
     @login_required
     def like(self, post_id):
-        self.posts_collection.update_one({'_id': ObjectId(post_id)}, {'$inc': {'likes': 1}})
+    # Assuming `session` contains user_id of the currently logged-in user
+        user_id = session.get('user_id')
+        post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
+        # Check if user has already liked the post
+        if user_id in post.get('liked_users', []):
+            # Handle case where user has already liked the post
+            self.posts_collection.update_one(
+            {'_id': ObjectId(post_id)},{'$inc': {'likes': -1}, '$pull': {'liked_users': user_id}}
+            )
+            return redirect(url_for('beach_detail', beach_id=post.get('beach_id')))
+        
+        # Update the post with a new like
+        self.posts_collection.update_one(
+            {'_id': ObjectId(post_id)}, {'$inc': {'likes': 1},'$push': {'liked_users': user_id} })
+        
         post_data = self.posts_collection.find_one({'_id': ObjectId(post_id)})
         post = Post.from_db(post_data)
         return redirect(url_for('beach_detail', beach_id=post.beach_id))
+    
+    @login_required
+    def like_reply(self, post_id, reply_index):
+        # Assuming `session` contains user_id of the currently logged-in user
+        user_id = current_user.id
+        reply_index = int(reply_index)
+        post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
+
+        if not post:
+            flash('Post not found.', 'danger')
+            return redirect(url_for('home'))
+
+        replies = post.get('replies', [])
+        if reply_index >= len(replies):
+            flash('Reply not found.', 'danger')
+            return redirect(url_for('beach_detail', beach_id=post['beach_id']))
+
+        reply = replies[reply_index]
+        
+        if user_id in reply.get('liked_users', []):
+            # Unlike the reply
+            self.posts_collection.update_one(
+                {'_id': ObjectId(post_id)},
+                {'$inc': {'replies.$.likes': -1}, '$pull': {'replies.$.liked_users': user_id}}
+            )
+        else:
+            # Like the reply
+            self.posts_collection.update_one(
+                {'_id': ObjectId(post_id)},
+                {'$inc': {f'replies.{reply_index}.likes': 1}}
+            )
+
+        return redirect(url_for('beach_detail', beach_id=post['beach_id']))
+    
+    @login_required
+    def favorites(self, beach_id):
+        user_id = current_user.id
+        beach = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
+        
+        # Check if the beach is already in the user's favorites
+        if beach_id in current_user.favorites:
+            # Remove from favorites
+            self.users_collection.update_one(
+                {'_id': ObjectId(user_id)},
+                {'$pull': {'favorites': beach_id}}
+            )
+            flash(f'Removed {beach["name"]} from your favorites.', 'success')
+        else:
+            # Add to favorites
+            self.users_collection.update_one(
+                {'_id': ObjectId(user_id)},
+                {'$push': {'favorites': beach_id}}
+            )
+            flash(f'Added {beach["name"]} to your favorites!', 'success')
+
+        return redirect(url_for('beach_detail', beach_id=beach_id))
 
     @login_required
     def admin_dashboard(self):

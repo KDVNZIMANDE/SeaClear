@@ -1,40 +1,51 @@
-{% extends "base.html" %}
-
-{% block title %}
-Beach Details
-{% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% block title %} Beach Details {% endblock %} {%
+block extra_css %}
 <!-- Link to custom beach CSS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/beach.css') }}">
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/beach.css') }}"
+/>
 
 <!-- Link to Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-{% endblock %}
-
-{% block content %}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+/>
+{% endblock %} {% block content %}
 <!-- Main container for the beach details and chat section -->
 <div id="chat-section" class="container">
   <div class="layout">
-    
     <!-- Left Column: Beach Details -->
     <div class="left-column">
       <div class="card">
         <div class="directions-button">
-          <a href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.altitude }}" target="_blank"class="directions-icon">
-            Get Directions <i class="fa fa-location-arrow"></i> <!-- FontAwesome directions icon -->
+          <a
+            href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.altitude }}"
+            target="_blank"
+            class="directions-icon"
+          >
+            Get Directions <i class="fa fa-location-arrow"></i>
+            <!-- FontAwesome directions icon -->
           </a>
         </div>
         <!-- Beach Image -->
-        <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" alt="Beach Image">
-        
+        <img
+          src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}"
+          alt="Beach Image"
+        />
+
         <!-- Favorite Pin Icon -->
         <div class="pin-favorite">
-          <a href="{{ url_for('favorites', beach_id=beach.id) }}" class="favorite-pin" id="pinIcon">
-            <i class="fa fa-thumbtack"></i> <!-- FontAwesome pin icon -->
+          <a
+            href="{{ url_for('favorites', beach_id=beach.id) }}"
+            class="favorite-pin"
+            id="pinIcon"
+          >
+            <i class="fa fa-thumbtack"></i>
+            <!-- FontAwesome pin icon -->
           </a>
         </div>
-        
+
         <!-- Card Content -->
         <div class="card-content">
           <h2>{{ beach.name }} ({{ beach.location }})</h2>
@@ -43,30 +54,37 @@ Beach Details
             <i class="fa fa-swimmer"></i> {{ beach.status}}
           </div>
         </div>
-        
+
         <!-- Real-time Weather Information -->
         <div class="weather-info">
           <p><i class="fa fa-thermometer-half"></i> 20°C</p>
           <p><i class="fa fa-cloud"></i> Cloudy</p>
           <p><i class="fa fa-wind"></i> 7 m/s</p>
           <a
-          href="{{ url_for('beach_detail', beach_id=beach.get('_id', '')) }}"
-          class="btn btn-primary"
-          >Weekend forecast ></a>
+            href="{{ url_for('beach_detail', beach_id=beach.get('_id', '')) }}"
+            class="btn btn-primary"
+            >Weekend forecast ></a
+          >
         </div>
       </div>
-      
+
       <!-- Amenities Section -->
       <div class="amenities">
         <div class="amenity-box"><i class="fa fa-toilet"></i> Restrooms</div>
         <div class="amenity-box"><i class="fa fa-life-ring"></i> Lifeguard</div>
         <div class="amenity-box"><i class="fa fa-shower"></i> Showers</div>
-        <div class="amenity-box"><i class="fa fa-swimming-pool"></i> Swimming Pools</div>
-        <div class="amenity-box"><i class="fa fa-shield-alt"></i> Police Station</div>
-        <div class="amenity-box"><i class="fa fa-bicycle"></i> Bike Rentals</div>
+        <div class="amenity-box">
+          <i class="fa fa-swimming-pool"></i> Swimming Pools
+        </div>
+        <div class="amenity-box">
+          <i class="fa fa-shield-alt"></i> Police Station
+        </div>
+        <div class="amenity-box">
+          <i class="fa fa-bicycle"></i> Bike Rentals
+        </div>
       </div>
     </div>
-    
+
     <!-- Right Column: Community Chat -->
     <div class="right-column">
       <div class="chat-card">
@@ -74,77 +92,130 @@ Beach Details
         <div class="chat-header">
           <h3>Community Chat <i class="fa fa-comments"></i></h3>
         </div>
-        
+
         <!-- Scrollable Chat Messages -->
         <div class="chat-messages">
           {% for comment in comments %}
           <div class="message">
-            <span class="author"><i class="fa fa-user-circle"></i> {{ comment.username }}</span>
-            <span class="time text-muted float-right">{{ comment.timestamp }}</span>
-            <p>
-              {{ comment.content }}
-            </p>
+            <span class="author"
+              ><i class="fa fa-user-circle"></i> {{ comment.username }}</span
+            >
+            <span class="time text-muted float-right"
+              >{{ comment.timestamp }}</span
+            >
+            <p>{{ comment.content }}</p>
             <div class="message-buttons">
-              <a href="{{ url_for('like', post_id=comment.id) }}" class="btn btn-like"><i class="fa fa-thumbs-up"></i> {{ comment.likes }}</a>
-              <a href="javascript:void(0);" onclick="toggleReplyForm('{{ comment.id }}')" class="btn btn-reply"><i class="fa fa-reply"></i> Reply</a>
+              <a
+                href="{{ url_for('like', post_id=comment.id) }}"
+                class="btn btn-like"
+                ><i class="fa fa-thumbs-up"></i> {{ comment.likes }}</a
+              >
+              <a
+                href="javascript:void(0);"
+                onclick="toggleReplyForm('{{ comment.id }}')"
+                class="btn btn-reply"
+                ><i class="fa fa-reply"></i> Reply</a
+              >
               <!-- Toggle Replies Button -->
-              <a href="javascript:void(0);" onclick="toggleReplies('replies-{{ comment.id }}')" class="btn btn-reply">View Replies</a>
-
+              <a
+                href="javascript:void(0);"
+                onclick="toggleReplies('replies-{{ comment.id }}')"
+                class="btn btn-reply"
+                >View Replies</a
+              >
             </div>
 
             <!-- Replies -->
-            <div id="replies-{{ comment.id }}" class="replies" style="display: none; margin-left: 20px;">
+            <div
+              id="replies-{{ comment.id }}"
+              class="replies"
+              style="display: none; margin-left: 20px"
+            >
               {% for reply in comment.replies %}
-                <div class="reply">
-                  <span class="author"><i class="fa fa-user-circle"></i>{{ reply.username }}</span>
-                  <span class="time text-muted float-right">{{ reply.timestamp }}</span>
-                  <p>{{ reply.content }}</p>
-                  <!-- <div class="message-buttons">
+              <div class="reply">
+                <span class="author"
+                  ><i class="fa fa-user-circle"></i>{{ reply.username }}</span
+                >
+                <span class="time text-muted float-right"
+                  >{{ reply.timestamp }}</span
+                >
+                <p>{{ reply.content }}</p>
+                <!-- <div class="message-buttons">
                     <a href="{{ url_for('like_reply', post_id=comment.id, reply_index=loop.index) }}" class="btn btn-like"><i class="fa fa-thumbs-up"></i> {{ reply.likes }}</a>
                   </div> -->
-                </div>
+              </div>
               {% endfor %}
             </div>
 
-            <div id="reply-form-{{ comment.id }}" class="reply-form" style="display: none;">
-              <form action="{{ url_for('add_reply', post_id=comment.id) }}" method="post" class="send-message-form">
-                <input type="hidden" name="reply_to_message_id" value="">
-                <input type="hidden" name="post_id" value="{{ comment.id }}">
+            <div
+              id="reply-form-{{ comment.id }}"
+              class="reply-form"
+              style="display: none"
+            >
+              <form
+                action="{{ url_for('add_reply', post_id=comment.id) }}"
+                method="post"
+                class="send-message-form"
+              >
+                <input type="hidden" name="reply_to_message_id" value="" />
+                <input type="hidden" name="post_id" value="{{ comment.id }}" />
                 <div class="chat-input">
                   <a id="emoji-picker-bt" type="button" class="btn btn-light">
                     <i class="fa fa-smile"></i>
                   </a>
                   <div id="emoji-picker" class="emoji-picker"></div>
-                  <textarea id="content1" name="content" class="form-control" rows="1" placeholder="Type a message..." required></textarea>
+                  <textarea
+                    id="content1"
+                    name="content"
+                    class="form-control"
+                    rows="1"
+                    placeholder="Type a message..."
+                    required
+                  ></textarea>
                   <button type="submit" class="btn btn-primary">Send</button>
                 </div>
               </form>
-            </div>            
+            </div>
           </div>
           {% endfor %}
         </div>
-        
+
         <!-- Chat Input -->
         {% if current_user.is_authenticated %}
-        <form method="POST" action="{{ url_for('post') }}" class="send-message-form">
+        <form
+          method="POST"
+          action="{{ url_for('post') }}"
+          class="send-message-form"
+        >
           <input type="hidden" name="beach_name" value="{{ beach.name }}" />
-          <input type="hidden" name="beach_id" value="{{ beach.id }}">
+          <input type="hidden" name="beach_id" value="{{ beach.id }}" />
           <!-- Chat Input Container -->
           <div class="chat-input">
             <!-- Emoji Picker Button -->
             <a id="emoji-picker-btn" type="button" class="btn btn-light">
-                <i class="fa fa-smile"></i> <!-- Emoji icon -->
+              <i class="fa fa-smile"></i>
+              <!-- Emoji icon -->
             </a>
             <div id="emoji-picker" class="emoji-picker">
               <!-- Emoji list will be populated here -->
             </div>
-            <textarea id="content" name="content" class="form-control" rows="1" placeholder="Type a message..." required></textarea>
+            <textarea
+              id="content"
+              name="content"
+              class="form-control"
+              rows="1"
+              placeholder="Type a message..."
+              required
+            ></textarea>
             <button tsubmitype="" class="btn btn-primary">Send</button>
           </div>
         </form>
-        
+
         {% else %}
-        <p>You must be logged in to send messages. <a href="{{ url_for('login') }}">Log in here</a>.</p>
+        <p>
+          You must be logged in to send messages.
+          <a href="{{ url_for('login') }}">Log in here</a>.
+        </p>
         {% endif %}
       </div>
     </div>
@@ -165,30 +236,126 @@ Beach Details
         </tr>
       </thead>
       <tbody id="table-body">
-        <tr><td>Jul 19 2024</td><td>76</td><td>Good</td></tr>
-        <tr><td>Jul 18 2024</td><td>126</td><td>Acceptable</td></tr>
-        <tr><td>Jul 17 2024</td><td>53</td><td>Good</td></tr>
-        <tr><td>Jul 16 2024</td><td>123</td><td>Acceptable</td></tr>
-        <tr><td>Jul 15 2024</td><td>34</td><td>Good</td></tr>
-        <tr><td>Jul 14 2024</td><td>180</td><td>Good</td></tr>
-        <tr><td>Jul 13 2024</td><td>150</td><td>Good</td></tr>
-        <tr><td>Jul 12 2024</td><td>42</td><td>Good</td></tr>
-        <tr><td>Jul 11 2024</td><td>>150</td><td>Bad</td></tr>
-        <tr><td>Jul 10 2024</td><td>>150</td><td>Bad</td></tr>
-        <tr><td>Jul 09 2024</td><td>76</td><td>Good</td></tr>
-        <tr><td>Jul 08 2024</td><td>58</td><td>Good</td></tr>
-        <tr><td>Jul 19 2024</td><td>76</td><td>Good</td></tr>
-        <tr><td>Jul 18 2024</td><td>126</td><td>Acceptable</td></tr>
-        <tr><td>Jul 17 2024</td><td>53</td><td>Good</td></tr>
-        <tr><td>Jul 16 2024</td><td>123</td><td>Acceptable</td></tr>
-        <tr><td>Jul 15 2024</td><td>34</td><td>Good</td></tr>
-        <tr><td>Jul 14 2024</td><td>180</td><td>bad</td></tr>
-        <tr><td>Jul 13 2024</td><td>150</td><td>Good</td></tr>
-        <tr><td>Jul 12 2024</td><td>42</td><td>Good</td></tr>
-        <tr><td>Jul 11 2024</td><td>>150</td><td>Bad</td></tr>
-        <tr><td>Jul 10 2024</td><td>>150</td><td>Bad</td></tr>
-        <tr><td>Jul 09 2024</td><td>76</td><td>Good</td></tr>
-        <tr><td>Jul 08 2024</td><td>58</td><td>Good</td></tr>
+        <tr>
+          <td>Jul 19 2024</td>
+          <td>76</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 18 2024</td>
+          <td>126</td>
+          <td>Acceptable</td>
+        </tr>
+        <tr>
+          <td>Jul 17 2024</td>
+          <td>53</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 16 2024</td>
+          <td>123</td>
+          <td>Acceptable</td>
+        </tr>
+        <tr>
+          <td>Jul 15 2024</td>
+          <td>34</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 14 2024</td>
+          <td>180</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 13 2024</td>
+          <td>150</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 12 2024</td>
+          <td>42</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 11 2024</td>
+          <td>>150</td>
+          <td>Bad</td>
+        </tr>
+        <tr>
+          <td>Jul 10 2024</td>
+          <td>>150</td>
+          <td>Bad</td>
+        </tr>
+        <tr>
+          <td>Jul 09 2024</td>
+          <td>76</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 08 2024</td>
+          <td>58</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 19 2024</td>
+          <td>76</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 18 2024</td>
+          <td>126</td>
+          <td>Acceptable</td>
+        </tr>
+        <tr>
+          <td>Jul 17 2024</td>
+          <td>53</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 16 2024</td>
+          <td>123</td>
+          <td>Acceptable</td>
+        </tr>
+        <tr>
+          <td>Jul 15 2024</td>
+          <td>34</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 14 2024</td>
+          <td>180</td>
+          <td>bad</td>
+        </tr>
+        <tr>
+          <td>Jul 13 2024</td>
+          <td>150</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 12 2024</td>
+          <td>42</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 11 2024</td>
+          <td>>150</td>
+          <td>Bad</td>
+        </tr>
+        <tr>
+          <td>Jul 10 2024</td>
+          <td>>150</td>
+          <td>Bad</td>
+        </tr>
+        <tr>
+          <td>Jul 09 2024</td>
+          <td>76</td>
+          <td>Good</td>
+        </tr>
+        <tr>
+          <td>Jul 08 2024</td>
+          <td>58</td>
+          <td>Good</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -201,10 +368,7 @@ Beach Details
   </div>
 </div>
 
-
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <!-- Link to custom scripts -->
 <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 {% endblock %}
