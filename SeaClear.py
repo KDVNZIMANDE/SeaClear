@@ -101,11 +101,21 @@ class Reply:
     
 class Report:
     def __init__(self, report_data):
+        self.id = str(report_data['_id'])
+        self.beach = report_data['beach']
         self.date = report_data['date']
+        self.enterococcicount = report_data['enterococcicount']
 
     @classmethod
-    def from_db(cls, beach_data):
-        return cls(beach_data)
+    def from_db(cls, report_data):
+        return cls(report_data)
+    
+    def to_dict(self):
+        return{
+            'beach' : self.beach,
+            'date' : self.date,
+            'enterococcicount' : self.enterococcicount
+        }
 
 class SeaClearApp:
     def __init__(self):
@@ -479,15 +489,61 @@ class SeaClearApp:
     
     @login_required
     def edit_report(self, report_id):
-        return redirect(url_for('admin_dashboard'))
+        # Fetch the existing beach data
+        report_data = self.reports_collection.find_one({"_id": ObjectId(report_id)})
+        report = Report.from_db(report_data)
+
+        if request.method == 'POST':
+            # Create updated report data from the form
+            updated_data = Report({
+                "_id": ObjectId(report_id),
+                "beach": request.form['beach'],
+                "date": request.form['date'],
+                "enterococcicount": request.form['enterococcicount']
+
+            })
+
+            # Update the beach document in MongoDB
+            self.reports_collection.update_one({"_id": ObjectId(report_id)}, {"$set": updated_data.to_dict()})
+
+            flash('Report updated successfully!', 'success')
+            return redirect(url_for('admin_dashboard'))
+
+        return render_template('edit_report.html', report=report)
     
     @login_required
     def delete_report(self, report_id):
+        try:
+            if not ObjectId.is_valid(report_id):
+                flash('Invalid report ID.', 'danger')
+                return redirect(url_for('admin_dashboard'))
+            report_id = ObjectId(report_id)
+            result = self.reports_collection.delete_one({"_id": report_id})
+            if result.deleted_count > 0:
+                flash('Report deleted successfully!', 'success')
+            else:
+                flash('Report not found.', 'danger')
+        except Exception as e:
+            flash(f'An error occurred: {str(e)}', 'danger')
         return redirect(url_for('admin_dashboard'))
     
     @login_required
-    def add_report(self, report_id):
-        return redirect(url_for('admin_dashboard'))
+    def add_report(self):
+        if request.method == 'POST':
+            beach = request.form.get('beach')
+            date = request.form.get('date')
+            entrocciticount = request.form.get('entrocciticount')
+
+            # Process the report data and save to the database
+            new_report = {
+                "_id": ObjectId(),
+                "beach": beach,
+                "date": date,
+                "enterococcicount": entrocciticount,
+            }
+            self.reports_collection.insert_one(new_report)  # Assuming you are using MongoDB
+            return redirect(url_for('admin_dashboard'))
+        return render_template('add_report.html')
     
     def sign_up(self):
         if request.method == 'POST':
