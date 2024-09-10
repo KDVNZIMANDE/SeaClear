@@ -20,7 +20,9 @@ class Beach:
     def __init__(self, beach_data):
         self.id = str(beach_data['_id'])
         self.name = beach_data['name']
-        self.location = beach_data['location']
+        self.location = beach_data.get('location', 'Unknown Location')  #TO-DO maybe change all to use get (this is a form of error handling)
+        self.longitude = beach_data.get('longitude', None)
+        self.latitude = beach_data.get('latitude', None)
         self.date = beach_data['date']
         self.description = beach_data['description']
         self.entrocciticount = beach_data['entrocciticount']
@@ -30,6 +32,8 @@ class Beach:
         self.wind_direction = beach_data['wind_direction']
         self.status = beach_data['status']
         self.map_image = beach_data.get('map_image', 'default_beach.jpg')
+        self.has_amenities = beach_data.get('has_amenities', False)
+        self.amenities = beach_data.get('amenities', [])
 
     @classmethod
     def from_db(cls, beach_data):
@@ -39,6 +43,8 @@ class Beach:
         return {
             'name': self.name,
             'location': self.location,
+            'longitude': self.longitude,
+            'latitude': self.latitude,
             'date': self.date,
             'description': self.description,
             'entrocciticount': self.entrocciticount,
@@ -47,11 +53,31 @@ class Beach:
             'wind_speed': self.wind_speed,
             'wind_direction': self.wind_direction,
             'status': self.status,
-            'map_image': self.map_image
+            'map_image': self.map_image,
+            'has_amenities': self.has_amenities,
+            'amenities': self.amenities
         }
     
     def get(self, attr, default=None):
         return getattr(self, attr, default)
+    
+    def add_amenity(self, amenity):
+        if amenity not in self.amenities:
+            self.amenities.append(amenity)
+            self.has_amenities = True
+
+    def remove_amenity(self, amenity):
+        if amenity in self.amenities:
+            self.amenities.remove(amenity)
+            if not self.amenities:
+                self.has_amenities = False
+
+    def set_amenities(self, amenities):
+        self.amenities = list(set(amenities))  # Remove duplicates
+        self.has_amenities = bool(self.amenities)
+
+    def get_amenities(self):
+        return self.amenities
 
 class Post:
     def __init__(self, post_data):
@@ -418,6 +444,8 @@ class SeaClearApp:
                 "_id": ObjectId(beach_id),
                 "name": request.form['name'],
                 "location": request.form['location'],
+                "longitude": float(request.form['longitude']),
+                "latitude": float(request.form['latitude']),
                 "date": request.form['date'],
                 "description": request.form['description'],
                 "entrocciticount": request.form['entrocciticount'],
@@ -426,7 +454,9 @@ class SeaClearApp:
                 "wind_speed": request.form['wind_speed'],
                 "wind_direction": request.form['wind_direction'],
                 "status": request.form['status'],
-                "map_image": beach.map_image  # Use existing image unless updated
+                "map_image": beach.map_image,  # Use existing image unless updated
+                "has_amenities": request.form.get('has_amenities') == 'on',
+                "amenities": request.form.getlist('amenities[]')
             })
 
             # Check if a new image is uploaded
@@ -441,14 +471,20 @@ class SeaClearApp:
                     map_image_id = self.fs.put(map_image, filename=map_image.filename)
                     updated_data.map_image = str(map_image_id)  # Store GridFS file ID
 
-            # Update the beach document in MongoDB
-            self.beaches_collection.update_one({"_id": ObjectId(beach_id)}, {"$set": updated_data.to_dict()})
-
-            flash('Beach updated successfully!', 'success')
+            try:
+                # Update the beach document in MongoDB
+                self.beaches_collection.update_one(
+                    {"_id": ObjectId(beach_id)}, 
+                    {"$set": updated_data.to_dict()}
+                )
+                flash('Beach updated successfully!', 'success')
+            except Exception as e:
+                flash(f'Error updating beach: {str(e)}', 'error')
+            
             return redirect(url_for('edit_beach', beach_id=beach_id))
 
         return render_template('edit_beach.html', beach=beach)
-
+    
     @login_required
     def delete_beach(self, beach_id):
         try:
@@ -468,25 +504,50 @@ class SeaClearApp:
     @login_required
     def add_beach(self):
         if request.method == 'POST':
+            # Create new beach data from the form
             new_beach = Beach({
                 "_id": ObjectId(),
-                "name": request.form.get('name', ''),
-                "location": request.form.get('location', ''),
-                "date": request.form.get('date', ''),
-                "description": request.form.get('description', ''),
-                "entrocciticount": request.form.get('entrocciticount', ''),
-                "grade": request.form.get('grade', ''),
-                "temperature": request.form.get('temperature', ''),
-                "wind_speed": request.form.get('wind_speed', ''),
-                "wind_direction": request.form.get('wind_direction', ''),
-                "status": request.form.get('status', ''),
-                "map_image": 'default_beach.jpg'
+                "name": request.form['name'],
+                "location": request.form['location'],
+                "latitude": float(request.form.get('latitude', 0)),
+                "longitude": float(request.form.get('longitude', 0)),
+                "date": request.form['date'],
+                "description": request.form['description'],
+                "entrocciticount": request.form['entrocciticount'],
+                "grade": request.form['grade'],
+                "temperature": request.form['temperature'],
+                "wind_speed": request.form['wind_speed'],
+                "wind_direction": request.form['wind_direction'],
+                "status": request.form['status'],
+                "map_image": None  # Initialize with no image
             })
-            self.beaches_collection.insert_one(new_beach.to_dict())
-            flash('Beach added successfully!', 'success')
-            return redirect(url_for('admin_dashboard'))
+
+            # Handle image upload
+            if 'map_image' in request.files:
+                map_image = request.files['map_image']
+                if map_image.filename != '':
+                    try:
+                        # Save the image to GridFS
+                        map_image_id = self.fs.put(map_image, filename=map_image.filename)
+                        new_beach.map_image = str(map_image_id)  # Store GridFS file ID
+                    except Exception as e:
+                        flash(f'Error uploading image: {str(e)}', 'error')
+
+            # Handle amenities
+            has_amenities = request.form.get('has_amenities') == 'on'
+            new_beach.has_amenities = has_amenities
+            new_beach.amenities = request.form.getlist('amenities[]') if has_amenities else []
+
+            try:
+                # Insert the new beach document into MongoDB
+                self.beaches_collection.insert_one(new_beach.to_dict())
+                flash('Beach added successfully!', 'success')
+                return redirect(url_for('admin_dashboard'))
+            except Exception as e:
+                flash(f'Error adding beach: {str(e)}', 'error')
+
         return render_template('add_beach.html')
-    
+
     @login_required
     def edit_report(self, report_id):
         # Fetch the existing beach data
