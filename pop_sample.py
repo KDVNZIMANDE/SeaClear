@@ -97,5 +97,4 @@ print(f"Inserted {len(user_result.inserted_ids)} users")
 posts = generate_posts(beach_result.inserted_ids, user_result.inserted_ids)
 post_result = post_collection.insert_many(posts)
 print(f"Inserted {len(post_result.inserted_ids)} posts")
-
 print("Sample data insertion complete!")
