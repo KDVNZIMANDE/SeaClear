@@ -15,7 +15,7 @@
             {% endif %}
         {% endwith %}
 
-        <form action="{{ url_for('edit_beach', beach_id=beach._id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ url_for('edit_beach', beach_id=beach.id) }}" method="POST" enctype="multipart/form-data">
             <!-- Form Fields -->
             <div class="form-group">
                 <label for="name">Beach Name</label>
@@ -30,6 +30,11 @@
             <div class="form-group">
                 <label for="date">Date</label>
                 <input type="date" class="form-control" id="date" name="date" value="{{ beach.date }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" name="description" value="{{ beach.description }}" required>
             </div>
 
             <div class="form-group">
@@ -77,4 +82,3 @@
         </form>
     </div>
 {% endblock %}
-

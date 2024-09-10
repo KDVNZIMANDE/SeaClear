@@ -1,0 +1,647 @@
+/* General Container Styles */
+#chat-section.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.layout {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.left-column {
+    width: 60%;
+}
+
+.right-column {
+    width: 40%;
+    margin-left: 5%;
+}
+
+/* Card Styles */
+.card {
+    background-color: #b3d9ff;
+    width: 100%;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    position: relative; /* Make the card the containing block */
+    border: 0px solid #208fff56; /* Default border style */
+}
+
+/* Card Image Styles */
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px 4px 4px 4px;
+    border: none; /* Remove border */
+    background-color: #ff000000; 
+}
+
+/* Card Content Styles */
+.card-content {
+    padding: 20px;
+    background-color: #208fff00; 
+    color: #000000;
+}
+
+/* Status Indicator */
+.status {
+    position: absolute;
+    top: 10px; /* Adjust distance from top */
+    left: 10px; /* Adjust distance from left */
+    background-color: #27db4e;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    z-index: 10; /* Make sure it's on top of the image */
+}
+
+/* Favorite Pin Icon */
+.pin-favorite {
+    position: absolute;
+    top: 8px; /* Adjust position from the top */
+    right: 20px; /* Adjust position from the right */
+    z-index: 10; /* Ensure it's on top of the card content */
+}
+
+.favorite-pin {
+    color: #e3f6f8; /* Default color */
+    font-size: 27px; /* Adjust icon size */
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.favorite-pin.active {
+    color: #16a8e2; /* Color when pin is clicked */
+}
+
+.favorite-pin:hover {
+    color: #b8d7ee; /* Hover effect */
+}
+.card {
+    position: relative;
+  }
+  
+  /* Directions Button */
+  .directions-button {
+    position: absolute;
+    background-color: #9aa3af8e;
+    top: 11px;
+    left: 100px; /* Placing it a bit left of the share button */
+    padding: 3px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+  }
+  
+  .directions-icon {
+    color: #e9e9e9; /* Green color for directions */
+    font-size: 18px;
+  }
+  
+  .directions-icon:hover {
+    color: #98d1ff; /* Darker on hover */
+    text-decoration: none;
+  }
+  
+  /* Share Button */
+  .share-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .share-icon {
+    color: #007bff;
+    font-size: 18px;
+  }
+  
+  .share-icon:hover {
+    color: #0056b3;
+  }
+  
+
+
+/* Weather Info Styles */
+.weather-info {
+    background-color: #208fff00;
+    color: #000000;
+    padding: 15px;
+    border-radius: 0px 0 0 0px;
+    margin-bottom: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.weather-info .temp {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.weather-info .details {
+    text-align: right;
+}
+
+.weather-info .details span {
+    display: block;
+    margin-top: 5px;
+}
+
+.weather-info .btn-primary{
+    background-color: #208fff49; 
+    border: 2px solid #208fff00;
+    color: #000000;
+    
+}
+
+.btn-primary:hover {
+    background-color: hsl(207, 70%, 55%);
+}
+
+.weather-info .icon {
+    font-size: 48px;
+    margin-right: 20px;
+}
+
+
+/* Amenities Section */
+.amenities {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap onto multiple lines if needed */
+    gap: 15px; /* Adds space between boxes */
+    margin-top: 10px;
+}
+
+.amenity-box {
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #292929;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    width: 23%; /* Adjust width to fit multiple boxes in a row */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers content horizontally */
+}
+
+.amenity-box i {
+    font-size: 20px; /* Adjust icon size */
+    margin-bottom: 5px; /* Adds space between icon and text */
+}
+
+/* Community Chat Card Styles */
+.chat-card {
+    background-color: #f8f8f8;
+    width: 100%;
+    margin: 20px 0;
+    padding: 0; /* Remove padding here, will add specific padding to elements */
+    border-radius: 10px;
+    border: 2px solid #208fff56;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    background-color: #2090ff;
+    color: #fff;
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+    font-size: 22px;
+    font-weight: bold;
+    width: 100%;
+    border-radius: 10px 10px 0 0; /* Curve the top corners */
+}
+
+.chat-card .message {
+    background-color: #7dcbff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .chat-card .message .author {
+    font-weight: bold;
+    color: #1a3d5f;
+  }
+
+  .chat-card .message .time {
+    font-size: 12px;
+    color: #999;
+    float: right;
+  }
+
+  .chat-card .message p {
+    margin: 5px 0 0;
+    font-size: 14px;
+  }
+
+.chat-messages {
+    flex-grow: 1; /* Allows the messages section to take up available space */
+    overflow-y: auto; /* Scrollable messages area */
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    flex-direction: column-reverse;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px 20px;
+    border-top: 1px solid #ccc;
+    background-color: #fff;
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid #a9dfff;
+}
+
+.chat-input button {
+    padding: 10px;
+    border-radius: 0 5px 5px 0;
+    border: 1px solid #ccc;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.chat-header {
+    background-color: rgba(32, 144, 255, 0.9); /* Semi-transparent background */
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+    font-size: 22px;
+    font-weight: bold;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    border-radius: 10px 10px 0 0; /* Curve the top corners */
+}
+
+.right-column .chat-card {
+    background-color: rgba(250, 252, 253, 0.986); /* Semi-transparent white background */
+    padding: 0px;
+    border-radius: 28px 28px 28px 28px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+.left-column .card {
+    background-color: #97cbff; /* Semi-transparent white background */
+    padding: 0px;
+}
+
+.left-column, .right-column {
+    padding: 10px;
+}
+  .btn-like:hover, .btn-reply:hover {
+    background-color: hsl(207, 70%, 55%); /* Change background color on hover */
+  }
+  
+  .btn-like i, .btn-reply i {
+    margin-right: 5px; /* Space between icon and text */
+  }
+
+  /* Hide scrollbar by default */
+.chat-messages {
+    overflow: auto;
+  }
+  
+  /* Show scrollbar only when scrolling */
+  .chat-messages::-webkit-scrollbar {
+    width: 12px;
+    opacity: 0; /* Initially hidden */
+  }
+  
+  .chat-messages:hover::-webkit-scrollbar {
+    opacity: 1; /* Show scrollbar on hover */
+  }
+  
+  .chat-messages::-webkit-scrollbar-thumb {
+    background-color: #bcdff773; /* Scrollbar color */
+    border-radius: 10px;
+  }
+  
+  .chat-messages::-webkit-scrollbar-track {
+    background:  rgba(255, 255, 255, 0.85); /* Track color */
+  }
+
+  /* Reply Form Container */
+#reply-form {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #208fff00;
+    border-radius: 8px;
+    display: none; /* Initially hidden */
+  }
+  
+  /* Textarea Style */
+  #reply-form textarea {
+    width: 100%;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+    resize: none; /* Prevent resizing */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Submit Button Style */
+  #reply-form button[type="submit"] {
+    background-color: #2090ff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+  }
+  
+  #reply-form button[type="submit"]:hover {
+    background-color: #0078e7;
+  }
+  
+  /* Aligning and Spacing */
+  #reply-form textarea {
+    margin-bottom: 10px;
+  }
+  
+  #reply-form input[type="hidden"] {
+    display: none;
+  }
+  
+  /* Media Query for Mobile Responsiveness */
+  @media (max-width: 768px) {
+    #reply-form {
+      padding: 5px;
+      border-radius: 4px;
+    }
+  
+    #reply-form textarea {
+      font-size: 12px;
+      padding: 8px;
+    }
+  
+    #reply-form button[type="submit"] {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
+
+  .message {
+    margin-bottom: 10px;
+  }
+  
+  .reply {
+    margin-left: 20px;
+    border-left: 2px solid hsla(207, 100%, 83%, 0.451);
+    padding-left: 8px;
+    margin-bottom: 5px;
+    padding: 5px;
+  }
+ 
+  
+  .reply-btn {
+    background-color: #208fff00;
+    color: rgb(0, 0, 0);
+    border: none;
+
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.reply-btn:hover {
+    background-color: hsl(207, 70%, 55%);
+}
+  
+  
+  
+/* Overall form container */
+.send-message-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* border: 2px solid #2090ff; Matches the overall theme */
+    border-radius: 30px;
+    padding: 10px;
+    background-color: #f9f9f9; /* Light background for a clean look */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+    width: 100%;
+}
+
+/* Styling the text area */
+.send-message-form .form-control {
+    flex-grow: 1;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 20px;
+    margin-right: 10px;
+    font-size: 17px;
+    background-color: #f1f6fc;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+    outline: none;
+    transition: box-shadow 0.3s ease;
+}
+
+.send-message-form .form-control:focus {
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Styling the send button */
+.send-message-form .send-btn {
+    background-color: #2090ff;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.send-message-form .send-btn i {
+    margin-right: 8px; /* Space between icon and text */
+}
+
+.send-message-form .send-btn:hover {
+    background-color: #006bb3; /* Darker color on hover */
+}
+
+/* Smooth transition when focusing on input */
+textarea:focus {
+    border-color: #2090ff;
+    outline: none;
+}
+
+/* Ensure form elements fit together without gaps */
+textarea,
+.send-btn {
+    border-radius: 30px;
+    font-size: 26px; /* Font size for the text area */
+}
+
+/* Chat Input Container */
+.chat-input {
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center items vertically */
+    background-color:#f8f8f8; /* White background */
+    border: 1px solid #f8f8f8; /* Light border */
+    padding: 3px; /* Padding inside the container */
+    position: relative; /* Positioning for the emoji picker */
+}
+
+/* Emoji Picker Button */
+.btn-emoji {
+    border-radius: 5px 0 0 5px; /* Rounded corners on the left */
+    border: 1px solid #ccc; /* Light border */
+    background-color: #f7f7f7; /* Light background */
+    color: #007bff; /* Icon color */
+    padding: 10px; /* Padding inside the button */
+    font-size: 16px; /* Emoji size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+}
+
+/* Emoji Picker Button Hover Effect */
+.btn-emoji:hover {
+    background-color: #e0e0e0; /* Slightly darker background on hover */
+}
+
+/* Text Area */
+.form-control {
+    flex-grow: 1; /* Expand to fill available space */
+    border-radius: 0; /* No rounded corners */
+    border: 1px solid #ccc; /* Light border */
+    padding: 10px; /* Padding inside the text area */
+    margin-left: 0; /* Remove left margin */
+    margin-right: 0; /* Remove right margin */
+}
+
+/* Send Button */
+.btn-send {
+    border-radius: 0 5px 5px 0; /* Rounded corners on the right */
+    border: 1px solid #ccc; /* Light border */
+    background-color: #007bff; /* Blue background */
+    color: white; /* Text color */
+    padding: 10px 15px; /* Padding inside the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+/* Send Button Hover Effect */
+.btn-send:hover {
+    background-color: #0056b3; /* Darker blue background on hover */
+}
+
+/* Emoji Picker Container */
+.emoji-picker {
+    display: none; /* Hidden by default */
+    position: absolute; /* Absolute positioning to overlay the text area */
+   
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    max-height: 200px; /* Limit height */
+    overflow-y: auto; /* Scroll if needed */
+    z-index: 1000; /* Ensure it appears above other elements */
+    width: 250px; /* Fixed width */
+    top: 100%; /* Position below the chat input */
+    left: 0; /* Align with the left edge of the chat input */
+}
+
+/* Emoji Item */
+.emoji-item {
+    display: inline-block; /* Inline display */
+    padding: 5px; /* Padding around emojis */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 20px; /* Emoji size */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.emoji-item:hover {
+    background-color: #f0f0f0; /* Light background on hover */
+}
+
+.layout {
+    flex-wrap:unset; /* Allow wrapping on smaller screens */
+}
+
+/* Water Quality Section */
+#water-quality-section {
+    margin: 20px 0;
+    background-color: #dcf0f5; /* Light beige background */
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  /* NowCast Table */
+  .nowcast-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .nowcast-table th, .nowcast-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .nowcast-table th {
+    background-color: #aedcff9a;
+    font-weight: bold;
+  }
+
+.nowcast-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination-controls button {
+  padding: 10px 15px;
+  background-color: #2090ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
