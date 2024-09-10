@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5">
+  <h2>Add New Report</h2>
+  <form action="{{ url_for('add_report') }}" method="POST">
+    <div class="form-group">
+      <label for="beach">Beach</label>
+      <input
+        type="text"
+        class="form-control"
+        id="beach"
+        name="beach"
+        required
+      />
+    </div>
+    <div class="form-group mt-3">
+      <label for="date">Date</label>
+      <input type="date" class="form-control" id="date" name="date" required />
+    </div>
+    <div class="form-group mt-3">
+      <label for="entrocciticount">Enterococci Count</label>
+      <input
+        type="text"
+        class="form-control"
+        id="entrocciticount"
+        name="entrocciticount"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-success mt-4">Add Report</button>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary mt-4"
+      >Cancel</a
+    >
+  </form>
+</div>
+{% endblock %}

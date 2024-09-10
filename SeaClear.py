@@ -101,11 +101,13 @@ class Reply:
     
 class Report:
     def __init__(self, report_data):
+        self.beach = report_data['beach']
         self.date = report_data['date']
+        self.enterococcicount = report_data['enterococcicount']
 
     @classmethod
-    def from_db(cls, beach_data):
-        return cls(beach_data)
+    def from_db(cls, report_data):
+        return cls(report_data)
 
 class SeaClearApp:
     def __init__(self):
@@ -486,8 +488,22 @@ class SeaClearApp:
         return redirect(url_for('admin_dashboard'))
     
     @login_required
-    def add_report(self, report_id):
-        return redirect(url_for('admin_dashboard'))
+    def add_report(self):
+        if request.method == 'POST':
+            beach = request.form.get('beach')
+            date = request.form.get('date')
+            entrocciticount = request.form.get('entrocciticount')
+
+            # Process the report data and save to the database
+            new_report = {
+                "_id": ObjectId(),
+                "beach": beach,
+                "date": date,
+                "enterococcicount": entrocciticount,
+            }
+            self.reports_collection.insert_one(new_report)  # Assuming you are using MongoDB
+            return redirect(url_for('admin_dashboard'))
+        return render_template('add_report.html')
     
     def sign_up(self):
         if request.method == 'POST':

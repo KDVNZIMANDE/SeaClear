@@ -143,14 +143,18 @@
       <table class="table table-bordered">
         <thead>
           <tr>
+            <th>Beach</th>
             <th>Date</th>
+            <th>Enterococci (per 100ml)</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {% for report in reports %}
           <tr>
+            <td>{{ report.beach }}</td>
             <td>{{ report.date }}</td>
+            <td>{{ report.enterococcicount }}</td>
             <td>
               <a
                 href="{{ url_for('edit_report', report_id=report.id) }}"
