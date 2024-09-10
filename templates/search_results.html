@@ -3,32 +3,33 @@ content %}
 <h2>Search Results for "{{ query }}"</h2>
 {% if beaches %}
 <div class="search-results">
-  {% for beach in beaches %} {% if beach.get('name', 'Unknown Beach') == query
-  %}
+  {% for beach in beaches %}
   <div class="col-md-4 mb-4">
     <div class="card beach-card">
+      <!-- Check if beach has an image, otherwise use default -->
       <img
-        src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}"
+        src="{{ url_for('static', filename='images/' + (beach.image if beach.image else 'default_beach.jpg')) }}"
         class="card-img-top beach-image"
-        alt="{{ beach.get('Location', 'Beach') }}"
+        alt="{{ beach.name }}"
       />
       <div class="card-body">
-        <h5 class="card-title">{{ beach.get('name', 'Unknown Beach') }}</h5>
+        <h5 class="card-title">{{ beach.name }}</h5>
         <p class="card-text">
-          <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
-          <strong>Entroccit Count:</strong> {{ beach.get('entrocciticount',
-          'N/A') }}<br />
-          <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}
+          <strong>Grade:</strong> {{ beach.grade if beach.grade else 'N/A' }}<br />
+          <strong>Enterococci Count:</strong> {{ beach.entrocciticount if
+          beach.entrocciticount else 'N/A' }}<br />
+          <strong>Last Updated:</strong> {{ beach.date if beach.date else 'N/A'
+          }}
         </p>
         <a
-          href="{{ url_for('beach_detail', beach_id=beach.get('_id', '')) }}"
+          href="{{ url_for('beach_detail', beach_id=beach.id) }}"
           class="btn btn-primary"
           >View Details</a
         >
       </div>
     </div>
   </div>
-  {% endif %} {% endfor %}
+  {% endfor %}
 </div>
 {% else %}
 <p>No results found for "{{ query }}".</p>

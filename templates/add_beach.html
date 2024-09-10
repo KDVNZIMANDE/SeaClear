@@ -21,6 +21,28 @@
       />
     </div>
     <div class="form-group mt-3">
+      <label for="latitude">Latitude</label>
+      <input
+        type="number"
+        step="any"
+        class="form-control"
+        id="latitude"
+        name="latitude"
+        required
+      />
+    </div>
+    <div class="form-group mt-3">
+      <label for="longitude">Longitude</label>
+      <input
+        type="number"
+        step="any"
+        class="form-control"
+        id="longitude"
+        name="longitude"
+        required
+      />
+    </div>
+    <div class="form-group mt-3">
       <label for="date">Date</label>
       <input type="date" class="form-control" id="date" name="date" required />
     </div>
@@ -100,10 +122,81 @@
         name="map_image"
       />
     </div>
+    <div class="form-group mt-3">
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="has_amenities"
+          name="has_amenities"
+          onchange="toggleAmenities()"
+        />
+        <label class="form-check-label" for="has_amenities">
+          This beach has amenities
+        </label>
+      </div>
+    </div>
+    <div id="amenities-container" style="display: none">
+      <div class="form-group mt-3">
+        <label>Amenities</label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            name="amenities[]"
+            placeholder="Enter an amenity"
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="addAmenityField()"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <button type="submit" class="btn btn-success mt-4">Add Beach</button>
     <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary mt-4"
       >Cancel</a
     >
   </form>
 </div>
+
+<script>
+  function toggleAmenities() {
+    const hasAmenities = document.getElementById("has_amenities").checked;
+    const amenitiesContainer = document.getElementById("amenities-container");
+    amenitiesContainer.style.display = hasAmenities ? "block" : "none";
+
+    if (!hasAmenities) {
+      // Clear existing amenity fields when unchecked
+      amenitiesContainer
+        .querySelectorAll(".input-group")
+        .forEach((el, index) => {
+          if (index > 0) el.remove();
+        });
+      amenitiesContainer.querySelector('input[name="amenities[]"]').value = "";
+    }
+  }
+
+  function addAmenityField() {
+    const container = document.getElementById("amenities-container");
+    const newField = document.createElement("div");
+    newField.className = "input-group mb-3";
+    newField.innerHTML = `
+    <input type="text" class="form-control" name="amenities[]" placeholder="Enter an amenity">
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" type="button" onclick="removeAmenityField(this)">-</button>
+    </div>
+  `;
+    container.appendChild(newField);
+  }
+
+  function removeAmenityField(button) {
+    button.closest(".input-group").remove();
+  }
+</script>
 {% endblock %}
