@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from gridfs import GridFS
 from io import BytesIO
 from datetime import datetime
+import requests
 
 class User(UserMixin):
     def __init__(self, user_data):
@@ -63,6 +64,7 @@ class Post:
         self.status = post_data['status']
         self.likes = post_data['likes']
         self.beach = post_data['beach']
+        self.replies = post_data.get('replies', [])
 
     @classmethod
     def from_db(cls, post_data):
@@ -78,6 +80,23 @@ class Post:
             'status': self.status,
             'likes': self.likes,
             'beach': self.beach
+        }
+    
+class Reply:
+    def __init__(self, reply_data):
+        self.user_id = reply_data['user_id']
+        self.username = reply_data['username']
+        self.timestamp = reply_data['timestamp']
+        self.content = reply_data['content']
+        self.likes = reply_data.get('likes', 0)
+
+    def to_dict(self):
+        return {
+            'user_id': self.user_id,
+            'username': self.username,
+            'timestamp': self.timestamp,
+            'content': self.content,
+            'likes': self.likes
         }
 
 class SeaClearApp:
