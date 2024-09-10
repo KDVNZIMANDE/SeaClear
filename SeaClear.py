@@ -513,6 +513,18 @@ class SeaClearApp:
     
     @login_required
     def delete_report(self, report_id):
+        try:
+            if not ObjectId.is_valid(report_id):
+                flash('Invalid report ID.', 'danger')
+                return redirect(url_for('admin_dashboard'))
+            report_id = ObjectId(report_id)
+            result = self.reports_collection.delete_one({"_id": report_id})
+            if result.deleted_count > 0:
+                flash('Report deleted successfully!', 'success')
+            else:
+                flash('Report not found.', 'danger')
+        except Exception as e:
+            flash(f'An error occurred: {str(e)}', 'danger')
         return redirect(url_for('admin_dashboard'))
     
     @login_required
