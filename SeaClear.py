@@ -178,7 +178,7 @@ class SeaClearApp:
         self.app.add_url_rule('/add_reply', 'add_reply', self.add_reply, methods=['POST'])
         self.app.add_url_rule('/like/<post_id>', 'like', self.like)
         self.app.add_url_rule('/like_reply/<post_id>/<reply_index>', 'like_reply', self.like_reply)
-        self.app.add_url_rule('/favorites/<beach_id>', 'favorites', self.favorites)
+        self.app.add_url_rule('/favorites/<beach_id>/<view>', 'favorites', self.favorites)
         self.app.add_url_rule('/admin', 'admin_dashboard', self.admin_dashboard)
         self.app.add_url_rule('/admin/approve/<post_id>', 'approve_post', self.approve_post)
         self.app.add_url_rule('/admin/approve_all_posts', 'approve_all_posts', self.approve_all_posts, methods=['POST'])
@@ -352,7 +352,7 @@ class SeaClearApp:
         return redirect(url_for('beach_detail', beach_id=post['beach_id']))
     
     @login_required
-    def favorites(self, beach_id):
+    def favorites(self, beach_id, view):
         user_id = current_user.id
         beach = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
         
@@ -363,7 +363,8 @@ class SeaClearApp:
                 {'_id': ObjectId(user_id)},
                 {'$pull': {'favorites': beach_id}}
             )
-            flash(f'Removed {beach["name"]} from your favorites.', 'success')
+            flash(f'Removed {beach["name"]} from your favorites.', 'danger')
+
         else:
             # Add to favorites
             self.users_collection.update_one(
@@ -372,6 +373,11 @@ class SeaClearApp:
             )
             flash(f'Added {beach["name"]} to your favorites!', 'success')
 
+        if view == "beaches":
+            return redirect(url_for('beaches'))
+        elif view == "map":
+            return redirect(url_for('map'))
+ 
         return redirect(url_for('beach_detail', beach_id=beach_id))
 
     @login_required
