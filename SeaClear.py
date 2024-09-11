@@ -21,6 +21,7 @@ class Beach:
         self.id = str(beach_data['_id'])
         self.name = beach_data['name']
         self.location = beach_data.get('location', 'Unknown Location')  #TO-DO maybe change all to use get (this is a form of error handling)
+        self.location_code = beach_data.get('location_code', '2a4a3941719942132f9ed4f71b5feadec34a454fbf3b03789def2d719b4b2e92')
         self.longitude = beach_data.get('longitude', None)
         self.latitude = beach_data.get('latitude', None)
         self.date = beach_data['date']
@@ -43,6 +44,7 @@ class Beach:
         return {
             'name': self.name,
             'location': self.location,
+            'location_code': self.location_code,
             'longitude': self.longitude,
             'latitude': self.latitude,
             'date': self.date,
@@ -171,6 +173,7 @@ class SeaClearApp:
         self.app.add_url_rule('/educational', 'educational', self.educational)
         self.app.add_url_rule('/map', 'map', self.map)
         self.app.add_url_rule('/all_beaches', 'all_beaches', self.all_beaches)
+        self.app.add_url_rule('/beaches', 'beaches', self.beaches)
         self.app.add_url_rule('/beach/<beach_id>', 'beach_detail', self.beach_detail, methods=['GET', 'POST'])
         self.app.add_url_rule('/post', 'post', self.post, methods=['POST'])
         self.app.add_url_rule('/add_reply', 'add_reply', self.add_reply, methods=['POST'])
@@ -218,6 +221,18 @@ class SeaClearApp:
     def all_beaches(self):
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
         return render_template('all_beaches.html', beaches = beaches)
+
+    def beaches(self):
+        beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
+        favorite_beaches = []
+    
+        # Fetch each favorite beach from the user's favorites
+        for favorite in current_user.favorites:
+            beach_data = self.beaches_collection.find_one({'_id': ObjectId(favorite)})
+            if beach_data:
+                favorite_beaches.append(beach_data)
+
+        return render_template('beaches.html', beaches=beaches, favorite_beaches=favorite_beaches)
 
     def beach_detail(self, beach_id):
         beach_data = self.beaches_collection.find_one({'_id': ObjectId(beach_id)})

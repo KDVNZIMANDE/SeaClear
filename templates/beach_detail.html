@@ -57,33 +57,24 @@ block extra_css %}
 
         <!-- Real-time Weather Information -->
         <div class="weather-info">
-          <p><i class="fa fa-thermometer-half"></i> 20°C</p>
-          <p><i class="fa fa-cloud"></i> Cloudy</p>
-          <p><i class="fa fa-wind"></i> 7 m/s</p>
+          <p><i class="fa fa-thermometer-half"></i> {{ weather['main']['temp'] }}°C</p>
+          <p><i class="fa fa-cloud"></i> {{ weather['weather'][0]['description'].title() }}</p>
+          <p><i class="fa fa-wind"></i> {{ weather['wind']['speed'] }} m/s</p>
           <a
-            href="{{ url_for('beach_detail', beach_id=beach.id) }}"
-            class="btn btn-primary"
-            >Weekend forecast ></a
-          >
+          href="https://weather.com/en-ZA/weather/tenday/l/{{ beach.location_code }}"
+          target="_blank"
+          class="btn btn-primary"
+          >Weekend forecast ></a>
         </div>
       </div>
 
       <!-- Amenities Section -->
-      <div class="amenities">
-        <div class="amenity-box"><i class="fa fa-toilet"></i> Restrooms</div>
-        <div class="amenity-box"><i class="fa fa-life-ring"></i> Lifeguard</div>
-        <div class="amenity-box"><i class="fa fa-shower"></i> Showers</div>
-        <div class="amenity-box">
-          <i class="fa fa-swimming-pool"></i> Swimming Pools
-        </div>
-        <div class="amenity-box">
-          <i class="fa fa-shield-alt"></i> Police Station
-        </div>
-        <div class="amenity-box">
-          <i class="fa fa-bicycle"></i> Bike Rentals
+        <div class="amenities">
+          {% for amenity in beach.amenities %}
+          <div class="amenity-box">{{ amenity }}</div>
+          {% endfor %}
         </div>
       </div>
-    </div>
 
     <!-- Right Column: Community Chat -->
     <div class="right-column">
@@ -121,7 +112,7 @@ block extra_css %}
                 href="javascript:void(0);"
                 onclick="toggleReplies('replies-{{ comment.id }}')"
                 class="btn btn-reply"
-                >View Replies</a
+                >View Replies ({{ comment.replies | length }})</a
               >
             </div>
 
@@ -163,7 +154,7 @@ block extra_css %}
                   <a id="emoji-picker-bt" type="button" class="btn btn-light">
                     <i class="fa fa-smile"></i>
                   </a>
-                  <div id="emoji-picker" class="emoji-picker"></div>
+                  <div id="emoji-picke" class="emoji-picker"></div>
                   <textarea
                     id="content1"
                     name="content"
