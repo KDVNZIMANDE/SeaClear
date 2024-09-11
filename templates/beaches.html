@@ -55,6 +55,85 @@
         background-color: #0056b3; /* Darker blue on hover */
     }
 
+    /* Favorites Section - horizontal layout */
+    /* Favorites Section - horizontal layout */
+    .favorites-section {
+    display: flex;
+    overflow-x: auto; /* Allows horizontal scrolling */
+    padding: 15px 0;
+    margin-bottom: 30px;
+    gap: 15px;
+}
+
+.favorites-section h3 {
+    flex-basis: 100%;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #007bff; /* Color for the heading */
+}
+
+.favorites-section .card {
+    flex: 0 0 auto; /* Prevents the card from shrinking */
+    width: 280px; /* Fixed width for cards */
+    border: 1px solid #66aff88f;
+    border-radius: 10px;
+    background-color: #e7f3ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.favorites-section .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.favorites-section .card img {
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+}
+
+.favorites-section .card-content {
+    padding: 0px;
+}
+
+.favorites-section .status {
+    background-color: #27db4e;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.favorites-section .directions-button {
+    position: absolute;
+    background-color: #9aa3af8e;
+    top: 11px;
+    left: 65px; /* Placing it a bit left of the share button */
+    padding: 0px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+  }
+  
+  .favorites-section .directions-icon {
+    color: #e9e9e9; /* Green color for directions */
+    font-size: 12px;
+  }
+  
+  .favorites-section .directions-icon:hover {
+    color: #98d1ff; /* Darker on hover */
+    text-decoration: none;
+  }
+
+  .favorites-section .weather-info .btn-primary {
+        background-color: #208fff49;
+        border: 0px solid #208fff00;
+        color: #000000;
+        font-size: 15px;
+    }
+
 
     /* All Beaches Section - 3 per row */
     .all-beaches-section {
@@ -197,26 +276,74 @@
         <label for="filters">Filter by:</label>
         <select id="filters" onchange="filterBeaches()">
             <option value="">All</option>
-            <option value="Favorite">Favorite</option>
-            <option value="lifeguards">Lifeguards</option>
-            <option value="showers">Showers</option>
+            <option value="Restrooms">Restrooms</option>
+            <option value="Parking">Parking</option>
+            <option value="Lifeguards">Lifeguards</option>
+            <option value="Showers">Showers</option>
+            <option value="Swimming pools">Swimming pools</option>
         </select>
 
         <label for="safety">Filter by Safety:</label>
         <select id="safety" onchange="filterBeaches()">
             <option value="">All</option>
             <option value="SAFE">SAFE</option>
-            <option value="unsafe">Unsafe</option>
+            <option value="UNSAFE">UNSAFE</option>
         </select>
     </div>
+    <!-- Favorites Section -->
+     <h3>Favorite Beaches</h3>
+    <div class="favorites-section">
+        
+        {% if favorite_beaches %}
+        <div class="favorites-section">
+            {% for favorite_beach in favorite_beaches %}
+                <div class="card" data="{{ favorite_beach.amenities | join(' ') }}" data-safety="{{ favorite_beach.status }}">
+                    <!-- Directions Button -->
+                    <div class="directions-button">
+                        <a href="https://www.google.com/maps?q={{ favorite_beach.latitude }},{{ favorite_beach.longitude }}" target="_blank" class="directions-icon">
+                            Get Directions <i class="fa fa-location-arrow"></i>
+                        </a>
+                    </div>
+                    
+                    <!-- Beach Image -->
+                    <img src="{{ url_for('static', filename='images/' + favorite_beach.get('image', 'default_beach.jpg')) }}" alt="Beach Image">
 
+                    <!-- Favorite Pin Icon -->
+                    <div class="pin-favorite">
+                        <a href="{{ url_for('favorites', beach_id=favorite_beach.id, view="beaches") }}" class="favorite-pin">
+                            <i class="fa fa-thumbtack"></i>
+                        </a>
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="card-content">
+                        <h5>{{ favorite_beach.name }} ({{ favorite_beach.location }})</h5>
+                        <!-- Status Indicator -->
+                        <div class="status">
+                            <i class="fa fa-swimmer"></i> {{ favorite_beach.status }}
+                        </div>
+                    </div>
+
+                    <!-- Real-time Weather Information -->
+                    <div class="weather-info">
+                        <p><i class="fa fa-thermometer-half"></i> {{ favorite_beach.temperature }}</p>
+                        <p><i class="fa fa-wind"></i> {{ favorite_beach.wind_speed }}</p>
+                        <a href="{{ url_for('beach_detail', beach_id=favorite_beach.id) }}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h4>No favorite beaches found. Add some to your favorites!</h4>
+    {% endif %}
+    </div>
 
     <!-- All Beaches Section -->
     <div class="all-beaches-section">
         <h3>All Beaches</h3>
         <div id="beaches-container">
             {% for beach in beaches %}
-            <div class="card" data="" data-safety="{{ beach.status }}">
+            <div class="card" data="{{ beach.amenities | join(' ') }}" data-safety="{{ beach.status }}">
                 <!-- Directions Button -->
                 <div class="directions-button">
                     <a href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.longitude }}" target="_blank" class="directions-icon">
@@ -236,7 +363,7 @@
 
                 <!-- Card Content -->
                 <div class="card-content">
-                    <h3>{{ beach.name }} ({{ beach.location }})</h3>
+                    <h4>{{ beach.name }} ({{ beach.location }})</h4>
                     <!-- Status Indicator -->
                     <div class="status">
                         <i class="fa fa-swimmer"></i> {{ beach.status }}
@@ -266,11 +393,14 @@
     const beachCards = document.querySelectorAll('.card');
 
     beachCards.forEach(card => {
-        const beachName = card.querySelector('h3').textContent.toLowerCase();
+        const headings = card.querySelectorAll('h4, h5');
+        const beachName = Array.from(headings)
+            .map(el => el.textContent.toLowerCase())
+            .join(' '); // Join text from both tags
         const cardfilters = card.getAttribute('data');
         const cardSafety = card.getAttribute('data-safety');
-
-        const matchesfilter = selectedfilter === '' || cardfilters.includes(selectedfilter.toLowerCase());
+        
+        const matchesfilter = selectedfilter === '' || cardfilters.includes(selectedfilter);
         const matchesSafety = selectedSafety === '' || cardSafety === selectedSafety;
 
         // Show/Hide based on filter conditions
