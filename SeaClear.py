@@ -172,7 +172,6 @@ class SeaClearApp:
         self.app.add_url_rule('/about', 'about', self.about)
         self.app.add_url_rule('/educational', 'educational', self.educational)
         self.app.add_url_rule('/map', 'map', self.map)
-        self.app.add_url_rule('/all_beaches', 'all_beaches', self.all_beaches)
         self.app.add_url_rule('/beaches', 'beaches', self.beaches)
         self.app.add_url_rule('/beach/<beach_id>', 'beach_detail', self.beach_detail, methods=['GET', 'POST'])
         self.app.add_url_rule('/post', 'post', self.post, methods=['POST'])
@@ -217,10 +216,6 @@ class SeaClearApp:
 
     def map(self):
         return render_template('map.html')
-    
-    def all_beaches(self):
-        beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
-        return render_template('all_beaches.html', beaches = beaches)
 
     def beaches(self):
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
