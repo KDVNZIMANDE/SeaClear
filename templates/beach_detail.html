@@ -20,7 +20,7 @@ block extra_css %}
       <div class="card">
         <div class="directions-button">
           <a
-            href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.altitude }}"
+            href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.longitude }}"
             target="_blank"
             class="directions-icon"
           >
@@ -37,7 +37,7 @@ block extra_css %}
         <!-- Favorite Pin Icon -->
         <div class="pin-favorite">
           <a
-            href="{{ url_for('favorites', beach_id=beach.id) }}"
+            href="{{ url_for('favorites', beach_id=beach.id, view="beach_detail") }}"
             class="favorite-pin"
             id="pinIcon"
           >

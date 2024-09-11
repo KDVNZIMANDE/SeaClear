@@ -12,7 +12,7 @@ content %}
           <div class="card"">
               <!-- Directions Button -->
               <div class="directions-button">
-                  <a href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.altitude }}" target="_blank" class="directions-icon">
+                  <a href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.longitude }}" target="_blank" class="directions-icon">
                       Get Directions <i class="fa fa-location-arrow"></i>
                   </a>
               </div>
@@ -22,7 +22,7 @@ content %}
 
               <!-- Favorite Pin Icon -->
               <div class="pin-favorite">
-                  <a href="{{ url_for('favorites', beach_id=beach.id) }}" class="favorite-pin">
+                  <a href="{{ url_for('favorites', beach_id=beach.id, view="map") }}" class="favorite-pin">
                       <i class="fa fa-thumbtack"></i>
                   </a>
               </div>
@@ -40,7 +40,7 @@ content %}
               <div class="weather-info">
                   <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}</p>
                   <p><i class="fa fa-wind"></i> {{ beach.wind_speed }}</p>
-                  <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">View Details ></a>
+                  <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">View Details</a>
               </div>
           </div>
           {% endfor %}
