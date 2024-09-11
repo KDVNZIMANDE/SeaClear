@@ -87,11 +87,11 @@ class Beach:
             'Restrooms': 'fa fa-restroom',
             'Parking': 'fa fa-parking',
             'Showers': 'fa fa-shower',
-            'Lifeguards': 'fa fa-life-ring',
+            'Lifeguard': 'fa fa-life-ring',
             'Picnic Area': 'fa fa-table',
             'Trash Cans': 'fa fa-trash',
             'Wheelchair Access': 'fa fa-wheelchair',
-            'Swimming': 'fa fa-swimmer',
+            'Swimming pool': 'fa fa-swimmer',
             'Changing Rooms': 'fa fa-tshirt',
             'First Aid': 'fa fa-plus',
             'Wi-Fi': 'fa fa-wifi',
@@ -421,6 +421,8 @@ class SeaClearApp:
             return redirect(url_for('beaches'))
         elif view == "map":
             return redirect(url_for('map'))
+        elif view == "search":
+            return redirect(url_for('search'))
  
         return redirect(url_for('beach_detail', beach_id=beach_id))
 
