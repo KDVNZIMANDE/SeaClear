@@ -1,96 +1,199 @@
-{% extends "base.html" %} {% block title %}Search Results{% endblock %} {% block
-content %}
+{% extends "base.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
 <h2>Search Results for "{{ query }}"</h2>
-{% if beaches %}
-<div class="search-results">
-  {% for beach in beaches %}
-  <div class="col-md-4 mb-4">
-    <div class="card beach-card">
-      <!-- Check if beach has an image, otherwise use default -->
-      <img
-        src="{{ url_for('static', filename='images/' + (beach.image if beach.image else 'default_beach.jpg')) }}"
-        class="card-img-top beach-image"
-        alt="{{ beach.name }}"
-      />
-      <div class="card-body">
-        <h5 class="card-title">{{ beach.name }}</h5>
-        <p class="card-text">
-          <strong>Grade:</strong> {{ beach.grade if beach.grade else 'N/A' }}<br />
-          <strong>Enterococci Count:</strong> {{ beach.entrocciticount if
-          beach.entrocciticount else 'N/A' }}<br />
-          <strong>Last Updated:</strong> {{ beach.date if beach.date else 'N/A'
-          }}
-        </p>
-        <a
-          href="{{ url_for('beach_detail', beach_id=beach.id) }}"
-          class="btn btn-primary"
-          >View Details</a
-        >
-      </div>
+<div class="all-beaches-section">
+    {% if beaches %}
+    <div id="beaches-container">
+        {% for beach in beaches %}
+        <div class="card" data="{{ beach.amenities | join(' ') }}" data-safety="{{ beach.status }}">
+            <!-- Directions Button -->
+            <div class="directions-button">
+                <a href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.longitude }}" target="_blank" class="directions-icon">
+                    Get Directions <i class="fa fa-location-arrow"></i>
+                </a>
+            </div>
+            
+            <!-- Beach Image -->
+            <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" alt="Beach Image">
+
+            <!-- Favorite Pin Icon -->
+            <div class="pin-favorite">
+                <a href="{{ url_for('favorites', beach_id=beach.id, view="search") }}" class="favorite-pin">
+                    <i class="fa fa-thumbtack"></i>
+                </a>
+            </div>
+
+            <!-- Card Content -->
+            <div class="card-content">
+                <h4>{{ beach.name }} ({{ beach.location }})</h4>
+                <!-- Status Indicator -->
+                <div class="status">
+                    <i class="fa fa-swimmer"></i> {{ beach.status }}
+                </div>
+            </div>
+
+            <!-- Real-time Weather Information -->
+            <div class="weather-info">
+                <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}</p>
+                <p><i class="fa fa-wind"></i> {{ beach.wind_speed }}</p>
+                <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">View Details ></a>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-  </div>
-  {% endfor %}
+    {% else %}
+    <p>No results found for "{{ query }}".</p>
+    {% endif %}
 </div>
-{% else %}
-<p>No results found for "{{ query }}".</p>
-{% endif %} {% endblock %} {% block extra_css %}
+{% endblock %}
+
+{% block extra_css %}
 <style>
-  .search-results {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem; /* Space between cards */
-  }
-
-  .beach-card {
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .beach-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-  }
-
-  .beach-image {
-    width: 100%;
-    height: auto;
-    object-fit: cover; /* Ensures image covers the card without distortion */
-  }
-
-  .card-body {
-    padding: 1rem;
-  }
-
-  .card-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-
-  .card-text {
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-
-  .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-  }
-
-  .btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #004085;
-  }
-
-  @media (max-width: 768px) {
-    .beach-card {
-      flex: 1 1 100%; /* Stacks cards in a single column on smaller screens */
+    .all-beaches-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
     }
-  }
+
+    #beaches-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .card {
+        border: 1px solid #66aff88f;
+        border-radius: 10px;
+        width: calc(33.33% - 20px);
+        text-align: center;
+        background-color: #e7f3ff;
+        transition: transform 0.3s ease;
+        position: relative;
+    }
+
+    .card img {
+        width: 100%;
+        border-radius: 10px;
+    }
+
+    .card-content {
+        padding: 10px;
+    }
+
+    .status {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #27db4e;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        z-index: 10;
+    }
+
+    .pin-favorite {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+    }
+
+    .favorite-pin {
+        color: #e3f6f8;
+        font-size: 24px;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .favorite-pin.active {
+        color: #16a8e2;
+    }
+
+    .favorite-pin:hover {
+        color: #b8d7ee;
+    }
+
+    .directions-button {
+        position: absolute;
+        background-color: #9aa3af8e;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 2px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+    }
+
+    .directions-icon {
+        color: #e9e9e9;
+        font-size: 16px;
+    }
+
+    .directions-icon:hover {
+        color: #98d1ff;
+    }
+
+    .weather-info {
+        background-color: #208fff00;
+        color: #000000;
+        padding: 10px;
+        border-radius: 0px 0 0 0px;
+        margin-bottom: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .weather-info .btn-primary {
+        background-color: #208fff49;
+        border: 2px solid #208fff00;
+        color: #000000;
+    }
+
+    .weather-info .btn-primary:hover {
+        background-color: hsl(207, 70%, 55%);
+    }
+
+    .card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 </style>
-{% endblock %} {% block extra_js %}
-<!-- Any additional JavaScript for this specific page -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function filterBeaches() {
+        const searchText = document.getElementById('filter-text').value.toLowerCase();
+        const selectedfilter = document.getElementById('filters').value;
+        const selectedSafety = document.getElementById('safety').value;
+        
+        const beachCards = document.querySelectorAll('.card');
+
+        beachCards.forEach(card => {
+            const headings = card.querySelectorAll('h4, h5');
+            const beachName = Array.from(headings)
+                .map(el => el.textContent.toLowerCase())
+                .join(' ');
+            const cardfilters = card.getAttribute('data');
+            const cardSafety = card.getAttribute('data-safety');
+            
+            const matchesfilter = selectedfilter === '' || cardfilters.includes(selectedfilter);
+            const matchesSafety = selectedSafety === '' || cardSafety === selectedSafety;
+
+            if (beachName.includes(searchText) && matchesfilter && matchesSafety) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
 {% endblock %}
