@@ -1,12 +1,3 @@
-// document.addEventListener('DOMContentLoaded', function() {
-//     var pinIcon = document.getElementById('pinIcon');
-  
-//     pinIcon.addEventListener('click', function(event) {
-//       event.preventDefault(); // Prevent the default action (if any)
-//       pinIcon.classList.toggle('active'); // Toggle the 'active' class
-//     });
-//   });
-  
   document.addEventListener('DOMContentLoaded', function() {
     const replyButtons = document.querySelectorAll('.btn-reply');
     
@@ -46,6 +37,45 @@
     }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+  const replyEmojiPickerBtns = document.querySelectorAll('#emoji-picker-bt');  // Select all emoji picker buttons for replies
+  const replyEmojiPickers = document.querySelectorAll('#emoji-picke');  // Select all emoji pickers
+  const replyTextAreas = document.querySelectorAll('#content1');  // Select all reply text areas
+
+  // List of emojis
+  const emojis = ['😀', '😂', '😍', '🤔', '😢', '😎'];
+
+  // Loop through each reply section
+  replyEmojiPickerBtns.forEach((btn, index) => {
+      const emojiPicker = replyEmojiPickers[index];  // Corresponding emoji picker
+      const textArea = replyTextAreas[index];  // Corresponding text area
+
+      // Add emojis to the picker
+      emojis.forEach(emoji => {
+          const emojiElem = document.createElement('span');
+          emojiElem.classList.add('emoji-item');
+          emojiElem.textContent = emoji;
+          emojiElem.addEventListener('click', () => {
+              textArea.value += emoji;  // Append emoji to the corresponding text area
+              emojiPicker.style.display = 'none';  // Hide picker after selection
+          });
+          emojiPicker.appendChild(emojiElem);
+      });
+
+      // Toggle emoji picker visibility for each button
+      btn.addEventListener('click', (event) => {
+          emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // Hide emoji picker when clicking outside
+      document.addEventListener('click', (event) => {
+          if (!btn.contains(event.target) && !emojiPicker.contains(event.target)) {
+              emojiPicker.style.display = 'none';
+          }
+      });
+  });
+});
+
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -78,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   });
 });
+
 
 document.addEventListener('DOMContentLoaded', function() {
   const rowsPerPage = 10;
@@ -173,37 +204,6 @@ function toggleReplyForm(commentId) {
   }
 }
 
-// scripts.js
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize the emoji picker
-  const picker = new EmojiButton();
-
-  // Get the emoji button and textarea
-  const emojiButton = document.getElementById('emoji-picker-btn');
-  const textarea = document.querySelector('#content');
-
-  // Show the emoji picker when the button is clicked
-  emojiButton.addEventListener('click', () => {
-    picker.togglePicker(emojiButton);
-  });
-
-  // Add emoji to the textarea when an emoji is selected
-  picker.on('emoji', emoji => {
-    textarea.value += emoji; // Append the emoji to the current text
-  });
-
-  // Handle reply form emoji picker
-  const replyEmojiButton = document.getElementById('emoji-picker-bt');
-  const replyTextarea = document.querySelector('#content1');
-
-  replyEmojiButton.addEventListener('click', () => {
-    picker.togglePicker(replyEmojiButton);
-  });
-
-  picker.on('emoji', emoji => {
-    replyTextarea.value += emoji; // Append the emoji to the current text
-  });
-});
 
 
