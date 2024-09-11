@@ -215,7 +215,8 @@ class SeaClearApp:
         return render_template('educational.html')
 
     def map(self):
-        return render_template('map.html')
+        beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
+        return render_template('map.html', beaches=beaches)
 
     def beaches(self):
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
