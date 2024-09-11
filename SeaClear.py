@@ -345,8 +345,7 @@ class SeaClearApp:
 
     @login_required
     def like(self, post_id):
-    # Assuming `session` contains user_id of the currently logged-in user
-        user_id = session.get('user_id')
+        user_id = current_user.id
         post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
         # Check if user has already liked the post
         if user_id in post.get('liked_users', []):
@@ -366,7 +365,6 @@ class SeaClearApp:
     
     @login_required
     def like_reply(self, post_id, reply_index):
-        # Assuming `session` contains user_id of the currently logged-in user
         user_id = current_user.id
         reply_index = int(reply_index)
         post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
