@@ -221,12 +221,14 @@ class SeaClearApp:
     def beaches(self):
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
         favorite_beaches = []
-    
-        # Fetch each favorite beach from the user's favorites
-        for favorite in current_user.favorites:
-            beach_data = self.beaches_collection.find_one({'_id': ObjectId(favorite)})
-            if beach_data:
-                favorite_beaches.append(beach_data)
+
+        if current_user.is_authenticated:
+            # Fetch each favorite beach from the user's favorites
+            for favorite in current_user.favorites:
+                beach_data = self.beaches_collection.find_one({'_id': ObjectId(favorite)})
+                if beach_data:
+                    beach_data['id'] = str(beach_data['_id'])
+                    favorite_beaches.append(beach_data)
 
         return render_template('beaches.html', beaches=beaches, favorite_beaches=favorite_beaches)
 

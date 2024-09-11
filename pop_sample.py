@@ -63,6 +63,24 @@ beaches = [
         "map_image": "bloubergstrand.jpg",
         "has_amenities": True,
         "amenities": ["Restrooms", "Parking", "Lifeguard"] 
+    },
+    {
+        "name": "Camps Bay",
+        "location": "Cape Town",
+        "location_code": "b12720131d19c2b739cb580403d5572ecad354f5fde1569b17403c827d762571",
+        "longitude": "18.4866",
+        "latitude": "-33.8194",
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "description": "temp",
+        "entrocciticount": "1",
+        "grade": "A",
+        "temperature": "23°C",
+        "wind_speed": "25 km/h",
+        "wind_direction": "NW",
+        "status": "SAFE",
+        "map_image": "bloubergstrand.jpg",
+        "has_amenities": True,
+        "amenities": ["Restrooms", "Parking", "Lifeguards", "Showers"] 
     }
 ]
 
