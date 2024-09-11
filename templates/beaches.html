@@ -10,12 +10,51 @@
         gap: 20px;
     }
 
+    /* Filters Section */
     .filters {
         display: flex;
-        gap: 10px;
-        justify-content: space-around;
-        margin-bottom: 20px;
+        gap: 15px; /* Increase gap for better spacing */
+        justify-content: space-between; /* Distribute filters evenly */
+        align-items: center; /* Align items vertically */
+        background-color: #e0f7fa; /* Light background color for contrast */
+        padding: 15px 20px; /* Add padding to create space inside the filter container */
+        border-radius: 10px; /* Rounded corners for a cleaner look */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+        margin-bottom: 30px; /* Increase margin for better separation from other elements */
     }
+
+    .filters label {
+        font-weight: bold; /* Make labels stand out */
+        color: #414142; /* Give labels a nice blue color */
+    }
+
+    .filters input[type="text"], .filters select {
+        padding: 8px 12px; /* Add padding for better usability */
+        border: 1px solid #ccc; /* Light border for input fields */
+        border-radius: 5px; /* Slightly rounded corners */
+        width: 200px; /* Fixed width for uniformity */
+        transition: all 0.3s ease; /* Smooth transition on hover/focus */
+    }
+
+    .filters input[type="text"]:focus, .filters select:focus {
+        border-color: #007bff; /* Highlight on focus */
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Soft glow effect on focus */
+    }
+
+    .filters button {
+        background-color: #368ce9; /* Blue background for buttons */
+        color: white; /* White text color */
+        padding: 10px 15px; /* Spacing around the text */
+        border: none; /* No border */
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer; /* Pointer cursor for interactivity */
+        transition: background-color 0.3s ease; /* Smooth transition on hover */
+    }
+
+    .filters button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+    }
+
 
     /* All Beaches Section - 3 per row */
     .all-beaches-section {
@@ -155,10 +194,10 @@
         <label for="filter-text">Search:</label>
         <input type="text" id="filter-text" placeholder="Search for beaches..." onkeyup="filterBeaches()">
 
-        <label for="amenities">Filter by:</label>
-        <select id="amenities" onchange="filterBeaches()">
+        <label for="filters">Filter by:</label>
+        <select id="filters" onchange="filterBeaches()">
             <option value="">All</option>
-            <option value="wifi">Favorite</option>
+            <option value="Favorite">Favorite</option>
             <option value="lifeguards">Lifeguards</option>
             <option value="showers">Showers</option>
         </select>
@@ -166,7 +205,7 @@
         <label for="safety">Filter by Safety:</label>
         <select id="safety" onchange="filterBeaches()">
             <option value="">All</option>
-            <option value="safe">Safe</option>
+            <option value="SAFE">SAFE</option>
             <option value="unsafe">Unsafe</option>
         </select>
     </div>
@@ -177,7 +216,7 @@
         <h3>All Beaches</h3>
         <div id="beaches-container">
             {% for beach in beaches %}
-            <div class="card">
+            <div class="card" data="" data-safety="{{ beach.status }}">
                 <!-- Directions Button -->
                 <div class="directions-button">
                     <a href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.altitude }}" target="_blank" class="directions-icon">
@@ -220,24 +259,28 @@
 {% block extra_js %}
 <script>
     function filterBeaches() {
-        const searchText = document.getElementById('filter-text').value.toLowerCase();
-        const selectedAmenity = document.getElementById('amenities').value;
-        const selectedSafety = document.getElementById('safety').value;
-        
-        const beachCards = document.querySelectorAll('.beach-card');
+    const searchText = document.getElementById('filter-text').value.toLowerCase();
+    const selectedfilter = document.getElementById('filters').value;
+    const selectedSafety = document.getElementById('safety').value;
     
-        beachCards.forEach(card => {
-            const beachName = card.querySelector('h4').textContent.toLowerCase();
-            const hasAmenity = selectedAmenity === '' || card.classList.contains(selectedAmenity);
-            const isSafe = selectedSafety === '' || card.classList.contains(selectedSafety);
-    
-            // Show/Hide based on filter conditions
-            if (beachName.includes(searchText) && hasAmenity && isSafe) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
+    const beachCards = document.querySelectorAll('.card');
+
+    beachCards.forEach(card => {
+        const beachName = card.querySelector('h3').textContent.toLowerCase();
+        const cardfilters = card.getAttribute('data');
+        const cardSafety = card.getAttribute('data-safety');
+
+        const matchesfilter = selectedfilter === '' || cardfilters.includes(selectedfilter.toLowerCase());
+        const matchesSafety = selectedSafety === '' || cardSafety === selectedSafety;
+
+        // Show/Hide based on filter conditions
+        if (beachName.includes(searchText) && matchesfilter && matchesSafety) {
+            card.style.display = 'block'; // Show card
+        } else {
+            card.style.display = 'none'; // Hide card
+        }
+    });
+}
+
 </script>
 {% endblock %}
