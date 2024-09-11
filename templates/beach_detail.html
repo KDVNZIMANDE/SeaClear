@@ -71,7 +71,7 @@ block extra_css %}
       <!-- Amenities Section -->
         <div class="amenities">
           {% for amenity in beach.amenities %}
-          <div class="amenity-box">{{ amenity }}</div>
+          <div class="amenity-box"><i class="{{ beach.get_amenity_icon(amenity) }}"></i>{{ amenity }}</div>
           {% endfor %}
         </div>
       </div>

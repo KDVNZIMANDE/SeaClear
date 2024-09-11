@@ -35,7 +35,7 @@ class Beach:
         self.map_image = beach_data.get('map_image', 'default_beach.jpg')
         self.has_amenities = beach_data.get('has_amenities', False)
         self.amenities = beach_data.get('amenities', [])
-
+    
     @classmethod
     def from_db(cls, beach_data):
         return cls(beach_data)
@@ -80,6 +80,39 @@ class Beach:
 
     def get_amenities(self):
         return self.amenities
+    
+    def get_amenity_icon(self, amenity):
+        # Define a mapping of amenities to icon classes
+        icon_map = {
+            'Restrooms': 'fa fa-restroom',
+            'Parking': 'fa fa-parking',
+            'Showers': 'fa fa-shower',
+            'Lifeguards': 'fa fa-life-ring',
+            'Picnic Area': 'fa fa-table',
+            'Trash Cans': 'fa fa-trash',
+            'Wheelchair Access': 'fa fa-wheelchair',
+            'Swimming': 'fa fa-swimmer',
+            'Changing Rooms': 'fa fa-tshirt',
+            'First Aid': 'fa fa-plus',
+            'Wi-Fi': 'fa fa-wifi',
+            'ATM': 'fa fa-credit-card',
+            'Boat Rental': 'fa fa-anchor',
+            'Bike Rental': 'fa fa-bicycle',
+            'Fishing': 'fa fa-fish',
+            'Surfing': 'fa fa-surfing',
+            'Beach Volleyball': 'fa fa-volleyball-ball',
+            'Playground': 'fa fa-child',
+            'Event Space': 'fa fa-calendar',
+            'Public Transport': 'fa fa-bus',
+            'Taxi': 'fa fa-taxi',
+            'Emergency Services': 'fa fa-ambulance',
+            'Barbecue': 'fa fa-fire',
+            'Dog Friendly': 'fa fa-dog',
+            'Sunset Viewing': 'fa fa-sun',
+            'Observation Deck': 'fa fa-binoculars'
+        }
+
+        return icon_map.get(amenity, '')  # Default icon if not found
 
 class Post:
     def __init__(self, post_data):
@@ -218,6 +251,7 @@ class SeaClearApp:
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
         return render_template('map.html', beaches=beaches)
 
+
     def beaches(self):
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
         favorite_beaches = []
@@ -231,6 +265,16 @@ class SeaClearApp:
                     favorite_beaches.append(beach_data)
 
         return render_template('beaches.html', beaches=beaches, favorite_beaches=favorite_beaches)
+
+    def get_amenity_icon(self, amenity):
+        # Define a mapping of amenities to icon classes
+        icon_map = {
+            'Restroom': 'fa fa-restroom',  # Example Font Awesome class
+            'Parking': 'fa fa-parking',
+            'Food': 'fa fa-utensils',
+            # Add other amenities and their icons
+        }
+        return icon_map.get(amenity, 'fa fa-question')  # Default icon if not found
 
     def beach_detail(self, beach_id):
         beach_data = self.beaches_collection.find_one({'_id': ObjectId(beach_id)})
