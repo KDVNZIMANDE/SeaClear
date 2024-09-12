@@ -30,6 +30,9 @@ content %}
               <!-- Card Content -->
               <div class="card-content">
                   <h5>{{ beach.name }} ({{ beach.location }})</h5>
+                  <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
+                  <strong>Entroccit Count:</strong> {{ beach.get('entrocciticount','N/A') }}<br />
+                  <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
                   <!-- Status Indicator -->
                   <div class="status">
                       <i class="fa fa-swimmer"></i> {{ beach.status }}
@@ -38,8 +41,8 @@ content %}
 
               <!-- Real-time Weather Information -->
               <div class="weather-info">
-                  <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}</p>
-                  <p><i class="fa fa-wind"></i> {{ beach.wind_speed }}</p>
+                  <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}°C</p>
+                  <p><i class="fa fa-wind"></i> {{ beach.wind_speed }} m/s</p>
                   <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">View Details</a>
               </div>
           </div>
