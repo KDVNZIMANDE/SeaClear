@@ -49,6 +49,9 @@ block extra_css %}
         <!-- Card Content -->
         <div class="card-content">
           <h2>{{ beach.name }} ({{ beach.location }})</h2>
+          <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
+          <strong>Entroccit Count:</strong> {{ beach.get('entrocciticount','N/A') }}<br />
+          <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
           <!-- Status Indicator -->
           <div class="status">
             <i class="fa fa-swimmer"></i> {{ beach.status}}
@@ -57,9 +60,9 @@ block extra_css %}
 
         <!-- Real-time Weather Information -->
         <div class="weather-info">
-          <p><i class="fa fa-thermometer-half"></i> {{ weather['main']['temp'] }}°C</p>
-          <p><i class="fa fa-cloud"></i> {{ weather['weather'][0]['description'].title() }}</p>
-          <p><i class="fa fa-wind"></i> {{ weather['wind']['speed'] }} m/s</p>
+          <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}°C</p>
+          <p><i class="fa fa-cloud"></i> {{ beach.wind_direction }}</p>
+          <p><i class="fa fa-wind"></i> {{ beach.wind_speed }} m/s</p>
           <a
           href="https://weather.com/en-ZA/weather/tenday/l/{{ beach.location_code }}"
           target="_blank"

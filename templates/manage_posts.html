@@ -1,0 +1,78 @@
+{% extends "base.html" %} {% block title %}Admin Dashboard{% endblock %} {%
+block content %}
+<h2>Admin Dashboard</h2>
+<p>Welcome, Admin!</p>
+
+<!-- Back Button -->
+<a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary mb-3"
+  >Back to Main Admin</a
+>
+
+<!-- Posts Management -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Manage Posts</h3>
+  <form
+    id="approveAllForm"
+    action="{{ url_for('approve_all_posts') }}"
+    method="post"
+    class="m-0"
+  >
+    <button
+      type="submit"
+      id="approveAllBtn"
+      class="btn btn-success"
+      onclick="return confirm('Are you sure you want to approve all pending posts?');"
+    >
+      Approve All Pending
+    </button>
+  </form>
+</div>
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Timestamp</th>
+        <th>Content</th>
+        <th>Status</th>
+        <th>Likes</th>
+        <th>Beach</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
+      <tr>
+        <td>{{ post.username }}</td>
+        <td>{{ post.timestamp }}</td>
+        <td>{{ post.content }}</td>
+        <td>{{ post.status }}</td>
+        <td>{{ post.likes }}</td>
+        <td>{{ post.beach }}</td>
+        <td>
+          {% if post.status != 'approved' %}
+          <a
+            href="{{ url_for('approve_post', post_id=post.id) }}"
+            class="btn btn-success btn-sm"
+            >Approve</a
+          >
+          {% endif %} {% if post.status != 'denied' %}
+          <a
+            href="{{ url_for('deny_post', post_id=post.id) }}"
+            class="btn btn-warning btn-sm"
+            >Deny</a
+          >
+          {% endif %}
+          <a
+            href="{{ url_for('delete_post', post_id=post.id) }}"
+            class="btn btn-danger btn-sm"
+            onclick="return confirm('Are you sure you want to delete this post?');"
+            >Delete</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
