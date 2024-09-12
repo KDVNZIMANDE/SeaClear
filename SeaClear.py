@@ -213,6 +213,9 @@ class SeaClearApp:
         self.app.add_url_rule('/like_reply/<post_id>/<reply_index>', 'like_reply', self.like_reply)
         self.app.add_url_rule('/favorites/<beach_id>/<view>', 'favorites', self.favorites)
         self.app.add_url_rule('/admin', 'admin_dashboard', self.admin_dashboard)
+        self.app.add_url_rule('/admin/manage-posts','manage_posts', self.manage_posts)
+        self.app.add_url_rule('/admin/manage-beaches','manage_beaches', self.manage_beaches)
+        self.app.add_url_rule('/admin/manage-reports','manage_reports', self.manage_reports)
         self.app.add_url_rule('/admin/approve/<post_id>', 'approve_post', self.approve_post)
         self.app.add_url_rule('/admin/approve_all_posts', 'approve_all_posts', self.approve_all_posts, methods=['POST'])
         self.app.add_url_rule('/admin/deny/<post_id>', 'deny_post', self.deny_post)
@@ -431,6 +434,13 @@ class SeaClearApp:
         if current_user.role != "admin":
             flash('You do not have permission to access this page.', 'danger')
             return redirect(url_for('home'))
+        return render_template('admin.html')
+    
+    @login_required
+    def manage_posts(self):
+        if current_user.role != "admin":
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('home'))
         pipeline = [
             {
                 "$addFields": {
@@ -448,9 +458,22 @@ class SeaClearApp:
             {"$sort": {"sort_order": 1}}
         ]
         posts = [Post.from_db(post) for post in self.posts_collection.aggregate(pipeline)]
+        return render_template('manage_posts.html', posts=posts)
+    
+    @login_required
+    def manage_beaches(self):
+        if current_user.role != "admin":
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('home'))
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
+        return render_template('manage_beaches.html', beaches=beaches)
+    
+    def manage_reports(self):
+        if current_user.role != "admin":
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('home'))
         reports = [Report.from_db(report) for report in self.reports_collection.find()]
-        return render_template('admin.html', posts=posts, beaches=beaches, reports=reports)
+        return render_template('manage_reports.html', reports=reports)
 
     @login_required
     def approve_post(self, post_id):
