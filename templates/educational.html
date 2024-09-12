@@ -1,90 +1,56 @@
-{% extends "base.html" %} {% block title %}Water Quality{% endblock %} {% block
-content %} {% block extra_css %}
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/water.css') }}"
-/>
+{% extends "base.html" %}
+
+{% block title %}Water Quality{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/water.css') }}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 {% endblock %}
+
+{% block content %}
 <main>
-  <h2>Know Your Status</h2>
-  <table>
-    <tr>
-      <td class="unsafe">
-        <b class="unsafe-title">UNSAFE</b>
-        <br />
-        <img
-          src="{{ url_for('static', filename='images/unsafe.jpg') }}"
-          alt="Unsafe"
-        />
-      </td>
-      <td class="safe">
-        <b class="safe-title">SAFE</b>
-        <br />
-        <img
-          src="{{ url_for('static', filename='images/safe.jpg') }}"
-          alt="Safe"
-        />
-      </td>
-      <td class="info">
-        <b>ADDITIONAL INFO</b>
-        <br />
-        <img
-          src="{{ url_for('static', filename='images/info.png') }}"
-          alt="Info"
-        />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <p><b>Do not swim here</b></p>
-        <p>
-          Swimming in unsafe water can pose significant health risks, including:
-          <br />
-          - Skin infections
-          <br />
-          - Ear, nose, throat infections
-          <br />
-          - Gastrointestinal illnesses
-          <br />
-          - Exposure to harmful bacteria, viruses, and chemicals
-          <br />
-          - Long-term health complications
-        </p>
-      </td>
-      <td>
-        Take the plunge into clear, clean waters! Our latest water quality
-        checks show that the beach is in great shape, making it the perfect time
-        for a refreshing swim. Enjoy the inviting waves and soak up the sun in a
-        setting that's ideal for relaxation and fun!
-      </td>
-      <td>
-        Find more info here:
-        <br />
-        <a
-          href="https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality"
-          >Coastal water quality</a
-        >
-        <br />
-        <a
-          href="https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/"
-          >Coastal concerns</a
-        >
-        <br />
-        <a
-          href="https://www.thesouthafrican.com/news/these-popular-cape-town-beaches-have-chronic-water-quality-problems-breaking-12-december-2023/"
-          >‘Red flag’ beaches</a
-        >
-        <br />
-        <a href="https://time.com/5631608/swimming-illness-risks/"
-          >Swimming Related Illnesses</a
-        >
-        <br />
-        <a
-          href="https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases"
-          >Waterborne Diseases</a
-        >
-      </td>
-    </tr>
-  </table>
+    <div id="waterCarousel" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#waterCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#waterCarousel" data-slide-to="1"></li>
+            <li data-target="#waterCarousel" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{{ url_for('static', filename='images/image1.jfif') }}" class="d-block w-100" alt="Illnesses">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Illnesses</h5>
+                    <p>Swimming in unsafe water can lead to skin infections, ear infections, gastrointestinal issues, and long-term health complications.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{{ url_for('static', filename='images/image3.jfif') }}" class="d-block w-100" alt="Reducing Your Impact">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Reducing Your Impact</h5>
+                    <p>Learn how to reduce your impact on water quality with simple actions and responsible behavior.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{{ url_for('static', filename='images/image2.jfif') }}" class="d-block w-100" alt="Impact on Wildlife">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Impact on Wildlife</h5>
+                    <p>Understand how poor water quality affects local wildlife and the environment.</p>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#waterCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#waterCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
 </main>
+
+<!-- Include Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock %}
