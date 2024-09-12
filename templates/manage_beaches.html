@@ -1,0 +1,75 @@
+{% extends "base.html" %} {% block title %}Admin Dashboard{% endblock %} {%
+block content %}
+<h2>Admin Dashboard</h2>
+<p>Welcome, Admin!</p>
+
+<!-- Back Button -->
+<a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary mb-3"
+  >Back to Main Admin</a
+>
+
+<!-- Beaches Management -->
+<div class="mt-4">
+  <h3>Manage Beaches</h3>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Last Updated</th>
+          <th>Description</th>
+          <th>Enterococci (per 100ml)</th>
+          <th>Grade</th>
+          <th>Temperature</th>
+          <th>Wind Speed</th>
+          <th>Wind Direction</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for beach in beaches %}
+        <tr>
+          <td>{{ beach.name }}</td>
+          <td>{{ beach.date }}</td>
+          <td>{{ beach.description }}</td>
+          <td>{{ beach.entrocciticount }}</td>
+          <td>{{ beach.grade }}</td>
+          <td>{{ beach.temperature }}</td>
+          <td>{{ beach.wind_speed }}</td>
+          <td>{{ beach.wind_direction }}</td>
+          <td>{{ beach.status }}</td>
+          <td>
+            <a
+              href="{{ url_for('edit_beach', beach_id=beach.id) }}"
+              class="btn btn-primary btn-sm"
+              >Edit</a
+            >
+            <a
+              href="{{ url_for('delete_beach', beach_id=beach.id) }}"
+              class="btn btn-danger btn-sm"
+              onclick="return confirm('Are you sure you want to delete this beach?');"
+              >Delete</a
+            >
+            <!-- Preview Button for Image -->
+            {% if beach.map_image %}
+            <a
+              href="{{ url_for('get_image', file_id=beach.map_image) }}"
+              target="_blank"
+              class="btn btn-info btn-sm"
+              >Preview Image</a
+            >
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add Beach Button -->
+  <a href="{{ url_for('add_beach') }}" class="btn btn-success mt-3"
+    >Add New Beach</a
+  >
+</div>
+{% endblock %}
