@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 from gridfs import GridFS
 from io import BytesIO
+from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 import requests
 
@@ -183,6 +184,7 @@ class SeaClearApp:
         self.app = Flask(__name__)
         self.app.config['SECRET_KEY'] = 'your_secret_key'  # Change this to a random secret key
 
+
         # MongoDB setup
         self.client = MongoClient('mongodb://localhost:27017/')
         self.db = self.client['seaclear_db']
@@ -196,6 +198,11 @@ class SeaClearApp:
         self.login_manager = LoginManager()
         self.login_manager.init_app(self.app)
         self.login_manager.login_view = 'login'
+
+        # Initialize APScheduler
+        self.scheduler = BackgroundScheduler()
+        self.scheduler.add_job(func=self.update_weather_data, trigger="interval", minutes=30)
+        self.scheduler.start()
 
         self.setup_routes()
         self.setup_login_manager()
@@ -239,6 +246,35 @@ class SeaClearApp:
             if user_data:
                 return User(user_data)
             return None
+
+    def update_weather_data(self):
+        # """Fetch and update the weather data for all beaches in the database."""
+        weather_api_key = "e4f0bddc1fc2079118ed71df7a9fa6d7"
+        beaches = self.beaches_collection.find()
+
+        for beach in beaches:
+            latitude = beach.get('latitude')
+            longitude = beach.get('longitude')
+            if latitude and longitude:
+                weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={weather_api_key}"
+
+                weather_data = requests.get(weather_url).json()
+                if weather_data:
+                    temperature = weather_data['main']['temp']
+                    wind_speed = weather_data['wind']['speed']
+                    weather_description = weather_data['weather'][0]['description']
+
+                    # Update the beach document in MongoDB
+                    self.beaches_collection.update_one(
+                        {'_id': beach['_id']},
+                        {
+                            '$set': {
+                                'temperature': temperature,
+                                'wind_speed': wind_speed,
+                                'wind_direction': weather_description,
+                            }
+                        }
+                    )
 
     def home(self):
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]

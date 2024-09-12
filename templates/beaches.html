@@ -318,6 +318,9 @@
                     <!-- Card Content -->
                     <div class="card-content">
                         <h5>{{ favorite_beach.name }} ({{ favorite_beach.location }})</h5>
+                        <strong>Grade:</strong> {{ favorite_beach.get('grade', 'N/A') }}<br />
+                        <strong>Entroccit Count:</strong> {{ favorite_beach.get('entrocciticount','N/A') }}<br />
+                        <strong>Last Updated:</strong> {{ favorite_beach.get('date', 'N/A') }}<br />
                         <!-- Status Indicator -->
                         <div class="status">
                             <i class="fa fa-swimmer"></i> {{ favorite_beach.status }}
@@ -326,8 +329,8 @@
 
                     <!-- Real-time Weather Information -->
                     <div class="weather-info">
-                        <p><i class="fa fa-thermometer-half"></i> {{ favorite_beach.temperature }}</p>
-                        <p><i class="fa fa-wind"></i> {{ favorite_beach.wind_speed }}</p>
+                        <p><i class="fa fa-thermometer-half"></i> {{ favorite_beach.temperature }}°C</p>
+                        <p><i class="fa fa-wind"></i> {{ favorite_beach.wind_speed }} m/s</p>
                         <a href="{{ url_for('beach_detail', beach_id=favorite_beach.id) }}" class="btn btn-primary">View Details</a>
                     </div>
                 </div>
@@ -364,6 +367,9 @@
                 <!-- Card Content -->
                 <div class="card-content">
                     <h4>{{ beach.name }} ({{ beach.location }})</h4>
+                    <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
+                    <strong>Entroccit Count:</strong> {{ beach.get('entrocciticount','N/A') }}<br />
+                    <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
                     <!-- Status Indicator -->
                     <div class="status">
                         <i class="fa fa-swimmer"></i> {{ beach.status }}
@@ -372,8 +378,8 @@
 
                 <!-- Real-time Weather Information -->
                 <div class="weather-info">
-                    <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}</p>
-                    <p><i class="fa fa-wind"></i> {{ beach.wind_speed }}</p>
+                    <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}°C</p>
+                    <p><i class="fa fa-wind"></i> {{ beach.wind_speed }} m/s</p>
                     <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">View Details ></a>
                 </div>
             </div>
