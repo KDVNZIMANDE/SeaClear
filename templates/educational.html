@@ -27,7 +27,7 @@
             </div>
             <!-- Updated "News" Item with Link -->
             <div class="carousel-item">
-                <a href="{{ url_for('news_page') }}"> <!-- Adjust 'news_page' to your route name -->
+                <a href="{{ url_for('news_page') }}"> 
                     <img src="{{ url_for('static', filename='images/news.jfif') }}" class="d-block w-100" alt="News">
                 </a>
                 <div class="carousel-caption d-none d-md-block">
@@ -37,6 +37,7 @@
             </div>
             <!-- Existing Items -->
             <div class="carousel-item">
+                <a href="{{ url_for('impact_page') }}"> 
                 <img src="{{ url_for('static', filename='images/image3.jfif') }}" class="d-block w-100" alt="Reducing Your Impact">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>Reducing Your Impact</h5>

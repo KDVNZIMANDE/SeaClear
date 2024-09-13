@@ -1,81 +1,83 @@
 /* Basic styles for the carousel container */
 .multi-item-carousel {
-    margin: 20px 0;
-  }
-  
-  .carousel-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  
-  /* Ensure images cover the full width of their container */
-  .carousel-item img {
-    width: 100%;
-    height: auto;
-  }
-  
-  /* Style for carousel captions */
-  .carousel-caption {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    border-radius: 5px;
-    text-align: left;
-  }
-  
-  .carousel-caption h5 a {
-    color: #fff;
-    text-decoration: none;
-  }
-  
-  .carousel-caption p {
-    margin: 0;
-    font-size: 14px;
-  }
-  
-  /* Style for navigation controls */
-  .carousel-control-prev,
-  .carousel-control-next {
-    width: 5%;
-  }
-  
-  .carousel-control-prev-icon,
-  .carousel-control-next-icon {
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-  }
-  
-  .carousel-control-prev-icon:focus,
-  .carousel-control-next-icon:focus {
-    outline: none;
-  }
-  
-  /* Ensure that each column in the carousel is properly spaced */
-  .row {
-    display: flex;
-    flex-wrap: nowrap;
-  }
-  
+  margin: 20px 0;
+}
+
+.carousel-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Ensure images cover the full width of their container */
+.carousel-item img {
+  width: 100%;
+  height: auto;
+}
+
+/* Style for carousel captions */
+.carousel-caption {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.carousel-caption h5 a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.carousel-caption p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Style for navigation controls */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+}
+
+.carousel-control-prev-icon:focus,
+.carousel-control-next-icon:focus {
+  outline: none;
+}
+
+/* Ensure that each column in the carousel is properly spaced */
+.row {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.col-4 {
+  flex: 0 0 auto;
+  width: 33.333%;
+  padding: 5px;
+}
+
+@media (max-width: 768px) {
   .col-4 {
-    flex: 0 0 auto;
-    width: 33.333%;
-    padding: 5px;
+    width: 100%;
   }
-  
-  @media (max-width: 768px) {
-    .col-4 {
-      width: 100%;
-    }
-  }
-  
-  /* Optional: Add some spacing for the carousel */
-  .carousel-inner {
-    padding: 10px;
-  }
+}
+
+/* Optional: Add some spacing for the carousel */
+.carousel-inner {
+  padding: 10px;
+}
+
+
   
   

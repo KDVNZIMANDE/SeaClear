@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Reducing Your Impact{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/impact.css') }}" />
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="container">
+    <h1 class="text-center mb-4">Reducing Your Impact on Polluted Waters</h1>
+    
+    <!-- Content Section -->
+    <section class="impact-content">
+      <p>Polluted waters can have significant effects on both the environment and human health. It’s crucial to adopt practices that help reduce the impact on water quality. Here are some steps you can take:</p>
+
+      <ul>
+        <li><strong>Minimize Chemical Use:</strong> Avoid using pesticides, fertilizers, and cleaning agents that can run off into water sources. Opt for eco-friendly products whenever possible.</li>
+        <li><strong>Proper Waste Disposal:</strong> Dispose of waste properly, including hazardous materials. Do not dump waste into drains or water bodies.</li>
+        <li><strong>Reduce Plastic Use:</strong> Reduce single-use plastics and support initiatives that promote plastic-free environments.</li>
+        <li><strong>Participate in Clean-Up Efforts:</strong> Engage in local clean-up activities to help remove litter from water sources and surrounding areas.</li>
+        <li><strong>Educate and Advocate:</strong> Spread awareness about water pollution and advocate for better water management policies.</li>
+      </ul>
+
+      <p>By adopting these practices, you contribute to maintaining the quality of water resources and protecting aquatic ecosystems.</p>
+    </section>
+  </div>
+</main>
+{% endblock %}

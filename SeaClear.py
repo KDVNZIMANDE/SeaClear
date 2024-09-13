@@ -242,10 +242,19 @@ class SeaClearApp:
         self.app.add_url_rule('/logout', 'logout', self.logout)
         self.app.add_url_rule('/search', 'search', self.search)
         self.app.add_url_rule('/images/<file_id>', 'get_image', self.get_image)  # Route for serving images
-        self.app.add_url_rule('/news', 'news_page', self.news_page)  # New route for the news page
+        self.app.add_url_rule('/news', 'news_page', self.news_page)  
+        self.app.add_url_rule('/impact', 'impact_page', self.impact_page)
+        self.app.add_url_rule('/quiz', 'impact_quiz', self.impact_quiz)
+        
 
+    def impact_quiz(self):
+        return render_template('impact_quiz.html')
+    
     def news_page(self):
         return render_template('news.html')
+    
+    def impact_page(self):
+        return render_template('impact.html')
         
 
     def setup_login_manager(self):
