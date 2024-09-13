@@ -25,14 +25,17 @@
                     <p>Get familiar with the words, symbols, and user affordances on our website to enhance your experience.</p>
                 </div>
             </div>
-            <!-- Existing Items -->
+            <!-- Updated "News" Item with Link -->
             <div class="carousel-item">
-                <img src="{{ url_for('static', filename='images/image1.jfif') }}" class="d-block w-100" alt="Illnesses">
+                <a href="{{ url_for('news_page') }}"> <!-- Adjust 'news_page' to your route name -->
+                    <img src="{{ url_for('static', filename='images/news.jfif') }}" class="d-block w-100" alt="News">
+                </a>
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>Illnesses</h5>
-                    <p>Swimming in unsafe water can lead to skin infections, ear infections, gastrointestinal issues, and long-term health complications.</p>
+                    <h5>News</h5>
+                    <p>Stay updated with the latest news and updates related to water quality and environmental protection.</p>
                 </div>
             </div>
+            <!-- Existing Items -->
             <div class="carousel-item">
                 <img src="{{ url_for('static', filename='images/image3.jfif') }}" class="d-block w-100" alt="Reducing Your Impact">
                 <div class="carousel-caption d-none d-md-block">

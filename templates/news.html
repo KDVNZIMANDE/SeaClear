@@ -1,7 +1,10 @@
 {% extends "base.html" %}
+
 {% block title %}Water Quality{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/edu.css') }}" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 {% endblock %}
 
 {% block content %}
@@ -9,6 +12,11 @@
   <!-- First Multi-Item Carousel -->
   <section class="multi-item-carousel">
     <div id="multiItemCarousel1" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#multiItemCarousel1" data-slide-to="0" class="active"></li>
+        <li data-target="#multiItemCarousel1" data-slide-to="1"></li>
+        <li data-target="#multiItemCarousel1" data-slide-to="2"></li>
+      </ol>
       <div class="carousel-inner">
         <!-- First Slide -->
         <div class="carousel-item active">
@@ -17,7 +25,7 @@
               <a href="https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality" target="_blank">
                 <img src="{{ url_for('static', filename='images/beach.jfif') }}" alt="Coastal Water Quality" class="d-block w-100"/>
                 <div class="carousel-caption">
-                  <h5><a href="https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality" target="_blank">Coastal Water Quality</a></h5>
+                  <h5>Coastal Water Quality</h5>
                   <p>Learn about the quality of coastal water and its importance.</p>
                 </div>
               </a>
@@ -26,7 +34,7 @@
               <a href="https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/" target="_blank">
                 <img src="{{ url_for('static', filename='images/bacteria.jfif') }}" alt="Coastal Concerns" class="d-block w-100"/>
                 <div class="carousel-caption">
-                  <h5><a href="https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/" target="_blank">Coastal Concerns</a></h5>
+                  <h5>Coastal Concerns</h5>
                   <p>Read about bacterial infections and the need for effective water quality flags.</p>
                 </div>
               </a>
@@ -35,28 +43,42 @@
               <a href="https://www.thesouthafrican.com/news/these-popular-cape-town-beaches-have-chronic-water-quality-problems-breaking-12-december-2023/" target="_blank">
                 <img src="{{ url_for('static', filename='images/flag.jfif') }}" alt="‘Red Flag’ Beaches" class="d-block w-100"/>
                 <div class="carousel-caption">
-                  <h5><a href="https://www.thesouthafrican.com/news/these-popular-cape-town-beaches-have-chronic-water-quality-problems-breaking-12-december-2023/" target="_blank">‘Red Flag’ Beaches</a></h5>
+                  <h5>‘Red Flag’ Beaches</h5>
                   <p>Discover which Cape Town beaches have chronic water quality problems.</p>
                 </div>
               </a>
             </div>
           </div>
         </div>
-     
+      </div>
+      <a class="carousel-control-prev" href="#multiItemCarousel1" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#multiItemCarousel1" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
   </section>
 
-  <!-- Second Multi-Item Carousel Below -->
+  <!-- Second Multi-Item Carousel -->
   <section class="multi-item-carousel mt-4">
     <div id="multiItemCarousel2" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#multiItemCarousel2" data-slide-to="0" class="active"></li>
+        <li data-target="#multiItemCarousel2" data-slide-to="1"></li>
+        <li data-target="#multiItemCarousel2" data-slide-to="2"></li>
+      </ol>
       <div class="carousel-inner">
-        <!-- First Slide of Second Carousel -->
+        <!-- First Slide -->
         <div class="carousel-item active">
           <div class="row">
             <div class="col-4">
               <a href="https://time.com/5631608/swimming-illness-risks/" target="_blank">
                 <img src="{{ url_for('static', filename='images/image1.jfif') }}" alt="Swimming Related Illnesses" class="d-block w-100"/>
                 <div class="carousel-caption">
-                  <h5><a href="https://time.com/5631608/swimming-illness-risks/" target="_blank">Swimming Related Illnesses</a></h5>
+                  <h5>Swimming Related Illnesses</h5>
                   <p>Understand the risks of swimming-related illnesses.</p>
                 </div>
               </a>
@@ -65,7 +87,7 @@
               <a href="https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases" target="_blank">
                 <img src="{{ url_for('static', filename='images/image3.jfif') }}" alt="Waterborne Diseases" class="d-block w-100"/>
                 <div class="carousel-caption">
-                  <h5><a href="https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases" target="_blank">Waterborne Diseases</a></h5>
+                  <h5>Waterborne Diseases</h5>
                   <p>Explore the impact of waterborne diseases on health.</p>
                 </div>
               </a>
@@ -74,29 +96,43 @@
               <a href="https://www.dailymaverick.co.za/article/2021-11-08-latest-data-reveals-dangerously-high-pollution-levels-in-cape-towns-vleis/" target="_blank">
                 <img src="{{ url_for('static', filename='images/vleis.jpeg') }}" alt="Dangerously High Pollution Levels" class="d-block w-100"/>
                 <div class="carousel-caption">
-                  <h5><a href="https://www.dailymaverick.co.za/article/2021-11-08-latest-data-reveals-dangerously-high-pollution-levels-in-cape-towns-vleis/" target="_blank">Dangerously High Pollution Levels</a></h5>
+                  <h5>Dangerously High Pollution Levels</h5>
                   <p>Latest data on pollution levels in Cape Town's vleis.</p>
                 </div>
               </a>
             </div>
           </div>
         </div>
-     
+      </div>
+      <a class="carousel-control-prev" href="#multiItemCarousel2" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#multiItemCarousel2" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
   </section>
 
-  <!-- Third Carousel Below -->
+  <!-- Third Multi-Item Carousel -->
   <section class="multi-item-carousel mt-4">
     <h2 class="text-center">Water Quality News</h2>
     <div id="multiItemCarousel3" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#multiItemCarousel3" data-slide-to="0" class="active"></li>
+        <li data-target="#multiItemCarousel3" data-slide-to="1"></li>
+        <li data-target="#multiItemCarousel3" data-slide-to="2"></li>
+      </ol>
       <div class="carousel-inner">
-        <!-- First Slide of Third Carousel -->
+        <!-- First Slide -->
         <div class="carousel-item active">
           <div class="row">
             <div class="col-4">
               <a href="https://www.dailymaverick.co.za/article/2023-12-04-its-code-red-on-the-water-quality-of-beaches-around-cape-town-ahead-of-peak-holiday-season/" target="_blank">
                 <img src="{{ url_for('static', filename='images/codered.jfif') }}" alt="Code Red Water Quality" class="d-block w-100"/>
                 <div class="carousel-caption">
-                  <h5><a href="https://www.dailymaverick.co.za/article/2023-12-04-its-code-red-on-the-water-quality-of-beaches-around-cape-town-ahead-of-peak-holiday-season/" target="_blank">Code Red on Water Quality</a></h5>
+                  <h5>Code Red on Water Quality</h5>
                   <p>It's code red on the water quality of beaches around Cape Town.</p>
                 </div>
               </a>
@@ -105,7 +141,7 @@
               <a href="https://resource.capetown.gov.za/documentcentre/Documents/Graphics%20and%20educational%20material/Water%20quality%20-%20assurance%20through%20testing%20.pdf.pdf" target="_blank">
                 <img src="{{ url_for('static', filename='images/quality.jpeg') }}" alt="Water Quality Assurance" class="d-block w-100"/>
                 <div class="carousel-caption">
-                  <h5><a href="https://resource.capetown.gov.za/documentcentre/Documents/Graphics%20and%20educational%20material/Water%20quality%20-%20assurance%20through%20testing%20.pdf.pdf" target="_blank">Water Quality Assurance</a></h5>
+                  <h5>Water Quality Assurance</h5>
                   <p>Assurance through testing and quality control measures.</p>
                 </div>
               </a>
@@ -114,14 +150,29 @@
               <a href="https://www.iol.co.za/sunday-tribune/travel/surge-in-illnesses-sparks-concerns-over-water-quality-and-safety-at-popular-strand-beach-f7c7e332-7bb1-46f7-935a-0320f1a5b321" target="_blank">
                 <img src="{{ url_for('static', filename='images/illness.jpg') }}" alt="Concerns Over Water Quality" class="d-block w-100"/>
                 <div class="carousel-caption">
-                  <h5><a href="https://www.iol.co.za/sunday-tribune/travel/surge-in-illnesses-sparks-concerns-over-water-quality-and-safety-at-popular-strand-beach-f7c7e332-7bb1-46f7-935a-0320f1a5b321" target="_blank">Concerns Over Water Quality</a></h5>
+                  <h5>Concerns Over Water Quality</h5>
                   <p>Concerns over water quality and safety at popular Strand Beach.</p>
                 </div>
               </a>
             </div>
           </div>
         </div>
-    
+      </div>
+      <a class="carousel-control-prev" href="#multiItemCarousel3" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#multiItemCarousel3" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
   </section>
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock %}

@@ -1,13 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, send_file, Response, session
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from pymongo import MongoClient
-from bson.objectid import ObjectId
-from werkzeug.security import generate_password_hash, check_password_hash
-from gridfs import GridFS
-from io import BytesIO
-from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
+from io import BytesIO
+
 import requests
+from apscheduler.schedulers.background import BackgroundScheduler
+from bson.objectid import ObjectId
+from flask import (Flask, Response, flash, redirect, render_template, request,
+                   send_file, session, url_for)
+from flask_login import (LoginManager, UserMixin, current_user, login_required,
+                         login_user, logout_user)
+from gridfs import GridFS
+from pymongo import MongoClient
+from werkzeug.security import check_password_hash, generate_password_hash
+
 
 class User(UserMixin):
     def __init__(self, user_data):
@@ -238,6 +242,11 @@ class SeaClearApp:
         self.app.add_url_rule('/logout', 'logout', self.logout)
         self.app.add_url_rule('/search', 'search', self.search)
         self.app.add_url_rule('/images/<file_id>', 'get_image', self.get_image)  # Route for serving images
+        self.app.add_url_rule('/news', 'news_page', self.news_page)  # New route for the news page
+
+    def news_page(self):
+        return render_template('news.html')
+        
 
     def setup_login_manager(self):
         @self.login_manager.user_loader
