@@ -58,13 +58,20 @@
     position: absolute;
     top: 10px; /* Adjust distance from top */
     left: 10px; /* Adjust distance from left */
-    background-color: #27db4e;
-    color: white;
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 15px;
     font-weight: bold;
     z-index: 10; /* Make sure it's on top of the image */
+}
+.status-safe {
+  background-color: #27db4e; /* Green for safe */
+  color: white;
+}
+
+.status-unsafe {
+  background-color: #dc3545; /* Red for unsafe */
+  color: white;
 }
 
 /* Favorite Pin Icon */
@@ -98,11 +105,18 @@
     position: absolute;
     background-color: #9aa3af8e;
     top: 11px;
-    left: 100px; /* Placing it a bit left of the share button */
     padding: 3px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     text-decoration: none;
+  }
+
+  .safe {
+    left: 100px;
+  }
+  
+  .unsafe {
+    left: 114px;
   }
   
   .directions-icon {

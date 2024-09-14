@@ -18,7 +18,7 @@ block extra_css %}
     <!-- Left Column: Beach Details -->
     <div class="left-column">
       <div class="card">
-        <div class="directions-button">
+        <div class="directions-button {{ 'safe' if beach.status == 'SAFE' else 'unsafe' }}">
           <a
             href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.longitude }}"
             target="_blank"
@@ -53,8 +53,8 @@ block extra_css %}
           <strong>Entroccit Count:</strong> {{ beach.get('entrocciticount','N/A') }}<br />
           <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
           <!-- Status Indicator -->
-          <div class="status">
-            <i class="fa fa-swimmer"></i> {{ beach.status}}
+          <div class="status {{ 'status-safe' if beach.status == 'SAFE' else 'status-unsafe' }}">
+            <i class="fa fa-swimmer"></i> {{ beach.status }}
           </div>
         </div>
 

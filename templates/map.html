@@ -27,7 +27,7 @@
           {% for beach in beaches %}
           <div class="card beach-card" data-name="{{ beach.name }}">
               <!-- Directions Button -->
-              <div class="directions-button">
+              <div class="directions-button {{ 'safe' if beach.status == 'SAFE' else 'unsafe' }}">
                   <a href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.longitude }}" target="_blank" class="directions-icon">
                       Get Directions <i class="fa fa-location-arrow"></i>
                   </a>
@@ -51,7 +51,7 @@
                   <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
                   
                   <!-- Status Indicator -->
-                  <div class="status">
+                  <div class="status {{ 'status-safe' if beach.status == 'SAFE' else 'status-unsafe' }}">
                       <i class="fa fa-swimmer"></i> {{ beach.status }}
                   </div>
               </div>
@@ -172,14 +172,21 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      background-color: #27db4e;
-      color: white;
       padding: 5px 10px;
       border-radius: 5px;
       font-size: 14px;
       font-weight: bold;
       z-index: 10;
   }
+  .status-safe {
+  background-color: #27db4e; /* Green for safe */
+  color: white;
+}
+
+.status-unsafe {
+  background-color: #dc3545; /* Red for unsafe */
+  color: white;
+}
 
   /* Favorite Pin Icon */
   .pin-favorite {
@@ -214,6 +221,13 @@
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       text-decoration: none;
+  }
+  .safe {
+    left: 90px;
+  }
+  
+  .unsafe {
+    left: 110px;
   }
 
   .directions-icon {
@@ -254,6 +268,7 @@
       border: none;
       color: white;
       font-weight: bold;
+      font-size: 12px;
   }
 
   .weather-info .btn-primary:hover {
@@ -306,6 +321,7 @@
       if (beach.name.toLowerCase().includes(input)) {
         // Add matching markers to the map
         markerGroup.addLayer(beach.marker);
+        beach.marker.openPopup();
         // Find and show the corresponding card
         Array.from(cards).forEach(card => {
           if (card.getAttribute('data-name').toLowerCase().includes(input)) {
