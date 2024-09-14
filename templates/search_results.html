@@ -10,7 +10,7 @@
         {% for beach in beaches %}
         <div class="card" data="{{ beach.amenities | join(' ') }}" data-safety="{{ beach.status }}">
             <!-- Directions Button -->
-            <div class="directions-button">
+            <div class="directions-button {{ 'safe' if beach.status == 'SAFE' else 'unsafe' }}">
                 <a href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.longitude }}" target="_blank" class="directions-icon">
                     Get Directions <i class="fa fa-location-arrow"></i>
                 </a>
@@ -30,7 +30,7 @@
             <div class="card-content">
                 <h4>{{ beach.name }} ({{ beach.location }})</h4>
                 <!-- Status Indicator -->
-                <div class="status">
+                <div class="status {{ 'status-safe' if beach.status == 'SAFE' else 'status-unsafe' }}">
                     <i class="fa fa-swimmer"></i> {{ beach.status }}
                 </div>
             </div>
@@ -85,16 +85,24 @@
     }
 
     .status {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background-color: #27db4e;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 14px;
-        font-weight: bold;
-        z-index: 10;
+    position: absolute;
+    top: 10px; /* Adjust distance from top */
+    left: 10px; /* Adjust distance from left */
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 10; /* Make sure it's on top of the image */
+}
+
+    .status-safe {
+    background-color: #27db4e; /* Green for safe */
+    color: white;
+    }
+
+    .status-unsafe {
+    background-color: #dc3545; /* Red for unsafe */
+    color: white;
     }
 
     .pin-favorite {
@@ -120,16 +128,21 @@
     }
 
     .directions-button {
-        position: absolute;
-        background-color: #9aa3af8e;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 2px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        text-decoration: none;
-    }
+    position: absolute;
+    background-color: #9aa3af8e;
+    top: 11px;
+    padding: 3px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+  }
+    .safe {
+    left: 90px;
+  }
+  
+  .unsafe {
+    left: 110px;
+  }
 
     .directions-icon {
         color: #e9e9e9;

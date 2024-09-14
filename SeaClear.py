@@ -216,7 +216,7 @@ class SeaClearApp:
         self.app.add_url_rule('/about', 'about', self.about)
         self.app.add_url_rule('/educational', 'educational', self.educational)
         self.app.add_url_rule('/map', 'map', self.map)
-        self.app.add_url_rule('/beaches', 'beaches', self.beaches)
+        self.app.add_url_rule('/all_beaches', 'all_beaches', self.all_beaches)
         self.app.add_url_rule('/beach/<beach_id>', 'beach_detail', self.beach_detail, methods=['GET', 'POST'])
         self.app.add_url_rule('/post', 'post', self.post, methods=['POST'])
         self.app.add_url_rule('/add_reply', 'add_reply', self.add_reply, methods=['POST'])
@@ -309,7 +309,7 @@ class SeaClearApp:
         return render_template('map.html', beaches=beaches)
 
 
-    def beaches(self):
+    def all_beaches(self):
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
         favorite_beaches = []
 
@@ -321,7 +321,7 @@ class SeaClearApp:
                     beach_data['id'] = str(beach_data['_id'])
                     favorite_beaches.append(beach_data)
 
-        return render_template('beaches.html', beaches=beaches, favorite_beaches=favorite_beaches)
+        return render_template('all_beaches.html', beaches=beaches, favorite_beaches=favorite_beaches)
 
     def get_amenity_icon(self, amenity):
         # Define a mapping of amenities to icon classes
@@ -475,7 +475,7 @@ class SeaClearApp:
             flash(f'Added {beach["name"]} to your favorites!', 'success')
 
         if view == "beaches":
-            return redirect(url_for('beaches'))
+            return redirect(url_for('all_beaches'))
         elif view == "map":
             return redirect(url_for('map'))
         elif view == "search":
