@@ -62,7 +62,7 @@
                     <div class="card-content">
                         <h5>{{ favorite_beach.name }} ({{ favorite_beach.location }})</h5>
                         <strong>Grade:</strong> {{ favorite_beach.get('grade', 'N/A') }}<br />
-                        <strong>Entroccit Count:</strong> {{ favorite_beach.get('entrocciticount','N/A') }}<br />
+                        <strong>Entroccit Count:</strong> {{ favorite_beach.get('enterococcicount','N/A') }}<br />
                         <strong>Last Updated:</strong> {{ favorite_beach.get('date', 'N/A') }}<br />
                         <!-- Status Indicator -->
                         <div class="status {{ 'status-safe' if favorite_beach.status == 'SAFE' else 'status-unsafe' }}">
@@ -111,7 +111,7 @@
                 <div class="card-content">
                     <h4>{{ beach.name }} ({{ beach.location }})</h4>
                     <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
-                    <strong>Entroccit Count:</strong> {{ beach.get('entrocciticount','N/A') }}<br />
+                    <strong>Entroccit Count:</strong> {{ beach.get('enterococcicount','N/A') }}<br />
                     <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
                     <!-- Status Indicator -->
                     <div class="status {{ 'status-safe' if beach.status == 'SAFE' else 'status-unsafe' }}">

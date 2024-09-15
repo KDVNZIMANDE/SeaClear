@@ -50,7 +50,7 @@ block extra_css %}
         <div class="card-content">
           <h2>{{ beach.name }} ({{ beach.location }})</h2>
           <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
-          <strong>Entroccit Count:</strong> {{ beach.get('entrocciticount','N/A') }}<br />
+          <strong>Entroccit Count:</strong> {{ beach.get('enterococcicount','N/A') }}<br />
           <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
           <!-- Status Indicator -->
           <div class="status {{ 'status-safe' if beach.status == 'SAFE' else 'status-unsafe' }}">

@@ -31,11 +31,11 @@ class Beach:
         self.latitude = beach_data.get('latitude', None)
         self.date = beach_data['date']
         self.description = beach_data['description']
-        self.entrocciticount = beach_data['entrocciticount']
+        self.enterococcicount = beach_data.get('enterococcicount')
         self.grade = beach_data['grade']
         self.temperature = beach_data['temperature']
         self.wind_speed = beach_data['wind_speed']
-        self.wind_direction = beach_data['wind_direction']
+        self.weather_description = beach_data.get('weather_description','Unknown Weather Description'),
         self.status = beach_data['status']
         self.map_image = beach_data.get('map_image', 'default_beach.jpg')
         self.has_amenities = beach_data.get('has_amenities', False)
@@ -54,11 +54,11 @@ class Beach:
             'latitude': self.latitude,
             'date': self.date,
             'description': self.description,
-            'entrocciticount': self.entrocciticount,
+            'enterococcicount': self.enterococcicount,
             'grade': self.grade,
             'temperature': self.temperature,
             'wind_speed': self.wind_speed,
-            'wind_direction': self.wind_direction,
+            'weather_description': self.weather_description,
             'status': self.status,
             'map_image': self.map_image,
             'has_amenities': self.has_amenities,
@@ -289,7 +289,7 @@ class SeaClearApp:
                             '$set': {
                                 'temperature': temperature,
                                 'wind_speed': wind_speed,
-                                'wind_direction': weather_description,
+                                'weather_description': weather_description,
                             }
                         }
                     )
@@ -593,11 +593,11 @@ class SeaClearApp:
                 "latitude": float(request.form['latitude']),
                 "date": request.form['date'],
                 "description": request.form['description'],
-                "entrocciticount": request.form['entrocciticount'],
+                "enterococcicount": request.form['enterococcicount'],
                 "grade": request.form['grade'],
                 "temperature": request.form['temperature'],
                 "wind_speed": request.form['wind_speed'],
-                "wind_direction": request.form['wind_direction'],
+                "weather_description": request.form['weather_description'],
                 "status": request.form['status'],
                 "map_image": beach.map_image,  # Use existing image unless updated
                 "has_amenities": request.form.get('has_amenities') == 'on',
@@ -658,11 +658,11 @@ class SeaClearApp:
                 "longitude": float(request.form.get('longitude', 0)),
                 "date": request.form['date'],
                 "description": request.form['description'],
-                "entrocciticount": request.form['entrocciticount'],
+                "enterococcicount": request.form['enterococcicount'],
                 "grade": request.form['grade'],
                 "temperature": request.form['temperature'],
                 "wind_speed": request.form['wind_speed'],
-                "wind_direction": request.form['wind_direction'],
+                "weather_description": request.form['weather_description'],
                 "status": request.form['status'],
                 "map_image": None  # Initialize with no image
             })
@@ -738,14 +738,14 @@ class SeaClearApp:
         if request.method == 'POST':
             beach = request.form.get('beach')
             date = request.form.get('date')
-            entrocciticount = request.form.get('entrocciticount')
+            enterococcicount = request.form.get('enterococcicount')
 
             # Process the report data and save to the database
             new_report = {
                 "_id": ObjectId(),
                 "beach": beach,
                 "date": date,
-                "enterococcicount": entrocciticount,
+                "enterococcicount": enterococcicount,
             }
             self.reports_collection.insert_one(new_report)  # Assuming you are using MongoDB
             return redirect(url_for('admin_dashboard'))
