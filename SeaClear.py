@@ -35,7 +35,7 @@ class Beach:
         self.grade = beach_data['grade']
         self.temperature = beach_data['temperature']
         self.wind_speed = beach_data['wind_speed']
-        self.weather_description = beach_data.get('weather_description','Unknown Weather Description'),
+        self.weather_description = beach_data.get('weather_description',None)
         self.status = beach_data['status']
         self.map_image = beach_data.get('map_image', 'default_beach.jpg')
         self.has_amenities = beach_data.get('has_amenities', False)
