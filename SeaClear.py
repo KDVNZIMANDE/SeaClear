@@ -306,10 +306,11 @@ class SeaClearApp:
             'link': 'https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality'
         },
         {
-            'title': 'Coastal Concerns',
-            'content': 'Read about bacterial infections and the need for effective water quality flags.',
-            'image': 'bacteria.jfif',
-            'link': 'https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/'
+            'title': 'Waterborne Diseases',
+            'content': 'Explore the impact of waterborne diseases on health.',
+            'image': 'waterborne.jfif',
+            'link': 'https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases'
+           
         },
         {
             'title': '‘Red Flag’ Beaches',
@@ -324,10 +325,10 @@ class SeaClearApp:
             'link': 'https://time.com/5631608/swimming-illness-risks/'
         },
         {
-            'title': 'Waterborne Diseases',
-            'content': 'Explore the impact of waterborne diseases on health.',
-            'image': 'waterborne.jfif',
-            'link': 'https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases'
+           'title': 'Coastal Concerns',
+            'content': 'Read about bacterial infections and the need for effective water quality flags.',
+            'image': 'bacteria.jfif',
+            'link': 'https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/'  
         },
         {
             'title': 'Dangerously High Pollution Levels',

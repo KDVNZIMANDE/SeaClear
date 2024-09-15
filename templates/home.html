@@ -1,6 +1,5 @@
 {% extends "base.html" %}
-{% block title %}SeaClear - Home{% endblock %} 
-
+{% block title %}SeaClear - Home{% endblock %}
 {% block extra_css %}
 <style>
   .beach-card {
@@ -27,99 +26,77 @@
     height: 400px;
   }
 
-  /* Welcome Section Styling */
-  .jumbotron {
-    background-color: #f8f9fa;
-    padding: 50px 30px;
+  /* Carousel Styles */
+  .carousel-item img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
   }
 
-  /* Search bar styling */
-  .search-bar {
-    margin: 40px 0;
+  .carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5); /* Dark background with transparency */
+    color: #fff; /* White text color */
+    padding: 15px;
+    border-radius: 5px;
   }
 
-  .carousel-item {
-    transition: transform 0.5s ease-in-out;
+  .carousel-caption h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .carousel-caption p {
+    font-size: 1rem;
+  }
+
+  .carousel-control-prev, .carousel-control-next {
+    display: none; /* Hide the controls */
   }
 </style>
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 {% endblock %}
 
 {% block content %}
-<!-- Header Section -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">SeaClear</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Beaches</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">About</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-<!-- Welcome Section -->
-<div class="jumbotron text-center">
-  <h1 class="display-4">Welcome to SeaClear</h1>
-  <p class="lead">Explore and contribute to the health of our beaches.</p>
-  <hr class="my-4" />
-  <p>View beach conditions, leave comments, and help keep our shores clean.</p>
-</div>
-
-<!-- News Widget (Carousel) -->
-
-<!-- News Widget (Carousel) -->
-<div id="newsCarousel" class="carousel slide news-widget" data-ride="carousel">
+<!-- Welcome and News Carousel -->
+<div id="carouselWelcome" class="carousel slide news-widget" data-ride="carousel" data-interval="5000">
   <div class="carousel-inner">
-    {% if news_items %}
-      {% for news in news_items %}
-        <div class="carousel-item {% if loop.first %}active{% endif %}">
-          <div class="text-center">
-            <h3>{{ news.title }}</h3>
-            <p>{{ news.content }}</p>
-          </div>
-        </div>
-      {% endfor %}
-    {% else %}
-      <div class="carousel-item active">
-        <div class="text-center">
-          <p>No news items available.</p>
-        </div>
+    <!-- Welcome Message as First Carousel Item -->
+    <div class="carousel-item active">
+      <div class="jumbotron text-center">
+        <h1 class="display-4">Welcome to SeaClear</h1>
+        <p class="lead">Explore and contribute to the health of our beaches.</p>
+        <hr class="my-4" />
+        <p>View beach conditions, leave comments, and help keep our shores clean.</p>
       </div>
-    {% endif %}
+    </div>
+
+    <!-- News Carousel Items -->
+    {% for news in news_items[:3] %}
+    <div class="carousel-item">
+      <a href="{{ news.link }}" target="_blank">
+        <img src="{{ url_for('static', filename='images/' + news.image) }}" class="d-block w-100" alt="{{ news.title }}" />
+        <div class="carousel-caption d-none d-md-block">
+          <h5>{{ news.title }}</h5>
+          <p>{{ news.content }}</p>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+
+    <!-- Link to Full News Page -->
+    <div class="carousel-item">
+      <a href="{{ url_for('news_page') }}">
+        <img src="{{ url_for('static', filename='images/default_news.jfif') }}" class="d-block w-100" alt="More News" />
+        <div class="carousel-caption d-none d-md-block">
+          <h5>More News</h5>
+          <p>See all the latest news and updates on our dedicated news page.</p>
+        </div>
+      </a>
+    </div>
   </div>
-  <a class="carousel-control-prev" href="#newsCarousel" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a class="carousel-control-next" href="#newsCarousel" role="button" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
 </div>
 
-
-<!-- Search Bar -->
-<div class="container search-bar">
-  <form class="form-inline justify-content-center">
-    <input class="form-control mr-sm-2" type="search" placeholder="Search for beaches" aria-label="Search">
-    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-  </form>
-</div>
-
-<!-- Map Widget (optional, you can remove if not needed) -->
+<!-- Map Widget -->
 <div id="map" class="map-widget"></div>
 
 <h2 class="mb-4">Popular Beaches</h2>
@@ -128,11 +105,7 @@
   {% for beach in beaches %}
   <div class="col-md-4 mb-4">
     <div class="card beach-card">
-      <img
-        src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}"
-        class="card-img-top beach-image"
-        alt="{{ beach.get('Location', 'Beach') }}"
-      />
+      <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" class="card-img-top beach-image" alt="{{ beach.get('Location', 'Beach') }}" />
       <div class="card-body">
         <h5 class="card-title">{{ beach.get('name', 'Unknown Beach') }}</h5>
         <p class="card-text">
@@ -140,8 +113,7 @@
           <strong>Entroccit Count:</strong> {{ beach.get('enterococcicount', 'N/A') }}<br />
           <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
           <strong>Status:</strong>
-          <span
-            class="badge badge-{{ 'success' if beach.get('status') == 'SAFE' else 'danger' }}">
+          <span class="badge badge-{{ 'success' if beach.get('status') == 'SAFE' else 'danger' }}">
             {{ beach.get('status', 'Unknown') }}
           </span>
         </p>
@@ -157,7 +129,6 @@
   No beaches found. Check back later for updates!
 </div>
 {% endif %}
-
 {% endblock %}
 
 {% block extra_js %}
