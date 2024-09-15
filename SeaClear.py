@@ -295,8 +295,69 @@ class SeaClearApp:
                     )
 
     def home(self):
+    
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
-        return render_template('home.html', beaches=beaches)
+    # Updated news_items
+        news_items = [
+        {
+            'title': 'Coastal Water Quality',
+            'content': 'Learn about the quality of coastal water and its importance.',
+            'image': 'beach.jfif',
+            'link': 'https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality'
+        },
+        {
+            'title': 'Coastal Concerns',
+            'content': 'Read about bacterial infections and the need for effective water quality flags.',
+            'image': 'bacteria.jfif',
+            'link': 'https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/'
+        },
+        {
+            'title': '‘Red Flag’ Beaches',
+            'content': 'Discover which Cape Town beaches have chronic water quality problems.',
+            'image': 'flag.jfif',
+            'link': 'https://www.thesouthafrican.com/news/these-popular-cape-town-beaches-have-chronic-water-quality-problems-breaking-12-december-2023/'
+        },
+        {
+            'title': 'Swimming Related Illnesses',
+            'content': 'Understand the risks of swimming-related illnesses.',
+            'image': 'image1.jfif',
+            'link': 'https://time.com/5631608/swimming-illness-risks/'
+        },
+        {
+            'title': 'Waterborne Diseases',
+            'content': 'Explore the impact of waterborne diseases on health.',
+            'image': 'waterborne.jfif',
+            'link': 'https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases'
+        },
+        {
+            'title': 'Dangerously High Pollution Levels',
+            'content': 'Latest data on pollution levels in Cape Town\'s vleis.',
+            'image': 'vleis.jfif',
+            'link': 'https://www.dailymaverick.co.za/article/2021-11-08-latest-data-reveals-dangerously-high-pollution-levels-in-cape-towns-vleis/'
+        },
+        {
+            'title': 'Code Red on Water Quality',
+            'content': 'It\'s code red on the water quality of beaches around Cape Town.',
+            'image': 'codered.jfif',
+            'link': 'https://www.dailymaverick.co.za/article/2023-12-04-its-code-red-on-the-water-quality-of-beaches-around-cape-town-ahead-of-peak-holiday-season/'
+        },
+        {
+            'title': 'Water Quality Assurance',
+            'content': 'Assurance through testing and quality control measures.',
+            'image': 'quality.jfif',
+            'link': 'https://resource.capetown.gov.za/documentcentre/Documents/Graphics%20and%20educational%20material/Water%20quality%20-%20assurance%20through%20testing%20.pdf.pdf'
+        },
+        {
+            'title': 'Concerns Over Water Quality',
+            'content': 'Concerns over water quality and safety at popular Strand Beach.',
+            'image': 'illness.jfif',
+            'link': 'https://www.iol.co.za/sunday-tribune/travel/surge-in-illnesses-sparks-concerns-over-water-quality-and-safety-at-popular-strand-beach-f7c7e332-7bb1-46f7-935a-0320f1a5b321'
+        }
+    ]
+        return render_template('home.html', beaches=beaches, news_items=news_items)
+
+
+    
 
     def about(self):
         return render_template('about.html')
