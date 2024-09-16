@@ -6,122 +6,100 @@
 
 {% block content %}
 <main>
-  <!-- First Multi-Item Carousel -->
-  <section class="multi-item-carousel">
-    <div id="multiItemCarousel1" class="carousel slide" data-ride="carousel">
-      <div class="carousel-inner">
-        <!-- First Slide -->
-        <div class="carousel-item active">
-          <div class="row">
-            <div class="col-4">
-              <a href="https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality" target="_blank">
-                <img src="{{ url_for('static', filename='images/beach.jfif') }}" alt="Coastal Water Quality" class="d-block w-100"/>
-                <div class="carousel-caption">
-                  <h5><a href="https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality" target="_blank">Coastal Water Quality</a></h5>
-                  <p>Learn about the quality of coastal water and its importance.</p>
-                </div>
-              </a>
-            </div>
-            <div class="col-4">
-              <a href="https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/" target="_blank">
-                <img src="{{ url_for('static', filename='images/bacteria.jfif') }}" alt="Coastal Concerns" class="d-block w-100"/>
-                <div class="carousel-caption">
-                  <h5><a href="https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/" target="_blank">Coastal Concerns</a></h5>
-                  <p>Read about bacterial infections and the need for effective water quality flags.</p>
-                </div>
-              </a>
-            </div>
-            <div class="col-4">
-              <a href="https://www.thesouthafrican.com/news/these-popular-cape-town-beaches-have-chronic-water-quality-problems-breaking-12-december-2023/" target="_blank">
-                <img src="{{ url_for('static', filename='images/beach_red.jfif') }}" alt="‘Red Flag’ Beaches" class="d-block w-100"/>
-                <div class="carousel-caption">
-                  <h5><a href="https://www.thesouthafrican.com/news/these-popular-cape-town-beaches-have-chronic-water-quality-problems-breaking-12-december-2023/" target="_blank">‘Red Flag’ Beaches</a></h5>
-                  <p>Discover which Cape Town beaches have chronic water quality problems.</p>
-                </div>
-              </a>
-            </div>
+  <section class="news-section">
+    <h2 class="news-title text-center">News</h2>
+    <div class="news-articles">
+      <!-- Article 1 -->
+      <div class="news-item">
+        <a href="https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality" target="_blank">
+          <img src="{{ url_for('static', filename='images/beach.jfif') }}" alt="Coastal Water Quality" />
+          <div class="news-caption">
+            <h5><a href="https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality" target="_blank">Coastal Water Quality</a></h5>
+            <p>Learn about the quality of coastal water and its importance.</p>
           </div>
-        </div>
-     
-  </section>
-
-  <!-- Second Multi-Item Carousel Below -->
-  <section class="multi-item-carousel mt-4">
-    <div id="multiItemCarousel2" class="carousel slide" data-ride="carousel">
-      <div class="carousel-inner">
-        <!-- First Slide of Second Carousel -->
-        <div class="carousel-item active">
-          <div class="row">
-            <div class="col-4">
-              <a href="https://time.com/5631608/swimming-illness-risks/" target="_blank">
-                <img src="{{ url_for('static', filename='images/image1.jfif') }}" alt="Swimming Related Illnesses" class="d-block w-100"/>
-                <div class="carousel-caption">
-                  <h5><a href="https://time.com/5631608/swimming-illness-risks/" target="_blank">Swimming Related Illnesses</a></h5>
-                  <p>Understand the risks of swimming-related illnesses.</p>
-                </div>
-              </a>
-            </div>
-            <div class="col-4">
-              <a href="https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases" target="_blank">
-                <img src="{{ url_for('static', filename='images/waterborne.jfif') }}" alt="Waterborne Diseases" class="d-block w-100"/>
-                <div class="carousel-caption">
-                  <h5><a href="https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases" target="_blank">Waterborne Diseases</a></h5>
-                  <p>Explore the impact of waterborne diseases on health.</p>
-                </div>
-              </a>
-            </div>
-            <div class="col-4">
-              <a href="https://www.dailymaverick.co.za/article/2021-11-08-latest-data-reveals-dangerously-high-pollution-levels-in-cape-towns-vleis/" target="_blank">
-                <img src="{{ url_for('static', filename='images/vleis.jfif') }}" alt="Dangerously High Pollution Levels" class="d-block w-100"/>
-                <div class="carousel-caption">
-                  <h5><a href="https://www.dailymaverick.co.za/article/2021-11-08-latest-data-reveals-dangerously-high-pollution-levels-in-cape-towns-vleis/" target="_blank">Dangerously High Pollution Levels</a></h5>
-                  <p>Latest data on pollution levels in Cape Town's vleis.</p>
-                </div>
-              </a>
-            </div>
+        </a>
+      </div>
+      <!-- Article 2 -->
+      <div class="news-item">
+        <a href="https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/" target="_blank">
+          <img src="{{ url_for('static', filename='images/bacteria.jfif') }}" alt="Coastal Concerns" />
+          <div class="news-caption">
+            <h5><a href="https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/" target="_blank">Coastal Concerns</a></h5>
+            <p>Read about bacterial infections and the need for effective water quality flags.</p>
           </div>
-        </div>
-     
-  </section>
-
-  <!-- Third Carousel Below -->
-  <section class="multi-item-carousel mt-4">
-    <h2 class="text-center">Water Quality News</h2>
-    <div id="multiItemCarousel3" class="carousel slide" data-ride="carousel">
-      <div class="carousel-inner">
-        <!-- First Slide of Third Carousel -->
-        <div class="carousel-item active">
-          <div class="row">
-            <div class="col-4">
-              <a href="https://www.dailymaverick.co.za/article/2023-12-04-its-code-red-on-the-water-quality-of-beaches-around-cape-town-ahead-of-peak-holiday-season/" target="_blank">
-                <img src="{{ url_for('static', filename='images/codered.jfif') }}" alt="Code Red Water Quality" class="d-block w-100"/>
-                <div class="carousel-caption">
-                  <h5><a href="https://www.dailymaverick.co.za/article/2023-12-04-its-code-red-on-the-water-quality-of-beaches-around-cape-town-ahead-of-peak-holiday-season/" target="_blank">Code Red on Water Quality</a></h5>
-                  <p>It's code red on the water quality of beaches around Cape Town.</p>
-                </div>
-              </a>
-            </div>
-            <div class="col-4">
-              <a href="https://resource.capetown.gov.za/documentcentre/Documents/Graphics%20and%20educational%20material/Water%20quality%20-%20assurance%20through%20testing%20.pdf.pdf" target="_blank">
-                <img src="{{ url_for('static', filename='images/quality.jfif') }}" alt="Water Quality Assurance" class="d-block w-100"/>
-                <div class="carousel-caption">
-                  <h5><a href="https://resource.capetown.gov.za/documentcentre/Documents/Graphics%20and%20educational%20material/Water%20quality%20-%20assurance%20through%20testing%20.pdf.pdf" target="_blank">Water Quality Assurance</a></h5>
-                  <p>Assurance through testing and quality control measures.</p>
-                </div>
-              </a>
-            </div>
-            <div class="col-4">
-              <a href="https://www.iol.co.za/sunday-tribune/travel/surge-in-illnesses-sparks-concerns-over-water-quality-and-safety-at-popular-strand-beach-f7c7e332-7bb1-46f7-935a-0320f1a5b321" target="_blank">
-                <img src="{{ url_for('static', filename='images/illness.jfif') }}" alt="Concerns Over Water Quality" class="d-block w-100"/>
-                <div class="carousel-caption">
-                  <h5><a href="https://www.iol.co.za/sunday-tribune/travel/surge-in-illnesses-sparks-concerns-over-water-quality-and-safety-at-popular-strand-beach-f7c7e332-7bb1-46f7-935a-0320f1a5b321" target="_blank">Concerns Over Water Quality</a></h5>
-                  <p>Concerns over water quality and safety at popular Strand Beach.</p>
-                </div>
-              </a>
-            </div>
+        </a>
+      </div>
+      <!-- Article 3 -->
+      <div class="news-item">
+        <a href="https://www.thesouthafrican.com/news/these-popular-cape-town-beaches-have-chronic-water-quality-problems-breaking-12-december-2023/" target="_blank">
+          <img src="{{ url_for('static', filename='images/flag.jfif') }}" alt="‘Red Flag’ Beaches" />
+          <div class="news-caption">
+            <h5><a href="https://www.thesouthafrican.com/news/these-popular-cape-town-beaches-have-chronic-water-quality-problems-breaking-12-december-2023/" target="_blank">‘Red Flag’ Beaches</a></h5>
+            <p>Discover which Cape Town beaches have chronic water quality problems.</p>
           </div>
-        </div>
-    
+        </a>
+      </div>
+      <!-- Article 4 -->
+      <div class="news-item">
+        <a href="https://time.com/5631608/swimming-illness-risks/" target="_blank">
+          <img src="{{ url_for('static', filename='images/image1.jfif') }}" alt="Swimming Related Illnesses" />
+          <div class="news-caption">
+            <h5><a href="https://time.com/5631608/swimming-illness-risks/" target="_blank">Swimming Related Illnesses</a></h5>
+            <p>Understand the risks of swimming-related illnesses.</p>
+          </div>
+        </a>
+      </div>
+      <!-- Article 5 -->
+      <div class="news-item">
+        <a href="https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases" target="_blank">
+          <img src="{{ url_for('static', filename='images/waterborne.jfif') }}" alt="Waterborne Diseases" />
+          <div class="news-caption">
+            <h5><a href="https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases" target="_blank">Waterborne Diseases</a></h5>
+            <p>Explore the impact of waterborne diseases on health.</p>
+          </div>
+        </a>
+      </div>
+      <!-- Article 6 -->
+      <div class="news-item">
+        <a href="https://www.dailymaverick.co.za/article/2021-11-08-latest-data-reveals-dangerously-high-pollution-levels-in-cape-towns-vleis/" target="_blank">
+          <img src="{{ url_for('static', filename='images/vleis.jfif') }}" alt="Dangerously High Pollution Levels" />
+          <div class="news-caption">
+            <h5><a href="https://www.dailymaverick.co.za/article/2021-11-08-latest-data-reveals-dangerously-high-pollution-levels-in-cape-towns-vleis/" target="_blank">Dangerously High Pollution Levels</a></h5>
+            <p>Latest data on pollution levels in Cape Town's vleis.</p>
+          </div>
+        </a>
+      </div>
+      <!-- Article 7 -->
+      <div class="news-item">
+        <a href="https://www.dailymaverick.co.za/article/2023-12-04-its-code-red-on-the-water-quality-of-beaches-around-cape-town-ahead-of-peak-holiday-season/" target="_blank">
+          <img src="{{ url_for('static', filename='images/codered.jfif') }}" alt="Code Red Water Quality" />
+          <div class="news-caption">
+            <h5><a href="https://www.dailymaverick.co.za/article/2023-12-04-its-code-red-on-the-water-quality-of-beaches-around-cape-town-ahead-of-peak-holiday-season/" target="_blank">Code Red on Water Quality</a></h5>
+            <p>It's code red on the water quality of beaches around Cape Town.</p>
+          </div>
+        </a>
+      </div>
+      <!-- Article 8 -->
+      <div class="news-item">
+        <a href="https://resource.capetown.gov.za/documentcentre/Documents/Graphics%20and%20educational%20material/Water%20quality%20-%20assurance%20through%20testing%20.pdf.pdf" target="_blank">
+          <img src="{{ url_for('static', filename='images/quality.jfif') }}" alt="Water Quality Assurance" />
+          <div class="news-caption">
+            <h5><a href="https://resource.capetown.gov.za/documentcentre/Documents/Graphics%20and%20educational%20material/Water%20quality%20-%20assurance%20through%20testing%20.pdf.pdf" target="_blank">Water Quality Assurance</a></h5>
+            <p>Assurance through testing and quality control measures.</p>
+          </div>
+        </a>
+      </div>
+      <!-- Article 9 -->
+      <div class="news-item">
+        <a href="https://www.iol.co.za/sunday-tribune/travel/surge-in-illnesses-sparks-concerns-over-water-quality-and-safety-at-popular-strand-beach-f7c7e332-7bb1-46f7-935a-0320f1a5b321" target="_blank">
+          <img src="{{ url_for('static', filename='images/illness.jfif') }}" alt="Concerns Over Water Quality" />
+          <div class="news-caption">
+            <h5><a href="https://www.iol.co.za/sunday-tribune/travel/surge-in-illnesses-sparks-concerns-over-water-quality-and-safety-at-popular-strand-beach-f7c7e332-7bb1-46f7-935a-0320f1a5b321" target="_blank">Concerns Over Water Quality</a></h5>
+            <p>Concerns over water quality and safety at popular Strand Beach.</p>
+          </div>
+        </a>
+      </div>
+    </div>
   </section>
 </main>
 {% endblock %}
