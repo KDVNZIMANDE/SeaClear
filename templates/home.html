@@ -9,6 +9,9 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 150%;
+    max-width: 1000px; /* Adjusted width for cards */
+    margin-bottom: 20px; /* Added margin to separate cards */
   }
 
   .beach-card:hover {
@@ -16,7 +19,7 @@
   }
 
   .beach-image {
-    height: 200px;
+    height: 200px; /* Increased image height */
     object-fit: cover;
   }
 
@@ -25,20 +28,24 @@
   }
 
   .map-widget {
-    height: 400px;
-    margin-bottom: 30px;
+    height: 200px; /* Shortened height of the map */
+    border-radius: 15px; /* Rounded corners */
+    overflow: hidden; /* Ensure map corners are rounded */
   }
 
   /* Leaflet CSS */
   #map {
     width: 100%;
-    height: 400px;
+    height: 70%;
+    border-radius: 15px; /* Rounded corners */
   }
 
   /* Carousel Styles */
   .carousel-item {
     position: relative;
-    height: 400px;
+    height: 300px; 
+    border-radius: 15px; /* Rounded corners */
+    overflow: hidden; /* Ensure carousel corners are rounded */
   }
 
   .carousel-item img {
@@ -48,8 +55,8 @@
   }
 
   .carousel-caption {
-    background-color: rgba(0, 0, 0, 0.5); /* Dark background with transparency */
-    color: #fff; /* White text color */
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
     padding: 15px;
     border-radius: 5px;
     bottom: 20px;
@@ -67,17 +74,45 @@
   }
 
   .carousel-control-prev, .carousel-control-next {
-    display: none; /* Hide the controls */
+    display: none;
   }
 
   /* Beach Card Styles */
-  .beach-list-item {
-    margin-bottom: 20px;
+  .beach-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px; /* Space between beach cards */
   }
 
-  .beach-list-item img {
-    width: 100%;
-    height: auto;
+  .status-open {
+    background-color: #28a745;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  .status-closed {
+    background-color: #dc3545;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  /* Container for Beach Cards and Map */
+  .beach-map-container {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start; /* Align items to the left */
+  }
+
+  .beach-list {
+    flex: 2;
+  }
+
+  .map-widget-container {
+    flex: 1;
+    max-width: 350px; /* Increase maximum width of the map */
   }
 </style>
 {% endblock %}
@@ -122,32 +157,35 @@
   </div>
 </div>
 
-<!-- Map Widget -->
-<div id="map" class="map-widget"></div>
-
-<h2 class="mb-4">Popular Beaches</h2>
-
-<div class="row">
-  {% for beach in beaches %}
-  <div class="col-md-12 mb-4 beach-list-item">
-    <div class="card beach-card">
-      <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" class="card-img-top beach-image" alt="{{ beach.get('Location', 'Beach') }}" />
-      <div class="card-body">
-        <h5 class="card-title">{{ beach.get('name', 'Unknown Beach') }}</h5>
-        <p class="card-text">
-          <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
-          <strong>Enterococci Count:</strong> {{ beach.get('enterococcicount', 'N/A') }}<br />
-          <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
-          <strong>Status:</strong>
-          <span class="badge badge-{{ 'success' if beach.get('status') == 'SAFE' else 'danger' }}">
-            {{ beach.get('status', 'Unknown') }}
-          </span>
-        </p>
-        <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">View Details</a>
+<!-- Beach Cards and Map Widget -->
+<div class="beach-map-container">
+  <!-- Popular Beaches -->
+  <div class="beach-list">
+    <h2 class="mb-4">Popular Beaches</h2>
+    {% for beach in beaches %}
+    <div class="beach-list-item">
+      <div class="card beach-card">
+        <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" class="card-img-top beach-image" alt="{{ beach.get('Location', 'Beach') }}" />
+        <div class="card-body">
+          <h5 class="card-title">{{ beach.get('name', 'Unknown Beach') }}</h5>
+          <p class="card-text">
+            <strong>Status:</strong>
+            <span class="badge {{ 'status-open' if beach.get('status') == 'OPEN' else 'status-closed' }}">
+              {{ beach.get('status', 'Unknown') }}
+            </span><br />
+            <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}
+          </p>
+          <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">Show Details</a>
+        </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-  {% endfor %}
+
+  <!-- Map Widget -->
+  <div class="map-widget-container">
+    <div id="map" class="map-widget"></div>
+  </div>
 </div>
 
 {% if not beaches %}
