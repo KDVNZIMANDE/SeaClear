@@ -4,14 +4,73 @@
 
 {% block extra_css %}
 <style>
+  /* Popular Beaches Title */
+  .beach-list h2 {
+    font-size: 2rem; 
+    font-weight: bold; 
+    color: #007bff; 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+    margin-bottom: 30px; 
+    border-bottom: 3px solid #0056b3; 
+    padding-bottom: 10px; 
+  }
+
+  body {
+    font-family: 'Arial', sans-serif; 
+    font-size: 1rem; 
+    line-height: 1.6; 
+    color: #333; 
+
+  /* Card Title Styling */
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333; 
+  }
+
+  /* Card Text Styling */
+  .card-text {
+    font-size: 1rem;
+    color: #555; 
+  }
+
+  /* Button Styling */
+  .btn-primary {
+    font-size: 1rem; /* More readable button text */
+    font-weight: bold;
+    padding: 10px 20px; /* Larger padding for better clickability */
+  }
+
+  /* All Beaches Button Styling */
+  .all-beaches-btn {
+    display: block;
+    font-size: 1.2rem; 
+    font-weight: bold;
+    padding: 15px 20px; 
+    text-align: center;
+    margin-bottom: 30px; /* Adjusted margin to add space between button and map */
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .all-beaches-btn:hover {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+  }
+
   .beach-card {
     transition: transform 0.3s ease-in-out;
     border-radius: 8px;
     overflow: hidden;
+    width: 700px;
+    height: 230px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 150%;
-    max-width: 1000px; /* Adjusted width for cards */
-    margin-bottom: 20px; /* Added margin to separate cards */
+    margin-bottom: 20px;
   }
 
   .beach-card:hover {
@@ -19,33 +78,33 @@
   }
 
   .beach-image {
-    height: 200px; /* Increased image height */
+    height: 80px;
     object-fit: cover;
   }
 
   .news-widget {
-    margin-bottom: 30px;
+    margin-bottom: 100px;
   }
 
   .map-widget {
-    height: 200px; /* Shortened height of the map */
-    border-radius: 15px; /* Rounded corners */
-    overflow: hidden; /* Ensure map corners are rounded */
+    height: 250px;
+    border-radius: 15px;
+    overflow: hidden;
   }
 
   /* Leaflet CSS */
   #map {
     width: 100%;
-    height: 70%;
-    border-radius: 15px; /* Rounded corners */
+    height: 90%;
+    border-radius: 15px;
   }
 
   /* Carousel Styles */
   .carousel-item {
     position: relative;
-    height: 300px; 
-    border-radius: 15px; /* Rounded corners */
-    overflow: hidden; /* Ensure carousel corners are rounded */
+    height: 300px;
+    border-radius: 15px;
+    overflow: hidden;
   }
 
   .carousel-item img {
@@ -77,12 +136,12 @@
     display: none;
   }
 
-  /* Beach Card Styles */
+  /* Beach List Styles */
   .beach-list {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px; /* Space between beach cards */
+    gap: 10px;
   }
 
   .status-open {
@@ -103,7 +162,7 @@
   .beach-map-container {
     display: flex;
     gap: 20px;
-    justify-content: flex-start; /* Align items to the left */
+    justify-content: flex-start;
   }
 
   .beach-list {
@@ -112,14 +171,14 @@
 
   .map-widget-container {
     flex: 1;
-    max-width: 350px; /* Increase maximum width of the map */
+    max-width: 350px;
   }
 </style>
 {% endblock %}
 
 {% block content %}
 <!-- Welcome and News Carousel -->
-<div id="carouselWelcome" class="carousel slide news-widget" data-ride="carousel" data-interval="5000">
+<div id="carouselWelcome" class="carousel slide news-widget" data-ride="carousel" data-interval="3000">
   <div class="carousel-inner">
     <!-- Welcome Message as First Carousel Item -->
     <div class="carousel-item active">
@@ -147,7 +206,7 @@
     <!-- Link to Full News Page -->
     <div class="carousel-item">
       <a href="{{ url_for('news_page') }}">
-        <img src="{{ url_for('static', filename='images/default_news.jfif') }}" class="d-block w-100" alt="More News" />
+        <img src="{{ url_for('static', filename='images/news2.jfif') }}" class="d-block w-100" alt="More News" />
         <div class="carousel-caption d-none d-md-block">
           <h5>More News</h5>
           <p>See all the latest news and updates on our dedicated news page.</p>
@@ -172,7 +231,7 @@
             <strong>Status:</strong>
             <span class="badge {{ 'status-open' if beach.get('status') == 'OPEN' else 'status-closed' }}">
               {{ beach.get('status', 'Unknown') }}
-            </span><br />
+            </span>
             <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}
           </p>
           <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">Show Details</a>
@@ -184,6 +243,8 @@
 
   <!-- Map Widget -->
   <div class="map-widget-container">
+    <!-- All Beaches Button -->
+    <a href="{{ url_for('all_beaches') }}" class="all-beaches-btn btn btn-primary">View All Beaches</a>
     <div id="map" class="map-widget"></div>
   </div>
 </div>
