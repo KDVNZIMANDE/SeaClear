@@ -286,3 +286,94 @@ text-decoration: none;
     transform: scale(1.03);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+/* General Image Styling */
+img {
+    width: 100%;
+    height: auto;
+    max-width: 100%; /* Ensure images never exceed their container's width */
+}
+
+/* Responsive Beach Card Layout */
+@media (max-width: 768px) {
+    .beaches-container {
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+        gap: 10px; /* Reduce the gap between items */
+        padding: 10px; /* Padding for smaller screens */
+    }
+
+    .card {
+        width: 100%; /* Full width on smaller screens */
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+
+    .weather-info, .card-content {
+        text-align: center; /* Center align text on smaller screens */
+    }
+
+    .favorites-section, .all-beaches-section {
+        padding: 10px;
+    }
+
+    .filters {
+        display: flex;
+        flex-direction: column; /* Stack filters vertically */
+        gap: 10px;
+    }
+
+    .filters input[type="text"], .filters select {
+        width: 100%; /* Full width for inputs */
+        font-size: 0.9rem; /* Smaller font size for mobile */
+    }
+
+    .btn-primary {
+        font-size: 0.9rem;
+        padding: 8px 12px; /* Adjust button padding */
+    }
+
+    h4, h5 {
+        font-size: 1.2rem; /* Make headings smaller */
+    }
+}
+
+
+/* Further refinement for smaller screens (<600px) */
+@media (max-width: 600px) {
+    .beaches-container {
+        grid-template-columns: 1fr; /* Single column layout */
+        gap: 10px; /* Reduce the gap */
+    }
+
+    .card {
+        margin-bottom: 10px; /* Less margin between cards */
+        padding: 10px; /* Reduce padding */
+    }
+
+    .filters {
+        gap: 8px; /* Decrease gap for small screens */
+        padding: 10px; /* Less padding for mobile */
+    }
+
+    .filters input[type="text"], .filters select {
+        width: 100%; /* Full width for inputs */
+        font-size: 0.9rem; /* Adjust input font size */
+    }
+
+    .btn-primary {
+        font-size: 0.8rem; /* Smaller button text */
+        padding: 6px 10px; /* Reduce button padding */
+    }
+
+    h4, h5 {
+        font-size: 1rem; /* Further reduce heading sizes */
+    }
+
+    p {
+        font-size: 0.9rem; /* Adjust paragraph font size */
+    }
+}
+
+/* Prevent horizontal scrolling on small screens */
+body {
+    overflow-x: hidden; /* Hide horizontal overflow */
+}
