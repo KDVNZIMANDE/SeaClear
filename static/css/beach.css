@@ -659,3 +659,88 @@ textarea,
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+
+.beach-details-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.left-section {
+  width: 60%; /* Take up 60% of the width */
+}
+
+.right-section {
+  width: 35%; /* Take up the remaining 35% */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ratings {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checked {
+  color: orange;
+}
+
+.fa-star {
+  cursor: pointer;
+}
+
+
+.ratings h4 {
+  margin-right: 10px;
+}
+
+.safety-rating, .clean-rating {
+  margin-bottom: 10px;
+}
+.map-blurred {
+  filter: blur(2px); /* Apply blur effect */
+  position: relative;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+.rating .fa-star {
+  color: gold;
+  font-size: 1.5rem;
+}
+.rating .fa-star.half {
+  color: #ffcc00;
+  position: relative;
+  display: inline-block;
+}
+.rating .fa-star.empty {
+  color: #e0e0e0;
+}
+.rating span {
+  margin-left: 0.5rem;
+  font-size: 1.2rem;
+}
+
+
+
+@media (max-width: 768px) {
+  .layout {
+      flex-direction: column;
+  }
+  .left-column, .right-column {
+      width: 100%;
+      margin: 0;
+  }
+  .beach-details-container {
+    flex-direction: column;
+  }
+
+  .left-section, .right-section {
+    width: 100%;
+  }
+}

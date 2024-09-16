@@ -26,7 +26,10 @@ beaches = [
         "status": "SAFE",
         "map_image": "clifton_4th.jpg",
         "has_amenities": True,
-        "amenities": ["Restrooms", "Parking", "Lifeguard", "Showers"] 
+        "amenities": ["Restrooms", "Parking", "Lifeguard", "Showers"],
+        "safety_rating": 4.2,
+        "clean_rating": 4.8,
+        "num_ratings": 25
     },
     {
         "name": "Muizenberg Beach",
@@ -44,7 +47,10 @@ beaches = [
         "status": "SAFE",
         "map_image": "muizenberg.jpg",
         "has_amenities": True,
-        "amenities": ["Restrooms", "Parking", "Surfing Rentals", "Showers"] 
+        "amenities": ["Restrooms", "Parking", "Surfing Rentals", "Showers"],
+        "safety_rating": 4.2,
+        "clean_rating": 4.8,
+        "num_ratings": 25
     },
     {
         "name": "Bloubergstrand",
@@ -62,7 +68,10 @@ beaches = [
         "status": "SAFE",
         "map_image": "bloubergstrand.jpg",
         "has_amenities": True,
-        "amenities": ["Restrooms", "Parking", "Lifeguard", "Restaurants"] 
+        "amenities": ["Restrooms", "Parking", "Lifeguard", "Restaurants"],
+        "safety_rating": 4.2,
+        "clean_rating": 4.8,
+        "num_ratings": 25 
     },
     {
         "name": "Camps Bay",
@@ -80,7 +89,10 @@ beaches = [
         "status": "SAFE",
         "map_image": "camps_bay.jpg",
         "has_amenities": True,
-        "amenities": ["Restrooms", "Parking", "Lifeguard", "Showers", "Restaurants"] 
+        "amenities": ["Restrooms", "Parking", "Lifeguard", "Showers", "Restaurants"],
+        "safety_rating": 4.2,
+        "clean_rating": 4.8,
+        "num_ratings": 25
     },
     {
         "name": "Boulders Beach",
@@ -98,7 +110,10 @@ beaches = [
         "status": "SAFE",
         "map_image": "boulders_beach.jpg",
         "has_amenities": True,
-        "amenities": ["Restrooms", "Parking", "Penguin Viewing"] 
+        "amenities": ["Restrooms", "Parking", "Penguin Viewing"],
+        "safety_rating": 4.2,
+        "clean_rating": 4.8,
+        "num_ratings": 25
     },
     {
         "name": "Hout Bay Beach",
@@ -116,7 +131,10 @@ beaches = [
         "status": "SAFE",
         "map_image": "hout_bay.jpg",
         "has_amenities": True,
-        "amenities": ["Restrooms", "Parking", "Fishing Village", "Restaurants"] 
+        "amenities": ["Restrooms", "Parking", "Fishing Village", "Restaurants"],
+        "safety_rating": 4.2,
+        "clean_rating": 4.8,
+        "num_ratings": 25 
     },
     {
         "name": "Fish Hoek Beach",
@@ -134,7 +152,10 @@ beaches = [
         "status": "SAFE",
         "map_image": "fish_hoek.jpg",
         "has_amenities": True,
-        "amenities": ["Restrooms", "Parking", "Lifeguard", "Playground"] 
+        "amenities": ["Restrooms", "Parking", "Lifeguard", "Playground"],
+        "safety_rating": 4.2,
+        "clean_rating": 4.8,
+        "num_ratings": 25
     },
     {
         "name": "Noordhoek Beach",
@@ -152,7 +173,10 @@ beaches = [
         "status": "UNSAFE",
         "map_image": "noordhoek.jpg",
         "has_amenities": True,
-        "amenities": ["Parking", "Horse Riding", "Scenic Views"] 
+        "amenities": ["Parking", "Horse Riding", "Scenic Views"],
+        "safety_rating": 4.2,
+        "clean_rating": 4.8,
+        "num_ratings": 25
     },
     {
         "name": "Llandudno Beach",
@@ -170,7 +194,10 @@ beaches = [
         "status": "SAFE",
         "map_image": "llandudno.jpg",
         "has_amenities": True,
-        "amenities": ["Restrooms", "Parking", "Lifeguard"] 
+        "amenities": ["Restrooms", "Parking", "Lifeguard"],
+        "safety_rating": 4.2,
+        "clean_rating": 4.8,
+        "num_ratings": 25
     },
     {
         "name": "Bakoven Beach",
@@ -183,12 +210,15 @@ beaches = [
         "entrocciticount": "0",
         "grade": "A",
         "temperature": "22°C",
-        "wind_speed": "16 km/h",
+        "wind_speed": "16",
         "wind_direction": "E",
         "status": "UNSAFE",
         "map_image": "bakoven.jpg",
         "has_amenities": True,
-        "amenities": ["Parking", "Scenic Views", "Snorkelling"] 
+        "amenities": ["Parking", "Scenic Views", "Snorkelling"],
+        "safety_rating": 4.2,
+        "clean_rating": 4.8,
+        "num_ratings": 25
     }
 ]
 
