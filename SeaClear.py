@@ -329,20 +329,20 @@ class SeaClearApp:
         {
             'title': 'Coastal Water Quality',
             'content': 'Learn about the quality of coastal water and its importance.',
-            'image': 'beach.jfif',
+            'image': 'beach_red.jfif',
             'link': 'https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality'
         },
         {
             'title': 'Waterborne Diseases',
             'content': 'Explore the impact of waterborne diseases on health.',
-            'image': 'waterborne.jfif',
+            'image': 'beach_red.jfif',
             'link': 'https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases'
            
         },
         {
             'title': '‘Red Flag’ Beaches',
             'content': 'Discover which Cape Town beaches have chronic water quality problems.',
-            'image': 'flag.jfif',
+            'image': 'beach_red.jfif',
             'link': 'https://www.thesouthafrican.com/news/these-popular-cape-town-beaches-have-chronic-water-quality-problems-breaking-12-december-2023/'
         },
         {

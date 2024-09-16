@@ -4,6 +4,25 @@
 
 {% block extra_css %}
 <style>
+  /* Background Image for Welcome Slide */
+  .carousel-item.welcome-slide {
+    background-image: url('{{ url_for('static', filename='images/beach_red.jfif') }}'); 
+    background-size: cover;
+    background-position: center;
+    height: 300px; 
+    color: #fff;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-item.welcome-slide .jumbotron {
+    background-color: transparent;  /* Set the background to transparent */
+    border-radius: 10px;  /* Keep the rounded corners if needed */
+    padding: 20px;  /* Optional: Adjust padding as needed */
+}
+
+
   /* Popular Beaches Title */
   .beach-list h2 {
     font-size: 2rem; 
@@ -21,6 +40,7 @@
     font-size: 1rem; 
     line-height: 1.6; 
     color: #333; 
+  }
 
   /* Card Title Styling */
   .card-title {
@@ -181,13 +201,13 @@
 <div id="carouselWelcome" class="carousel slide news-widget" data-ride="carousel" data-interval="3000">
   <div class="carousel-inner">
     <!-- Welcome Message as First Carousel Item -->
-    <div class="carousel-item active">
-      <div class="jumbotron text-center">
+    <div class="carousel-item active welcome-slide">
+      <div class="jumbotron text-center"> 
         <h1 class="display-4">Welcome to SeaClear</h1>
         <p class="lead">Explore and contribute to the health of our beaches.</p>
         <hr class="my-4" />
         <p>View beach conditions, leave comments, and help keep our shores clean.</p>
-      </div>
+      </div> 
     </div>
 
     <!-- News Carousel Items -->
@@ -272,3 +292,4 @@
     .openPopup();
 </script>
 {% endblock %}
+
