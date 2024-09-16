@@ -182,6 +182,28 @@ class Report:
             'date' : self.date,
             'enterococcicount' : self.enterococcicount
         }
+        
+class CommunityReport:
+    def __init__(self, community_report_data):
+        self.id = str(community_report_data['_id'])
+        self.problem_type = community_report_data['problem_type']
+        self.problem_description = community_report_data.get['problem_description']
+        self.user_id = community_report_data['user_id']
+        self.beach = community_report_data['beach']
+        self.date= community_report_data['date']
+    @classmethod
+    def from_db(cls, community_report_data):
+        return cls(community_report_data)
+    
+    def to_dict(self):
+        return {
+            'problem_type': self.problem_type,
+            'problem_description': self.problem_description,
+            'user_id': self.user_id,
+            'beach': self.beach,
+            'date' : self.date
+            
+        }
 
 class SeaClearApp:
     def __init__(self):
@@ -196,6 +218,7 @@ class SeaClearApp:
         self.users_collection = self.db['users']
         self.posts_collection = self.db['posts']
         self.reports_collection = self.db['reports']
+        self.community_reports_collection = self.db['community_reports']
         self.fs = GridFS(self.db)   #for images
 
         # Flask-Login setup
@@ -241,10 +264,12 @@ class SeaClearApp:
         self.app.add_url_rule('/login', 'login', self.login, methods=['GET', 'POST'])
         self.app.add_url_rule('/logout', 'logout', self.logout)
         self.app.add_url_rule('/search', 'search', self.search)
-        self.app.add_url_rule('/images/<file_id>', 'get_image', self.get_image)  # Route for serving images
+        self.app.add_url_rule('/images/<file_id>', 'get_image', self.get_image)  
         self.app.add_url_rule('/news', 'news_page', self.news_page)  
         self.app.add_url_rule('/impact', 'impact_page', self.impact_page)
         self.app.add_url_rule('/quiz', 'impact_quiz', self.impact_quiz)
+        self.app.add_url_rule('/community_report','community_report', self.community_report, methods=['GET', 'POST'])
+        
         
 
     def impact_quiz(self):
@@ -255,7 +280,9 @@ class SeaClearApp:
     
     def impact_page(self):
         return render_template('impact.html')
-        
+     
+    def community_report(self):
+        return render_template('add_community_report.html')
 
     def setup_login_manager(self):
         @self.login_manager.user_loader
@@ -812,7 +839,54 @@ class SeaClearApp:
             self.reports_collection.insert_one(new_report)  # Assuming you are using MongoDB
             return redirect(url_for('admin_dashboard'))
         return render_template('add_report.html')
+   
+    @login_required
+    def community_report(self):
+     if request.method == 'POST':
+        problem_type = request.form.get('problem_type')
+        problem_description = request.form.get('problem_description')
+        user_id = request.form.get('user_id')
+        beach  = request.form.get('beach')
+
+        # Validate the input fields
+        if not problem_type or not problem_description or not beach:
+            flash('Please fill out all fields.', 'danger')
+            return redirect(url_for('community_report'))
+
+        # Validate beach_id
+        if not self.beaches_collection.find_one({'_id': ObjectId(beach)}):
+            flash('Invalid beach ID.', 'danger')
+            return redirect(url_for('community_report'))
+
+        # Create a new CommunityReport instance
     
+        new_community_report ={
+            'problem_type': problem_type,
+            'problem_description': problem_description,
+            'user_id': user_id,
+            'beach': beach,
+            'date': datetime.now()
+        }
+        # Insert the report into the database
+    
+        self.community_reports_collection.insert_one(new_community_report)
+
+        flash('Report submitted successfully!', 'success')
+        return redirect(url_for('community_report'))
+
+    # Retrieve the list of beaches and problem types
+     beaches = list(self.beaches_collection.find())
+     problem_types = [
+        'Pollution',
+        'Safety Issue',
+        'Lack of Facilities',
+        'Maintenance',
+        'Other'
+     ]
+     return render_template('community_report.html', beaches=beaches, problem_types=problem_types)
+       
+
+
     def sign_up(self):
         if request.method == 'POST':
             email = request.form.get('email')
