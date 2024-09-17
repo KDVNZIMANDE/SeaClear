@@ -652,7 +652,7 @@ class SeaClearApp:
         # Logic for an admin to approve all posts that are 'pending'
         if current_user.role != "admin":
             flash('You do not have permission to perform this action.', 'danger')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('home'))
         
         try:
             result = self.posts_collection.update_many(
@@ -683,7 +683,7 @@ class SeaClearApp:
         # Logic for an admin to remove a post from the database
         if current_user.role != "admin":
             flash('You do not have permission to perform this action.', 'danger')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('home'))
         
         try:
             result = self.posts_collection.delete_one({'_id': ObjectId(post_id)})
@@ -701,7 +701,7 @@ class SeaClearApp:
 
         if current_user.role != "admin":
             flash('You do not have permission to perform this action.', 'danger')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('home'))
         
         # Fetch the existing beach data
         beach_data = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
@@ -763,7 +763,7 @@ class SeaClearApp:
 
         if current_user.role != "admin":
             flash('You do not have permission to perform this action.', 'danger')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('home'))
 
         try:
             if not ObjectId.is_valid(beach_id):
@@ -786,7 +786,7 @@ class SeaClearApp:
         # Check if user is an admin
         if current_user.role != "admin":
             flash('You do not have permission to perform this action.', 'danger')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('home'))
 
         if request.method == 'POST':
             # Create new beach data from the form
@@ -840,7 +840,7 @@ class SeaClearApp:
         # Check if the user is an admin
         if current_user.role != "admin":
             flash('You do not have permission to perform this action.', 'danger')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('home'))
 
         # Fetch the existing beach data
         report_data = self.reports_collection.find_one({"_id": ObjectId(report_id)})
@@ -871,12 +871,12 @@ class SeaClearApp:
         # Check if the user is an admin
         if current_user.role != "admin":
             flash('You do not have permission to perform this action.', 'danger')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('home'))
         
         try:
             if not ObjectId.is_valid(report_id):
                 flash('Invalid report ID.', 'danger')
-                return redirect(url_for('admin_dashboard'))
+                return redirect(url_for('manage_reports'))
             report_id = ObjectId(report_id)
             result = self.reports_collection.delete_one({"_id": report_id})
             if result.deleted_count > 0:
@@ -885,7 +885,7 @@ class SeaClearApp:
                 flash('Report not found.', 'danger')
         except Exception as e:
             flash(f'An error occurred: {str(e)}', 'danger')
-        return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('manage_reports'))
     
     @login_required
     def add_report(self):
@@ -894,13 +894,14 @@ class SeaClearApp:
         # Check if the user is an admin
         if current_user.role != "admin":
             flash('You do not have permission to perform this action.', 'danger')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('home'))
         
         # Check if this is a submission of the report
         if request.method == 'POST':
             beach = request.form.get('beach')
             date = request.form.get('date')
             enterococcicount = request.form.get('enterococcicount')
+            category = request.form.get('category')
 
             # Process the report data and save to the database
             new_report = {
@@ -908,9 +909,10 @@ class SeaClearApp:
                 "beach": beach,
                 "date": date,
                 "enterococcicount": enterococcicount,
+                "category": category
             }
             self.reports_collection.insert_one(new_report)  # Assuming you are using MongoDB
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('manage_reports'))
         return render_template('add_report.html')
     
     def sign_up(self):
