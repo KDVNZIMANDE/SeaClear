@@ -1,0 +1,7 @@
+[{
+  "email": "admin@example.com",
+  "password": "pbkdf2:sha256:600000$ik1EXnWQ$9c752e957395e79c2f8c553b32048eb86c4d84050bbb8f16d0796f2d51beb17c",
+  "role": "admin",
+  "username": "Admin User",
+  "favorites": []
+}]
