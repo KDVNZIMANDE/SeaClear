@@ -12,11 +12,19 @@ block content %}
 <div class="mt-4">
   <h3>Manage Reports</h3>
   <div class="table-responsive">
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="reportsTable">
       <thead>
         <tr>
           <th>Beach</th>
-          <th>Date</th>
+          <th>
+            Date
+            <button
+              onclick="sortTable()"
+              class="btn btn-sm btn-outline-primary"
+            >
+              Sort
+            </button>
+          </th>
           <th>Enterococci (per 100ml)</th>
           <th>Category</th>
           <th>Actions</th>
@@ -26,7 +34,7 @@ block content %}
         {% for report in reports %}
         <tr>
           <td>{{ report.beach }}</td>
-          <td>{{ report.date }}</td>
+          <td data-date="{{ report.date }}">{{ report.date }}</td>
           <td>{{ report.enterococcicount }}</td>
           <td>{{ report.category }}</td>
           <td>
@@ -53,4 +61,30 @@ block content %}
     >Add New Report</a
   >
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script>
+  let sortAscending = true;
+
+  function sortTable() {
+    const table = document.getElementById("reportsTable");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    rows.sort((a, b) => {
+      const dateA = moment(
+        a.querySelector("td[data-date]").getAttribute("data-date")
+      );
+      const dateB = moment(
+        b.querySelector("td[data-date]").getAttribute("data-date")
+      );
+      return sortAscending ? dateA - dateB : dateB - dateA;
+    });
+
+    sortAscending = !sortAscending;
+
+    tbody.innerHTML = "";
+    rows.forEach((row) => tbody.appendChild(row));
+  }
+</script>
 {% endblock %}
