@@ -12,7 +12,7 @@ from gridfs import GridFS
 from pymongo import MongoClient
 from werkzeug.security import check_password_hash, generate_password_hash
 
-
+# User Class
 class User(UserMixin):
     def __init__(self, user_data):
         self.id = str(user_data['_id'])
@@ -21,6 +21,7 @@ class User(UserMixin):
         self.role = user_data['role']
         self.favorites = user_data.get('favorites', [])
 
+# Beach Class
 class Beach:
     def __init__(self, beach_data):
         self.id = str(beach_data['_id'])
@@ -44,7 +45,7 @@ class Beach:
         self.clean_rating = beach_data.get('clean_rating', 0)
         self.num_ratings = beach_data.get('num_ratings', 0)
         
-    
+    # Getters and Setters
     @classmethod
     def from_db(cls, beach_data):
         return cls(beach_data)
@@ -126,6 +127,7 @@ class Beach:
 
         return icon_map.get(amenity, '')  # Default icon if not found
 
+# Post Class
 class Post:
     def __init__(self, post_data):
         self.id = str(post_data['_id'])
@@ -139,6 +141,7 @@ class Post:
         self.beach = post_data['beach']
         self.replies = post_data.get('replies', [])
 
+    # Getters and Setters
     @classmethod
     def from_db(cls, post_data):
         return cls(post_data)
@@ -154,7 +157,8 @@ class Post:
             'likes': self.likes,
             'beach': self.beach
         }
-    
+
+# Reply Class
 class Reply:
     def __init__(self, reply_data):
         self.user_id = reply_data['user_id']
@@ -171,7 +175,8 @@ class Reply:
             'content': self.content,
             'likes': self.likes
         }
-    
+
+# Report Class
 class Report:
     def __init__(self, report_data):
         self.id = str(report_data['_id'])
@@ -193,7 +198,7 @@ class Report:
 class SeaClearApp:
     def __init__(self):
         self.app = Flask(__name__)
-        self.app.config['SECRET_KEY'] = 'your_secret_key'  # Change this to a random secret key
+        self.app.config['SECRET_KEY'] = 'your_secret_key'  # TO-DO Change this to a random secret key
 
 
         # MongoDB setup
@@ -219,6 +224,7 @@ class SeaClearApp:
         self.setup_login_manager()
 
     def setup_routes(self):
+        # All routes
         self.app.add_url_rule('/', 'home', self.home)
         self.app.add_url_rule('/about', 'about', self.about)
         self.app.add_url_rule('/educational', 'educational', self.educational)
@@ -258,16 +264,18 @@ class SeaClearApp:
         
 
     def impact_quiz(self):
+        # TO-DO
         return render_template('impact_quiz.html')
     
     def news_page(self):
         return render_template('news.html')
     
     def impact_page(self):
+        # TO-DO
         return render_template('impact.html')
         
-
     def setup_login_manager(self):
+    # Login manager to manage users logged into the site
         @self.login_manager.user_loader
         def load_user(user_id):
             user_data = self.users_collection.find_one({'_id': ObjectId(user_id)})
@@ -277,10 +285,12 @@ class SeaClearApp:
 
     @login_required
     def rate_beach(self,beach_id):
+        # Users can rate a beach on safety and cleanliness 
         beach = self.beaches_collection.find_one({'_id': ObjectId(beach_id)})
         return render_template('rate_beach.html', beach=beach, beach_id=beach_id)
 
     def submit_rating(self):
+        # TO-DO move under rate_beach
         try:
             # Get data from the request
             beach_id = request.form.get('beach_id')
@@ -326,6 +336,8 @@ class SeaClearApp:
 
 
     def get_ratings(self, beach_id):
+        # Get ratings for the beach_details
+        # TO-DO, should be under the beach class?
         beach = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
         if beach:
             return jsonify({
@@ -337,6 +349,7 @@ class SeaClearApp:
 
     def sort_reports_by_date(self, reports):
         # Sort reports by date in descending order (most recent first)
+        # TO-DO, should be under the report class?
         sorted_reports = sorted(reports, key=lambda report: datetime.strptime(report['date'], '%Y-%m-%d'), reverse=True)
         return sorted_reports
 
@@ -370,21 +383,26 @@ class SeaClearApp:
                     )
 
     def home(self):
+        # Render home page and pass through beaches
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
         return render_template('home.html', beaches=beaches)
 
     def about(self):
+        # Render the about page
         return render_template('about.html')
 
     def educational(self):
+        # Render the educational page
         return render_template('educational.html')
 
     def map(self):
+        # Render the map page and pass through the beaches
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
         return render_template('map.html', beaches=beaches)
 
 
     def all_beaches(self):
+        # Render the all beaches view for the user and pass through all beaches as well as the users favourite beaches (pinned)
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
         favorite_beaches = []
 
@@ -400,6 +418,7 @@ class SeaClearApp:
 
     def get_amenity_icon(self, amenity):
         # Define a mapping of amenities to icon classes
+        # TO-DO should this be here (under SeaClear class)
         icon_map = {
             'Restroom': 'fa fa-restroom',  # Example Font Awesome class
             'Parking': 'fa fa-parking',
@@ -409,6 +428,7 @@ class SeaClearApp:
         return icon_map.get(amenity, 'fa fa-question')  # Default icon if not found
 
     def beach_detail(self, beach_id):
+        # Use the weather API key to get the weather for the coordinates of a beach
         beach_data = self.beaches_collection.find_one({'_id': ObjectId(beach_id)})
         weather_api_key = "e4f0bddc1fc2079118ed71df7a9fa6d7"
         latitude = beach_data.get('latitude')
@@ -419,7 +439,6 @@ class SeaClearApp:
             return redirect(url_for('home'))
         
         # Fetch weather data
-        
         weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={weather_api_key}"
         weather_data = None
         try:
@@ -427,6 +446,7 @@ class SeaClearApp:
         except:
             weather_data = {"main": {"temp": "N/A"}, "weather": [{"description": "N/A"}], "wind": {"speed": "N/A"}}
 
+        # Grab reports, beach and comments to pass the beach_detail
         reports = self.reports_collection.find({'beach': beach_data.get('name')})
         reports = self.sort_reports_by_date(reports)
         report_list = [{'date': report.get('date'),'enterococcicount': report.get('enterococcicount')} for report in reports]
@@ -436,6 +456,7 @@ class SeaClearApp:
 
     @login_required
     def post(self):
+        # Logic for a user to post a comment to the discussion board of a beach
         content = request.form['content']
         beach_id = request.form['beach_id']
         beach_name = request.form['beach_name']
@@ -455,6 +476,7 @@ class SeaClearApp:
     
     @login_required
     def add_reply(self):
+        # Logic for a user to add a reply to a comment on a beach
         content = request.form['content']
         post_id = request.form['post_id']
         post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
@@ -480,6 +502,7 @@ class SeaClearApp:
 
     @login_required
     def like(self, post_id):
+        # Logic for a user to like a comment on the discussion board
         user_id = current_user.id
         post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
         # Check if user has already liked the post
@@ -500,6 +523,7 @@ class SeaClearApp:
     
     @login_required
     def like_reply(self, post_id, reply_index):
+        # Logic for a user to like a reply on the discussion board of a beach
         user_id = current_user.id
         reply_index = int(reply_index)
         post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
@@ -532,6 +556,7 @@ class SeaClearApp:
     
     @login_required
     def favorites(self, beach_id, view):
+        # Logic for a user to favourite a beach
         user_id = current_user.id
         beach = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
         
@@ -563,6 +588,7 @@ class SeaClearApp:
 
     @login_required
     def admin_dashboard(self):
+        # Check if the user is an admin before allowing access to the admin page
         if current_user.role != "admin":
             flash('You do not have permission to access this page.', 'danger')
             return redirect(url_for('home'))
@@ -570,6 +596,7 @@ class SeaClearApp:
     
     @login_required
     def manage_posts(self):
+        # Logic to organize posts in order of 'status'
         if current_user.role != "admin":
             flash('You do not have permission to access this page.', 'danger')
             return redirect(url_for('home'))
@@ -594,6 +621,7 @@ class SeaClearApp:
     
     @login_required
     def manage_beaches(self):
+        # Check if the user is admin and pass through beaches to the render
         if current_user.role != "admin":
             flash('You do not have permission to access this page.', 'danger')
             return redirect(url_for('home'))
@@ -601,6 +629,7 @@ class SeaClearApp:
         return render_template('manage_beaches.html', beaches=beaches)
     
     def manage_reports(self):
+        # Check if admin and pass through the reports to the render
         if current_user.role != "admin":
             flash('You do not have permission to access this page.', 'danger')
             return redirect(url_for('home'))
@@ -609,6 +638,7 @@ class SeaClearApp:
 
     @login_required
     def approve_post(self, post_id):
+        # Logic for an admin to approve a post for the discussion board
         if current_user.role != "admin":
             return redirect(url_for('home'))
         self.posts_collection.update_one({'_id': ObjectId(post_id)}, {'$set': {'status': 'approved'}})
@@ -617,6 +647,7 @@ class SeaClearApp:
 
     @login_required
     def approve_all_posts(self):
+        # Logic for an admin to approve all posts that are 'pending'
         if current_user.role != "admin":
             flash('You do not have permission to perform this action.', 'danger')
             return redirect(url_for('admin_dashboard'))
@@ -638,6 +669,7 @@ class SeaClearApp:
 
     @login_required
     def deny_post(self, post_id):
+        # Logic for an admin to set a post to status 'denied'
         if current_user.role != "admin":
             return redirect(url_for('home'))
         self.posts_collection.update_one({'_id': ObjectId(post_id)}, {'$set': {'status': 'denied'}})
@@ -645,6 +677,8 @@ class SeaClearApp:
 
     @login_required
     def delete_post(self, post_id):
+        # TO-DO missing admin check
+        # Logic for an admin to remove a post from the database
         try:
             result = self.posts_collection.delete_one({'_id': ObjectId(post_id)})
             if result.deleted_count > 0:
@@ -657,6 +691,7 @@ class SeaClearApp:
 
     @login_required
     def edit_beach(self, beach_id):
+        # TO-DO admin check
         # Fetch the existing beach data
         beach_data = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
         beach = Beach.from_db(beach_data)
@@ -713,6 +748,8 @@ class SeaClearApp:
     
     @login_required
     def delete_beach(self, beach_id):
+        # TO-DO admin check
+        # Logic for an admin to delete a beach
         try:
             if not ObjectId.is_valid(beach_id):
                 flash('Invalid beach ID.', 'danger')
@@ -729,6 +766,8 @@ class SeaClearApp:
 
     @login_required
     def add_beach(self):
+        # TO-DO add admin check
+        # Logic for an admin to add a beach to the db
         if request.method == 'POST':
             # Create new beach data from the form
             new_beach = Beach({
@@ -776,6 +815,8 @@ class SeaClearApp:
 
     @login_required
     def edit_report(self, report_id):
+        # Logic for an admin to edit data in the db
+        # TO-DO admin check
         # Fetch the existing beach data
         report_data = self.reports_collection.find_one({"_id": ObjectId(report_id)})
         report = Report.from_db(report_data)
@@ -800,6 +841,8 @@ class SeaClearApp:
     
     @login_required
     def delete_report(self, report_id):
+        # TO-DO admin check
+        # Logic for an admin to delete a report from the data base
         try:
             if not ObjectId.is_valid(report_id):
                 flash('Invalid report ID.', 'danger')
@@ -816,6 +859,8 @@ class SeaClearApp:
     
     @login_required
     def add_report(self):
+        # TO-DO admin check
+        # Logic for an admin to manually create a water quality report from the interface
         if request.method == 'POST':
             beach = request.form.get('beach')
             date = request.form.get('date')
@@ -833,6 +878,7 @@ class SeaClearApp:
         return render_template('add_report.html')
     
     def sign_up(self):
+        # Logic for a user to create a profile
         if request.method == 'POST':
             email = request.form.get('email')
             password1 = request.form.get('password1')
@@ -858,26 +904,29 @@ class SeaClearApp:
         return render_template('sign_up.html')
 
     def login(self):
-            if request.method == 'POST':
-                email = request.form['email']
-                password = request.form['password']
-                user = self.users_collection.find_one({'email': email})
-                if user and check_password_hash(user['password'], password):
-                    user_obj = User(user)
-                    login_user(user_obj)
-                    flash('Logged in successfully.', 'success')
-                    return redirect(url_for('home'))
-                else:
-                    flash('Invalid email or password', 'error')
-            return render_template('login.html')
+        # Logic for a user to login
+        if request.method == 'POST':
+            email = request.form['email']
+            password = request.form['password']
+            user = self.users_collection.find_one({'email': email})
+            if user and check_password_hash(user['password'], password):
+                user_obj = User(user)
+                login_user(user_obj)
+                flash('Logged in successfully.', 'success')
+                return redirect(url_for('home'))
+            else:
+                flash('Invalid email or password', 'error')
+        return render_template('login.html')
 
     @login_required
     def logout(self):
+        # Logic for a user to logout of their profile
         logout_user()
         flash('Logged out successfully.', 'success')
         return redirect(url_for('home'))
 
     def search(self):
+        # Search logic
         query = request.args.get('query', '')
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find(
             {"$or": [
