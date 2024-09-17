@@ -662,6 +662,9 @@ class SeaClearApp:
         beach = Beach.from_db(beach_data)
 
         if request.method == 'POST':
+            # Make sure there are no empty strings in the amenities array
+            amenities = [amenity for amenity in request.form.getlist('amenities[]') if amenity]
+
             # Create updated beach data from the form
             updated_data = Beach({
                 "_id": ObjectId(beach_id),
@@ -679,7 +682,7 @@ class SeaClearApp:
                 "status": request.form['status'],
                 "map_image": beach.map_image,  # Use existing image unless updated
                 "has_amenities": request.form.get('has_amenities') == 'on',
-                "amenities": request.form.getlist('amenities[]')
+                "amenities": amenities
             })
 
             # Check if a new image is uploaded
