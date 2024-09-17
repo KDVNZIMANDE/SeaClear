@@ -176,10 +176,11 @@ class Reply:
             'likes': self.likes
         }
 
-# Report Class
+# Report Class (for water quality reports)
 class Report:
     def __init__(self, report_data):
         self.id = str(report_data['_id'])
+        self.category = report_data['category']
         self.beach = report_data['beach']
         self.date = report_data['date']
         self.enterococcicount = report_data['enterococcicount']
@@ -192,7 +193,8 @@ class Report:
         return{
             'beach' : self.beach,
             'date' : self.date,
-            'enterococcicount' : self.enterococcicount
+            'enterococcicount' : self.enterococcicount,
+            'category' : self.category
         }
 
 class SeaClearApp:
