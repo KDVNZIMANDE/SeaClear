@@ -1,1 +1,48 @@
-impact quiz
+{% extends "base.html" %}
+
+{% block title %}Reducing Your Impact{% endblock %}
+
+{% block extra_css %}
+<style>
+  .infographic-section {
+    position: relative;
+  }
+
+  .watermark {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 10;
+  }
+
+  .watermark a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .watermark a:hover {
+    text-decoration: underline;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="container text-center">
+    <h1 class="mb-4">Waterborne Diseases</h1>
+
+    <!-- Infographic Section -->
+    <section class="infographic-section position-relative">
+      <img src="{{ url_for('static', filename='images/sick.jfif') }}" alt="Waterborne Diseases" class="img-fluid">
+      <div class="watermark">
+        <a href="https://ecobluelife.com/what-you-need-to-know-about-water-borne-illnesses/" target="_blank">EcoBlueLife</a>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}

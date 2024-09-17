@@ -2,63 +2,52 @@
 
 {% block title %}Educational Content{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/educational.css') }}" />
-{% endblock %}
-
 {% block content %}
-<main class="container mt-4">
-  <!-- Introduction to Water Quality -->
-  <section id="intro-water-quality">
-    <h2>Introduction to Water Quality</h2>
-    <p>Water quality refers to the condition of water, including its chemical, physical, and biological characteristics, usually with respect to its suitability for a particular purpose. Ensuring good water quality is essential for health, environmental sustainability, and economic development.</p>
-  </section>
+<main>
+  <div class="container">
+    <h1 class="text-center mb-4">Educational Content</h1>
 
-  <!-- Why It's Important -->
-  <section id="importance">
-    <h2>Why It's Important</h2>
-    <p>Maintaining high water quality is crucial because it directly impacts human health, ecosystems, and economies. Poor water quality can lead to waterborne diseases, harm aquatic life, and negatively affect tourism and local economies. Proper management and monitoring help mitigate these risks and promote a healthy environment.</p>
-  </section>
+    <!-- Introduction to Water Quality -->
+    <section class="intro-section mb-4">
+      <h2>Introduction to Water Quality</h2>
+      <p>Water quality refers to the condition of water based on its physical, chemical, and biological characteristics. It is essential for maintaining a healthy environment and ensuring the safety of water for human use and aquatic life.</p>
+    </section>
 
-  <!-- Words and Symbols Explanation -->
-  <section id="words-symbols">
-    <h2>Words and Symbols Used on Our Website</h2>
-    <p>On our website, you will encounter various terms and symbols related to water quality. Here’s what they mean:</p>
-    <ul>
-      <li><strong>pH:</strong> A measure of how acidic or alkaline the water is. A pH of 7 is neutral.</li>
-      <li><strong>Turbidity:</strong> The cloudiness or haziness of a fluid caused by large numbers of individual particles.</li>
-      <li><strong>Enterococcus:</strong> A type of bacteria used to assess water quality. High levels can indicate contamination.</li>
-      <li><strong>Red Flag:</strong> Indicates a warning about poor water quality or contamination at a beach.</li>
-    </ul>
-  </section>
+    <!-- Why It's Important -->
+    <section class="importance-section mb-4">
+      <h2>Why It's Important</h2>
+      <p>Understanding and maintaining water quality is crucial for several reasons. Poor water quality can lead to <a href="{{ url_for('impact_quiz') }}"> illnesses</a>, affect the ecosystem, and impact various  <a href="{{ url_for('impact_page') }} "> economic </a> activities. Learn more about the <a href="{{ url_for('impact_page') }}">impacts</a> of water quality.</p>
+    </section>
 
-  <!-- Video: Understanding Water Quality -->
-  <section id="video-explanation">
-    <h2>Watch: Understanding Water Quality</h2>
-    <div class="embed-responsive embed-responsive-16by9">
-      <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/OTerH6SgwO8" allowfullscreen></iframe>
-    </div>
-  </section> 
+    <!-- Words and Symbols Used on the Website -->
+    <section class="words-symbols-section mb-4">
+      <h2>Words and Symbols Used on the Website</h2>
+      <p>Our website uses specific terms and symbols to represent different aspects of water quality and beach conditions. Here’s a guide to help you understand them:</p>
+      <!-- Add explanations here -->
+    </section>
 
-  <!-- Video: How Water Quality is Measured -->S
-  <section id="video-measurement">
-    <h2>Watch: How Water Quality is Measured</h2>
-    <div class="embed-responsive embed-responsive-16by9">
-      <iframe class="embed-responsive-item" src=" https://www.youtube.com/embed/kuFa_M52488" allowfullscreen></iframe>
-    </div>
-  </section>
+    <!-- Video on Water Quality -->
+    <section class="video-section mb-4">
+      <h2>Video: What is Water Quality?</h2>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/OTerH6SgwO8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </section>
 
-  <!-- Get Involved -->
-  <section id="get-involved">
-    <h2>Get Involved</h2>
-    <p>There are several ways you can contribute to improving water quality:</p>
-    <ul>
-      <li><a href="https://www.example.org/volunteer" target="_blank" rel="noopener noreferrer">Volunteer with local water quality monitoring programs</a></li>
-      <li><a href="https://www.example.org/donate" target="_blank" rel="noopener noreferrer">Donate to organizations focused on water conservation</a></li>
-      <li><a href="https://www.example.org/advocacy" target="_blank" rel="noopener noreferrer">Advocate for better water quality policies</a></li>
-    </ul>
-  </section>
+    <!-- Video on Measuring Water Quality -->
+    <section class="video-section mb-4">
+      <h2>Video: How is Water Quality Measured?</h2>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/kuFa_M52488" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </section>
+
+    <!-- Get Involved Section -->
+    <section class="get-involved-section mb-4">
+      <h2>Get Involved</h2>
+      <p>There are several ways you can contribute to improving water quality:</p>
+      <ul>
+        <li><a href="https://greencoast.org/ways-to-reduce-water-pollution/#:~:text=16%20ways%20to%20reduce%20water%20pollution%20and%20help,Avoid%20using%20a%20garbage%20disposal%20...%20More%20items" target="_blank">Reduce your impact</a></li>
+        <li><a href="https://olympianwatertesting.com/the-contributions-of-ngos-in-strengthening-water-testing-and-monitoring-for-improved-water-quality/" target="_blank">Importance of NGOs</a></li>
+        <li><a href="https://www.advocacy-website.com" target="_blank">Advocate</a></li>
+      </ul>
+    </section>
+  </div>
 </main>
 {% endblock %}
-
-
