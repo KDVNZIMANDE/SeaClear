@@ -713,11 +713,7 @@ textarea,
   color: gold;
   font-size: 1.5rem;
 }
-.rating .fa-star.half {
-  color: #ffcc00;
-  position: relative;
-  display: inline-block;
-}
+
 .rating .fa-star.empty {
   color: #e0e0e0;
 }

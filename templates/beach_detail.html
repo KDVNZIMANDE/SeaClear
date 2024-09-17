@@ -1,312 +1,305 @@
-{% extends "base.html" %} {% block title %} Beach Details {% endblock %} {%
-block extra_css %}
+{% extends "base.html" %}
+
+{% block title %} 
+    Beach Details 
+{% endblock %}
+
+{% block extra_css %}
 <!-- Link to custom beach CSS -->
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/beach.css') }}"
-/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/beach.css') }}" />
 
 <!-- Link to Font Awesome icons -->
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-/>
-{% endblock %} {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+{% endblock %}
+
+{% block content %}
 <!-- Main container for the beach details and chat section -->
 <div id="chat-section" class="container">
-  <div class="layout">
-    <!-- Left Column: Beach Details -->
-    <div class="left-column">
-      <div class="card">
-        <div class="directions-button {{ 'safe' if beach.status == 'SAFE' else 'unsafe' }}">
-          <a
-            href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.longitude }}"
-            target="_blank"
-            class="directions-icon"
-          >
-            Get Directions <i class="fa fa-location-arrow"></i>
-            <!-- FontAwesome directions icon -->
-          </a>
-        </div>
-        <!-- Beach Image -->
-        <img
-          src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}"
-          alt="Beach Image"
-        />
-
-        <!-- Favorite Pin Icon -->
-        <div class="pin-favorite">
-          <a
-            href="{{ url_for('favorites', beach_id=beach.id, view="beach_detail") }}"
-            class="favorite-pin"
-            id="pinIcon"
-          >
-            <i class="fa fa-thumbtack"></i>
-            <!-- FontAwesome pin icon -->
-          </a>
-        </div>
-
-        <!-- Card Content -->
-        <div class="card-content">
-          <h2>{{ beach.name }} ({{ beach.location }})</h2>
-          <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
-          <strong>Entroccit Count:</strong> {{ beach.get('enterococcicount','N/A') }}<br />
-          <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
-          <!-- Status Indicator -->
-          <div class="status {{ 'status-safe' if beach.status == 'SAFE' else 'status-unsafe' }}">
-            <i class="fa fa-swimmer"></i> {{ beach.status }}
-          </div>
-        </div>
-
-        <!-- Real-time Weather Information -->
-        <div class="weather-info">
-          <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}°C</p>
-          <p><i class="fa fa-cloud"></i> {{ beach.weather_description }}</p>
-          <p><i class="fa fa-wind"></i> {{ beach.wind_speed }} m/s</p>
-          <a
-          href="https://weather.com/en-ZA/weather/tenday/l/{{ beach.location_code }}"
-          target="_blank"
-          class="btn btn-primary"
-          >Weekend forecast ></a>
-        </div>
-      </div>
-
-      <!-- Amenities Section -->
-        <div class="amenities">
-          {% for amenity in beach.amenities %}
-          <div class="amenity-box"><i class="{{ beach.get_amenity_icon(amenity) }}"></i>{{ amenity }}</div>
-          {% endfor %}
-        </div>
-      </div>
-
-    <!-- Right Column: Community Chat -->
-    <div class="right-column">
-      <div class="chat-card">
-        <!-- Chat Header -->
-        <div class="chat-header">
-          <h3>Community Chat <i class="fa fa-comments"></i></h3>
-        </div>
-
-        <!-- Scrollable Chat Messages -->
-        <div class="chat-messages">
-          {% for comment in comments %}
-          <div class="message">
-            <span class="author"
-              ><i class="fa fa-user-circle"></i> {{ comment.username }}</span
-            >
-            <span class="time text-muted float-right"
-              >{{ comment.timestamp }}</span
-            >
-            <p>{{ comment.content }}</p>
-            <div class="message-buttons">
-              <a
-                href="{{ url_for('like', post_id=comment.id) }}"
-                class="btn btn-like"
-                ><i class="fa fa-thumbs-up"></i> {{ comment.likes }}</a
-              >
-              <a
-                href="javascript:void(0);"
-                onclick="toggleReplyForm('{{ comment.id }}')"
-                class="btn btn-reply"
-                ><i class="fa fa-reply"></i> Reply</a
-              >
-              <!-- Toggle Replies Button -->
-              <a
-                href="javascript:void(0);"
-                onclick="toggleReplies('replies-{{ comment.id }}')"
-                class="btn btn-reply"
-                >View Replies ({{ comment.replies | length }})</a
-              >
-            </div>
-
-            <!-- Replies -->
-            <div
-              id="replies-{{ comment.id }}"
-              class="replies"
-              style="display: none; margin-left: 20px"
-            >
-              {% for reply in comment.replies %}
-              <div class="reply">
-                <span class="author"
-                  ><i class="fa fa-user-circle"></i>{{ reply.username }}</span
-                >
-                <span class="time text-muted float-right"
-                  >{{ reply.timestamp }}</span
-                >
-                <p>{{ reply.content }}</p>
-                <!-- <div class="message-buttons">
-                    <a href="{{ url_for('like_reply', post_id=comment.id, reply_index=loop.index) }}" class="btn btn-like"><i class="fa fa-thumbs-up"></i> {{ reply.likes }}</a>
-                  </div> -->
-              </div>
-              {% endfor %}
-            </div>
-
-            <div
-              id="reply-form-{{ comment.id }}"
-              class="reply-form"
-              style="display: none"
-            >
-              <form
-                action="{{ url_for('add_reply', post_id=comment.id) }}"
-                method="post"
-                class="send-message-form"
-              >
-                <input type="hidden" name="reply_to_message_id" value="" />
-                <input type="hidden" name="post_id" value="{{ comment.id }}" />
-                <div class="chat-input">
-                  <a id="emoji-picker-bt" type="button" class="btn btn-light">
-                    <i class="fa fa-smile"></i>
-                  </a>
-                  <div id="emoji-picke" class="emoji-picker"></div>
-                  <textarea
-                    id="content1"
-                    name="content"
-                    class="form-control"
-                    rows="1"
-                    placeholder="Type a message..."
-                    required
-                  ></textarea>
-                  <button type="submit" class="btn btn-primary">Send</button>
+    <div class="layout">
+        <!-- Left Column: Beach Details -->
+        <div class="left-column">
+            <div class="card">
+                <!-- Directions Button -->
+                <div class="directions-button {{ 'safe' if beach.status == 'SAFE' else 'unsafe' }}">
+                    <a href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.longitude }}" target="_blank" class="directions-icon">
+                        Get Directions <i class="fa fa-location-arrow"></i>
+                    </a>
                 </div>
-              </form>
+
+                <!-- Beach Image -->
+                <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" alt="Beach Image" />
+
+                <!-- Favorite Pin Icon -->
+                <div class="pin-favorite">
+                    <a href="{{ url_for('favorites', beach_id=beach.id, view="beach_detail") }}" class="favorite-pin" id="pinIcon">
+                        <i class="fa fa-thumbtack"></i>
+                    </a>
+                </div>
+
+                <!-- Card Content: Beach Info -->
+                <div class="card-content">
+                    <h2>{{ beach.name }} ({{ beach.location }})</h2>     
+                    <!-- Display the most recent report data -->
+                    {% if reports|length > 0 %}
+                        <strong>Grade:</strong> {{ reports[0].grade }}<br />
+                        <strong>Enterococci Count:</strong> {{ reports[0].enterococcicount }}<br />
+                        <strong>Last Updated:</strong> {{ reports[0].date }}<br />
+                    {% else %}
+                        <strong>Grade:</strong> N/A<br />
+                        <strong>Enterococci Count:</strong> N/A<br />
+                        <strong>Last Updated:</strong> N/A<br />
+                    {% endif %}
+
+                    <!-- Status Indicator -->
+                    <div class="status {{ 'status-safe' if beach.status == 'SAFE' else 'status-unsafe' }}">
+                        <i class="fa fa-swimmer"></i> {{ beach.status }}
+                    </div>
+                </div>
+
+                <!-- Real-time Weather Information -->
+                <div class="weather-info">
+                    <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}°C</p>
+                    <p><i class="fa fa-cloud"></i> {{ beach.weather_description }}</p>
+                    <p><i class="fa fa-wind"></i> {{ beach.wind_speed }} m/s</p>
+                    <a href="https://weather.com/en-ZA/weather/tenday/l/{{ beach.location_code }}" target="_blank" class="btn btn-primary">
+                        Weekend forecast >
+                    </a>
+                </div>
             </div>
-          </div>
-          {% endfor %}
+
+            <!-- Amenities Section -->
+            <div class="amenities">
+                {% for amenity in beach.amenities %}
+                    <div class="amenity-box">
+                        <i class="{{ beach.get_amenity_icon(amenity) }}"></i>{{ amenity }}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
 
-        <!-- Chat Input -->
-        {% if current_user.is_authenticated %}
-        <form
-          method="POST"
-          action="{{ url_for('post') }}"
-          class="send-message-form"
-        >
-          <input type="hidden" name="beach_name" value="{{ beach.name }}" />
-          <input type="hidden" name="beach_id" value="{{ beach.id }}" />
-          <!-- Chat Input Container -->
-          <div class="chat-input">
-            <!-- Emoji Picker Button -->
-            <a id="emoji-picker-btn" type="button" class="btn btn-light">
-              <i class="fa fa-smile"></i>
-              <!-- Emoji icon -->
-            </a>
-            <div id="emoji-picker" class="emoji-picker">
-              <!-- Emoji list will be populated here -->
+        <!-- Right Column: Community Chat -->
+        <div class="right-column">
+            <div class="chat-card">
+                <!-- Chat Header -->
+                <div class="chat-header">
+                    <h3>Community Chat <i class="fa fa-comments"></i></h3>
+                </div>
+
+                <!-- Scrollable Chat Messages -->
+                <div class="chat-messages">
+                    {% for comment in comments %}
+                        <div class="message">
+                            <span class="author"><i class="fa fa-user-circle"></i> {{ comment.username }}</span>
+                            <span class="time text-muted float-right">{{ comment.timestamp }}</span>
+                            <p>{{ comment.content }}</p>
+                            
+                            <!-- Message Buttons: Like, Reply, View Replies -->
+                            <div class="message-buttons">
+                                <a href="{{ url_for('like', post_id=comment.id) }}" class="btn btn-like">
+                                    <i class="fa fa-thumbs-up"></i> {{ comment.likes }}
+                                </a>
+                                <a href="javascript:void(0);" onclick="toggleReplyForm('{{ comment.id }}')" class="btn btn-reply">
+                                    <i class="fa fa-reply"></i> Reply
+                                </a>
+                                <a href="javascript:void(0);" onclick="toggleReplies('replies-{{ comment.id }}')" class="btn btn-reply">
+                                    View Replies ({{ comment.replies | length }})
+                                </a>
+                            </div>
+
+                            <!-- Replies Section -->
+                            <div id="replies-{{ comment.id }}" class="replies" style="display: none; margin-left: 20px">
+                                {% for reply in comment.replies %}
+                                    <div class="reply">
+                                        <span class="author"><i class="fa fa-user-circle"></i>{{ reply.username }}</span>
+                                        <span class="time text-muted float-right">{{ reply.timestamp }}</span>
+                                        <p>{{ reply.content }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Reply Form -->
+                            <div id="reply-form-{{ comment.id }}" class="reply-form" style="display: none">
+                              <form
+                                action="{{ url_for('add_reply', post_id=comment.id) }}"
+                                method="post"
+                                class="send-message-form"
+                              >
+                                <input type="hidden" name="reply_to_message_id" value="" />
+                                <input type="hidden" name="post_id" value="{{ comment.id }}" />
+                                <div class="chat-input">
+                                  <a id="emoji-picker-bt" type="button" class="btn btn-light">
+                                    <i class="fa fa-smile"></i>
+                                  </a>
+                                  <div id="emoji-picke" class="emoji-picker"></div>
+                                  <textarea
+                                    id="content1"
+                                    name="content"
+                                    class="form-control"
+                                    rows="1"
+                                    placeholder="Type a message."
+                                    required
+                                  ></textarea>
+                                  <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                              </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Chat Input for Authenticated Users -->
+                {% if current_user.is_authenticated %}
+                  <form
+                  method="POST"
+                  action="{{ url_for('post') }}"
+                  class="send-message-form"
+                >
+                  <input type="hidden" name="beach_name" value="{{ beach.name }}" />
+                  <input type="hidden" name="beach_id" value="{{ beach.id }}" />
+                  <!-- Chat Input Container -->
+                  <div class="chat-input">
+                    <!-- Emoji Picker Button -->
+                    <a id="emoji-picker-btn" type="button" class="btn btn-light">
+                      <i class="fa fa-smile"></i>
+                      <!-- Emoji icon -->
+                    </a>
+                    <div id="emoji-picker" class="emoji-picker">
+                      <!-- Emoji list will be populated here -->
+                    </div>
+                    <textarea
+                      id="content"
+                      name="content"
+                      class="form-control"
+                      rows="1"
+                      placeholder="Type a message..."
+                      required
+                    ></textarea>
+                    <button tsubmitype="" class="btn btn-primary">Send</button>
+                  </div>
+                </form>
+                {% else %}
+                    <p>
+                        You must be logged in to send messages.
+                        <a href="{{ url_for('login') }}">Log in here</a>.
+                    </p>
+                {% endif %}
             </div>
-            <textarea
-              id="content"
-              name="content"
-              class="form-control"
-              rows="1"
-              placeholder="Type a message..."
-              required
-            ></textarea>
-            <button tsubmitype="" class="btn btn-primary">Send</button>
-          </div>
-        </form>
-
-        {% else %}
-        <p>
-          You must be logged in to send messages.
-          <a href="{{ url_for('login') }}">Log in here</a>.
-        </p>
-        {% endif %}
-      </div>
+        </div>
     </div>
-  </div>
 </div>
 
-
-
+<!-- Beach Details and Ratings -->
 <div class="beach-details-container">
-  <div class="left-section">
-<!-- Water Quality Section -->
-<div id="water-quality-section" class="container">
-  <h3>Water Quality Information</h3>
-  <!-- Data Table -->
-  <div class="nowcast-table">
-    <table id="data-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Enterococci count</th>
-          <th>Rating</th>
-        </tr>
-      </thead>
-      <tbody id="table-body">
-        {% for report in reports %}
-        <tr>
-          <td>{{ report.date }}</td>
-          <td>{{ report.enterococcicount }}</td>
-          <td>Good</td>
-        </tr>
-      {% else %}
-        <tr>
-          <td colspan="2">No reports available.</td>
-        </tr>
-        {% endfor%}
-      </tbody>
-    </table>
-  </div>
+    <div class="left-section">
+        <!-- Water Quality Section -->
+        <div id="water-quality-section" class="container">
+            <h3>Water Quality Information</h3>
+            <!-- Data Table -->
+            <div class="nowcast-table">
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Enterococci count</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        {% for report in reports %}
+                            <tr>
+                                <td>{{ report.date }}</td>
+                                <td>{{ report.enterococcicount }}</td>
+                                <td>{{ report.grade }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="2">No reports available.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination Controls -->
+            <div class="pagination-controls">
+                <button id="prev-btn" disabled>Previous</button>
+                <span id="page-info"></span>
+                <button id="next-btn">Next</button>
+            </div>
+        </div>
+    </div>
 
-  <!-- Pagination Controls -->
-  <div class="pagination-controls">
-    <button id="prev-btn" disabled>Previous</button>
-    <span id="page-info"></span>
-    <button id="next-btn">Next</button>
-  </div>
-</div>
-  </div>
-
-  <div class="right-section">
-   <!-- Add a link to the new rating page -->
-    <h2>{{ beach.name }}:</h2>
-    <h3>Safety Ratings:</h3>
-    <div class="rating">
-        {% for i in range(5) %}
-            {% if i < (beach.safety_rating | float) %}
-                <i class="fa fa-star"></i>
-            {% elif i < (beach.safety_rating | float) + 0.5 %}
-                <i class="fa fa-star half"></i>
-            {% else %}
-                <i class="fa fa-star empty"></i>
-            {% endif %}
-        {% endfor %}
-        <span>({{ beach.num_ratings }} ratings)</span>
+    <!-- Right Section: Ratings -->
+    <div class="right-section">
+        <h2>{{ beach.name }}:</h2>
+        <h3>Safety Ratings:</h3>
+        <div class="rating">
+            {% for i in range(5) %}
+                {% if i < beach.safety_rating %}
+                    <i class="fa fa-star"></i>
+                {% else %}
+                    <i class="fa fa-star empty"></i>
+                {% endif %}
+            {% endfor %}
+            <span>({{ beach.num_ratings }} people rated this beach)</span>
+        </div>
+        <h3>Cleanliness Ratings:</h3>
+        <div class="rating">
+            {% for i in range(5) %}
+                {% if i < beach.clean_rating %}
+                    <i class="fa fa-star"></i>
+                {% else %}
+                    <i class="fa fa-star empty"></i>
+                {% endif %}
+            {% endfor %}
+            <span>({{ beach.num_ratings }} people rated this beach)</span>
+        </div>
+        <br />
+        <a href="{{ url_for('rate_beach', beach_id=beach.id) }}" class="btn btn-primary">Rate This Beach</a>
+        <br />
+        <!-- Link to Map Section -->
+        <h4>Click below to view other beaches:</h4> 
+        <div id="map" class="map-blurred" style="width: 100%; height: 200px; margin-top: 20px; cursor: pointer;"></div>
     </div>
-    <h3>Cleanliness Ratings:</h3>
-    <div class="rating">
-        {% for i in range(5) %}
-            {% if i < (beach.clean_rating | float) %}
-                <i class="fa fa-star"></i>
-            {% elif i < (beach.clean_rating | float) + 0.5 %}
-                <i class="fa fa-star half"></i>
-            {% else %}
-                <i class="fa fa-star empty"></i>
-            {% endif %}
-        {% endfor %}
-        <span>({{ beach.num_ratings }} ratings)</span>
-    </div>
-    <br>
-    <a href="{{ url_for('rate_beach', beach_id=beach.id) }}" class="btn btn-primary">Rate This Beach</a>
-    <br>
-    <div>
-      <h4>Click below to view other beaches:</h4> 
-      <div id="map" class="map-blurred" style="width: 100%; height: 200px; margin-top: 20px; cursor: pointer;"></div>
-    </div>
-  </div>
 </div>
 
 
+{% endblock %} 
 
-{% endblock %} {% block extra_js %}
+{% block extra_js %}
 <script>
+// Event listener for map redirection
 document.getElementById("map").addEventListener("click", function() {
   // Redirect to the full map view (you can replace the URL with your actual map page)
   window.location.href = "{{ url_for('map') }}"; 
 });
+
+// Function to run when the window is fully loaded
+window.onload = function() {
+  const beachId = "{{ beach.id }}"; // Retrieve the current beach ID from template context
+
+  // Fetch existing ratings from the server for this beach
+  fetch(`/get_ratings/${beachId}`)
+    .then(response => response.json())  // Convert the server response to JSON
+    .then(data => {
+      // Check if safety and cleanliness ratings exist in the data
+      if (data.safety_rating && data.clean_rating) {
+        // Update the star display for safety and cleanliness ratings
+        updateStarDisplay(Math.round(data.safety_rating), 'safety');
+        updateStarDisplay(Math.round(data.clean_rating), 'clean');
+      } else {
+        // Log a message if no ratings are found
+        console.log("No ratings found for this beach");
+      }
+    })
+    .catch(error => console.error("Error fetching ratings:", error));  // Handle any fetch errors
+}
 </script>
+
+<!-- Leaflet.js library for map display -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
+<!-- Link to custom JavaScript file for additional scripts -->
+<script src="{{ url_for('static', filename='js/beach_scripts.js') }}"></script>
 
 {% endblock %}
+

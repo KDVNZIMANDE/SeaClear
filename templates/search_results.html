@@ -3,48 +3,54 @@
 {% block title %}Search Results{% endblock %}
 
 {% block content %}
+<!-- Heading for the search results -->
 <h2>Search Results for "{{ query }}"</h2>
+
+<!-- Container for all beaches section -->
 <div class="all-beaches-section">
+    <!-- Check if there are beaches to display -->
     {% if beaches %}
     <div id="beaches-container">
+        <!-- Iterate through each beach and display in a card -->
         {% for beach in beaches %}
         <div class="card" data="{{ beach.amenities | join(' ') }}" data-safety="{{ beach.status }}">
-            <!-- Directions Button -->
+            <!-- Directions Button: Indicates whether the beach is safe or unsafe -->
             <div class="directions-button {{ 'safe' if beach.status == 'SAFE' else 'unsafe' }}">
                 <a href="https://www.google.com/maps?q={{ beach.latitude }},{{ beach.longitude }}" target="_blank" class="directions-icon">
                     Get Directions <i class="fa fa-location-arrow"></i>
                 </a>
             </div>
             
-            <!-- Beach Image -->
+            <!-- Beach Image: Displays the image of the beach -->
             <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" alt="Beach Image">
 
-            <!-- Favorite Pin Icon -->
+            <!-- Favorite Pin Icon: Allows users to add the beach to their favorites -->
             <div class="pin-favorite">
                 <a href="{{ url_for('favorites', beach_id=beach.id, view="search") }}" class="favorite-pin">
                     <i class="fa fa-thumbtack"></i>
                 </a>
             </div>
 
-            <!-- Card Content -->
+            <!-- Card Content: Includes beach name, location, and status -->
             <div class="card-content">
-                <h4>{{ beach.name }} ({{ beach.location }})</h4>
-                <!-- Status Indicator -->
+                <h5>{{ beach.name }} ({{ beach.location }})</h5>
+                <!-- Status Indicator: Shows the safety status of the beach -->
                 <div class="status {{ 'status-safe' if beach.status == 'SAFE' else 'status-unsafe' }}">
                     <i class="fa fa-swimmer"></i> {{ beach.status }}
                 </div>
             </div>
 
-            <!-- Real-time Weather Information -->
+            <!-- Real-time Weather Information: Displays current weather data -->
             <div class="weather-info">
-                <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}</p>
-                <p><i class="fa fa-wind"></i> {{ beach.wind_speed }}</p>
+                <p><i class="fa fa-thermometer-half"></i> {{ beach.temperature }}°C</p>
+                <p><i class="fa fa-wind"></i> {{ beach.wind_speed }} m/s</p>
                 <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">View Details ></a>
             </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
+    <!-- Message to display when no results are found -->
     <p>No results found for "{{ query }}".</p>
     {% endif %}
 </div>
@@ -85,24 +91,24 @@
     }
 
     .status {
-    position: absolute;
-    top: 10px; /* Adjust distance from top */
-    left: 10px; /* Adjust distance from left */
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: bold;
-    z-index: 10; /* Make sure it's on top of the image */
-}
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        z-index: 10;
+    }
 
     .status-safe {
-    background-color: #27db4e; /* Green for safe */
-    color: white;
+        background-color: #27db4e;
+        color: white;
     }
 
     .status-unsafe {
-    background-color: #dc3545; /* Red for unsafe */
-    color: white;
+        background-color: #dc3545;
+        color: white;
     }
 
     .pin-favorite {
@@ -128,21 +134,22 @@
     }
 
     .directions-button {
-    position: absolute;
-    background-color: #9aa3af8e;
-    top: 11px;
-    padding: 3px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    text-decoration: none;
-  }
+        position: absolute;
+        background-color: #9aa3af8e;
+        top: 11px;
+        padding: 3px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+    }
+
     .safe {
-    left: 90px;
-  }
+        left: 90px;
+    }
   
-  .unsafe {
-    left: 110px;
-  }
+    .unsafe {
+        left: 110px;
+    }
 
     .directions-icon {
         color: #e9e9e9;
@@ -157,8 +164,8 @@
         background-color: #208fff00;
         color: #000000;
         padding: 10px;
-        border-radius: 0px 0 0 0px;
-        margin-bottom: 0px;
+        border-radius: 0;
+        margin-bottom: 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -178,50 +185,51 @@
         transform: scale(1.03);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+
     @media only screen and (max-width: 768px) {
-    .all-beaches-section {
-        gap: 10px;
+        .all-beaches-section {
+            gap: 10px;
+        }
+
+        #beaches-container {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card {
+            width: 100%;
+        }
     }
-
-    #beaches-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .card {
-        width: 100%;
-
-    }
-
-}
-
 </style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+    // Function to filter beach cards based on search text and filters
     function filterBeaches() {
-        const searchText = document.getElementById('filter-text').value.toLowerCase();
-        const selectedfilter = document.getElementById('filters').value;
-        const selectedSafety = document.getElementById('safety').value;
+        const searchText = document.getElementById('filter-text').value.toLowerCase(); // Get the search text and convert to lowercase
+        const selectedfilter = document.getElementById('filters').value; // Get the selected filter
+        const selectedSafety = document.getElementById('safety').value; // Get the selected safety status
         
-        const beachCards = document.querySelectorAll('.card');
+        const beachCards = document.querySelectorAll('.card'); // Select all beach cards
 
+        // Iterate through each card to check if it matches the filters
         beachCards.forEach(card => {
-            const headings = card.querySelectorAll('h4, h5');
+            const headings = card.querySelectorAll('h4, h5'); // Get all headings in the card
             const beachName = Array.from(headings)
-                .map(el => el.textContent.toLowerCase())
-                .join(' ');
-            const cardfilters = card.getAttribute('data');
-            const cardSafety = card.getAttribute('data-safety');
+                .map(el => el.textContent.toLowerCase()) // Convert heading text to lowercase
+                .join(' '); // Join all heading texts into a single string
+            const cardfilters = card.getAttribute('data'); // Get filter data attribute from the card
+            const cardSafety = card.getAttribute('data-safety'); // Get safety data attribute from the card
             
-            const matchesfilter = selectedfilter === '' || cardfilters.includes(selectedfilter);
-            const matchesSafety = selectedSafety === '' || cardSafety === selectedSafety;
+            const matchesfilter = selectedfilter === '' || cardfilters.includes(selectedfilter); // Check if card matches the selected filter
+            const matchesSafety = selectedSafety === '' || cardSafety === selectedSafety; // Check if card matches the selected safety status
 
+            // Show or hide the card based on the search text and filters
             if (beachName.includes(searchText) && matchesfilter && matchesSafety) {
-                card.style.display = 'block';
+                card.style.display = 'block'; // Show the card
             } else {
-                card.style.display = 'none';
+                card.style.display = 'none'; // Hide the card
             }
         });
     }
