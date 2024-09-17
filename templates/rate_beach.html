@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Rate Beach{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Rate {{ beach.name }}</h1>
+  <form id="rating-form">
+    <div class="form-group">
+      <label for="safety-rating">Safety Rating:</label>
+      <div class="rating">
+        {% for i in range(1, 6) %}
+          <span class="fa fa-star" id="safety-star-{{ i }}" onclick="setRating({{ i }}, 'safety')"></span>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="clean-rating">Cleanliness Rating:</label>
+      <div class="rating">
+        {% for i in range(1, 6) %}
+          <span class="fa fa-star" id="clean-star-{{ i }}" onclick="setRating({{ i }}, 'clean')"></span>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <input type="hidden" id="safety-rating" name="safety_rating" value="0">
+    <input type="hidden" id="clean-rating" name="clean_rating" value="0">
+    <input type="hidden" name="beach_id" value="{{ beach_id }}">
+    <button type="submit" class="btn btn-primary">Submit Rating</button>
+  </form>
+</div>
+{% endblock %}
+{% block extra_css %}
+<style>
+.rating {
+    font-size: 24px;
+    color: #ddd;
+  }
+  .rating .fa-star.checked {
+    color: #f39c12;
+  }
+</style>  
+{% endblock %}
+{% block extra_js %}
+<script>
+  let selectedSafetyRating = 0;
+  let selectedCleanRating = 0;
+
+  function setRating(rating, type) {
+    if (type === 'safety') {
+      selectedSafetyRating = rating;
+      document.getElementById('safety-rating').value = rating;
+      updateStarDisplay(rating, 'safety');
+    } else if (type === 'clean') {
+      selectedCleanRating = rating;
+      document.getElementById('clean-rating').value = rating;
+      updateStarDisplay(rating, 'clean');
+    }
+  }
+
+  function updateStarDisplay(rating, type) {
+    for (let i = 1; i <= 5; i++) {
+      let starElement = document.getElementById(`${type}-star-${i}`);
+      if (i <= rating) {
+        starElement.classList.add('checked');
+      } else {
+        starElement.classList.remove('checked');
+      }
+    }
+  }
+
+  document.getElementById('rating-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    if (selectedSafetyRating === 0 || selectedCleanRating === 0) {
+      alert('Please select ratings for both categories.');
+      return;
+    }
+    
+    const formData = new FormData(this);
+    fetch('/submit_rating', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Rating submitted successfully');
+        window.location.href = '{{ url_for('beach_detail', beach_id=beach_id) }}'; // Redirect to the beach detail page
+      } else {
+        alert('Failed to submit rating');
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  });
+</script>
+{% endblock %}

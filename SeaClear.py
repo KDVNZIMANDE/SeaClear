@@ -4,8 +4,8 @@ from io import BytesIO
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 from bson.objectid import ObjectId
-from flask import (Flask, Response, flash, redirect, render_template, request,
-                   send_file, session, url_for)
+from flask import (Flask, Response, flash, jsonify, redirect, render_template,
+                   request, send_file, session, url_for)
 from flask_login import (LoginManager, UserMixin, current_user, login_required,
                          login_user, logout_user)
 from gridfs import GridFS
@@ -40,6 +40,10 @@ class Beach:
         self.map_image = beach_data.get('map_image', 'default_beach.jpg')
         self.has_amenities = beach_data.get('has_amenities', False)
         self.amenities = beach_data.get('amenities', [])
+        self.safety_rating = beach_data.get('safety_rating', 0)
+        self.clean_rating = beach_data.get('clean_rating', 0)
+        self.num_ratings = beach_data.get('num_ratings', 0)
+        
     
     @classmethod
     def from_db(cls, beach_data):
@@ -62,7 +66,10 @@ class Beach:
             'status': self.status,
             'map_image': self.map_image,
             'has_amenities': self.has_amenities,
-            'amenities': self.amenities
+            'amenities': self.amenities,
+            'safety_rating' :self.safety_rating,
+            'clean_rating' :self.clean_rating,
+            'num_ratings' : self.num_ratings
         }
     
     def get(self, attr, default=None):
@@ -270,6 +277,9 @@ class SeaClearApp:
         self.app.add_url_rule('/quiz', 'impact_quiz', self.impact_quiz)
         self.app.add_url_rule('/community_report','community_report', self.community_report, methods=['GET', 'POST'])
         
+        self.app.add_url_rule('/get_ratings/<beach_id>', 'get_ratings', self.get_ratings, methods=['GET'])
+        self.app.add_url_rule('/rate_beach/<beach_id>', 'rate_beach', self.rate_beach, methods=['GET'])
+        self.app.add_url_rule('/submit_rating', 'submit_rating', self.submit_rating, methods=['POST'])
         
 
     def impact_quiz(self):
@@ -291,6 +301,71 @@ class SeaClearApp:
             if user_data:
                 return User(user_data)
             return None
+
+    @login_required
+    def rate_beach(self,beach_id):
+        beach = self.beaches_collection.find_one({'_id': ObjectId(beach_id)})
+        return render_template('rate_beach.html', beach=beach, beach_id=beach_id)
+
+    def submit_rating(self):
+        try:
+            # Get data from the request
+            beach_id = request.form.get('beach_id')
+            if not ObjectId.is_valid(beach_id):
+                return jsonify({'success': False, 'error': 'Invalid beach ID format'}), 400
+            
+            safety_rating = float(request.form['safety_rating'])
+            clean_rating = float(request.form['clean_rating'])
+
+            # Validate ratings
+            if not (1 <= safety_rating <= 5) or not (1 <= clean_rating <= 5):
+                return jsonify({'success': False, 'error': 'Ratings must be between 1 and 5'}), 400
+
+            # Check if the beach exists in the database
+            beach = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
+            if beach:
+                # Default values if num_ratings does not exist
+                num_ratings = beach.get('num_ratings', 0)
+                current_safety_rating = beach.get('safety_rating', 0)
+                current_clean_rating = beach.get('clean_rating', 0)
+
+                # Calculate new average ratings
+                new_safety_rating = (current_safety_rating * num_ratings + safety_rating) / (num_ratings + 1)
+                new_clean_rating = (current_clean_rating * num_ratings + clean_rating) / (num_ratings + 1)
+                new_num_ratings = num_ratings + 1
+
+                # Update ratings in the database
+                self.beaches_collection.update_one(
+                    {"_id": ObjectId(beach_id)},
+                    {"$set": {
+                        'safety_rating': new_safety_rating,
+                        'clean_rating': new_clean_rating,
+                        'num_ratings': new_num_ratings
+                    }}
+                )
+                return jsonify({'success': True, 'message': 'Rating updated successfully'})
+            else:
+                return jsonify({'success': False, 'error': 'Beach not found'}), 404
+        except ValueError:
+            return jsonify({'success': False, 'error': 'Invalid rating values'}), 400
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)}), 500
+
+
+    def get_ratings(self, beach_id):
+        beach = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
+        if beach:
+            return jsonify({
+                'safety_rating': beach['safety_rating'],
+                'clean_rating': beach['clean_rating']
+            })
+        else:
+            return jsonify({'error': 'Beach not found'}), 404
+
+    def sort_reports_by_date(self, reports):
+        # Sort reports by date in descending order (most recent first)
+        sorted_reports = sorted(reports, key=lambda report: datetime.strptime(report['date'], '%Y-%m-%d'), reverse=True)
+        return sorted_reports
 
     def update_weather_data(self):
         # """Fetch and update the weather data for all beaches in the database."""
@@ -441,9 +516,12 @@ class SeaClearApp:
         except:
             weather_data = {"main": {"temp": "N/A"}, "weather": [{"description": "N/A"}], "wind": {"speed": "N/A"}}
 
+        reports = self.reports_collection.find({'beach': beach_data.get('name')})
+        reports = self.sort_reports_by_date(reports)
+        report_list = [{'date': report.get('date'),'enterococcicount': report.get('enterococcicount')} for report in reports]
         beach = Beach.from_db(beach_data)
         comments = [Post.from_db(post) for post in self.posts_collection.find({'beach_id': ObjectId(beach_id), 'status': 'approved'})]
-        return render_template('beach_detail.html', beach=beach, comments=comments, weather=weather_data) 
+        return render_template('beach_detail.html', beach=beach, comments=comments, weather=weather_data, reports=report_list) 
 
     @login_required
     def post(self):

@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-  const rowsPerPage = 10;
+  const rowsPerPage = 7;
   const tableBody = document.getElementById('table-body');
   const rows = Array.from(tableBody.querySelectorAll('tr'));
   const totalPages = Math.ceil(rows.length / rowsPerPage);
@@ -204,6 +204,35 @@ function toggleReplyForm(commentId) {
   }
 }
 
+var map = L.map("map").setView([-33.9249, 18.4241], 11); // Centered on Cape Town
+
+// Add a tile layer (the background map)
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 18,
+}).addTo(map);
+
+// Add markers for each beach (you can add more)
+L.marker([-33.941, 18.377])
+  .addTo(map)
+
+
+
+window.onload = function() {
+  const beachId = "{{ beach.id }}"; // Use the actual beach ID
+
+  // Fetch existing ratings from the server
+  fetch(`/get_ratings/${beachId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.safety_rating && data.clean_rating) {
+        updateStarDisplay(Math.round(data.safety_rating), 'safety');
+        updateStarDisplay(Math.round(data.clean_rating), 'clean');
+      } else {
+        console.log("No ratings found for this beach");
+      }
+    })
+    .catch(error => console.error("Error fetching ratings:", error));
+}
 
 
 

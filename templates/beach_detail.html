@@ -216,6 +216,10 @@ block extra_css %}
   </div>
 </div>
 
+
+
+<div class="beach-details-container">
+  <div class="left-section">
 <!-- Water Quality Section -->
 <div id="water-quality-section" class="container">
   <h3>Water Quality Information</h3>
@@ -230,126 +234,17 @@ block extra_css %}
         </tr>
       </thead>
       <tbody id="table-body">
+        {% for report in reports %}
         <tr>
-          <td>Jul 19 2024</td>
-          <td>76</td>
+          <td>{{ report.date }}</td>
+          <td>{{ report.enterococcicount }}</td>
           <td>Good</td>
         </tr>
+      {% else %}
         <tr>
-          <td>Jul 18 2024</td>
-          <td>126</td>
-          <td>Acceptable</td>
+          <td colspan="2">No reports available.</td>
         </tr>
-        <tr>
-          <td>Jul 17 2024</td>
-          <td>53</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 16 2024</td>
-          <td>123</td>
-          <td>Acceptable</td>
-        </tr>
-        <tr>
-          <td>Jul 15 2024</td>
-          <td>34</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 14 2024</td>
-          <td>180</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 13 2024</td>
-          <td>150</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 12 2024</td>
-          <td>42</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 11 2024</td>
-          <td>>150</td>
-          <td>Bad</td>
-        </tr>
-        <tr>
-          <td>Jul 10 2024</td>
-          <td>>150</td>
-          <td>Bad</td>
-        </tr>
-        <tr>
-          <td>Jul 09 2024</td>
-          <td>76</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 08 2024</td>
-          <td>58</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 19 2024</td>
-          <td>76</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 18 2024</td>
-          <td>126</td>
-          <td>Acceptable</td>
-        </tr>
-        <tr>
-          <td>Jul 17 2024</td>
-          <td>53</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 16 2024</td>
-          <td>123</td>
-          <td>Acceptable</td>
-        </tr>
-        <tr>
-          <td>Jul 15 2024</td>
-          <td>34</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 14 2024</td>
-          <td>180</td>
-          <td>bad</td>
-        </tr>
-        <tr>
-          <td>Jul 13 2024</td>
-          <td>150</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 12 2024</td>
-          <td>42</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 11 2024</td>
-          <td>>150</td>
-          <td>Bad</td>
-        </tr>
-        <tr>
-          <td>Jul 10 2024</td>
-          <td>>150</td>
-          <td>Bad</td>
-        </tr>
-        <tr>
-          <td>Jul 09 2024</td>
-          <td>76</td>
-          <td>Good</td>
-        </tr>
-        <tr>
-          <td>Jul 08 2024</td>
-          <td>58</td>
-          <td>Good</td>
-        </tr>
+        {% endfor%}
       </tbody>
     </table>
   </div>
@@ -361,8 +256,57 @@ block extra_css %}
     <button id="next-btn">Next</button>
   </div>
 </div>
+  </div>
+
+  <div class="right-section">
+   <!-- Add a link to the new rating page -->
+    <h2>{{ beach.name }}:</h2>
+    <h3>Safety Ratings:</h3>
+    <div class="rating">
+        {% for i in range(5) %}
+            {% if i < (beach.safety_rating | float) %}
+                <i class="fa fa-star"></i>
+            {% elif i < (beach.safety_rating | float) + 0.5 %}
+                <i class="fa fa-star half"></i>
+            {% else %}
+                <i class="fa fa-star empty"></i>
+            {% endif %}
+        {% endfor %}
+        <span>({{ beach.num_ratings }} ratings)</span>
+    </div>
+    <h3>Cleanliness Ratings:</h3>
+    <div class="rating">
+        {% for i in range(5) %}
+            {% if i < (beach.clean_rating | float) %}
+                <i class="fa fa-star"></i>
+            {% elif i < (beach.clean_rating | float) + 0.5 %}
+                <i class="fa fa-star half"></i>
+            {% else %}
+                <i class="fa fa-star empty"></i>
+            {% endif %}
+        {% endfor %}
+        <span>({{ beach.num_ratings }} ratings)</span>
+    </div>
+    <br>
+    <a href="{{ url_for('rate_beach', beach_id=beach.id) }}" class="btn btn-primary">Rate This Beach</a>
+    <br>
+    <div>
+      <h4>Click below to view other beaches:</h4> 
+      <div id="map" class="map-blurred" style="width: 100%; height: 200px; margin-top: 20px; cursor: pointer;"></div>
+    </div>
+  </div>
+</div>
+
+
 
 {% endblock %} {% block extra_js %}
-<!-- Link to custom scripts -->
+<script>
+document.getElementById("map").addEventListener("click", function() {
+  // Redirect to the full map view (you can replace the URL with your actual map page)
+  window.location.href = "{{ url_for('map') }}"; 
+});
+</script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
 {% endblock %}
