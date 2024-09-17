@@ -671,14 +671,18 @@ class SeaClearApp:
     def deny_post(self, post_id):
         # Logic for an admin to set a post to status 'denied'
         if current_user.role != "admin":
+            flash('You do not have permission to perform this action.', 'danger')
             return redirect(url_for('home'))
         self.posts_collection.update_one({'_id': ObjectId(post_id)}, {'$set': {'status': 'denied'}})
         return redirect(url_for('admin_dashboard'))
 
     @login_required
     def delete_post(self, post_id):
-        # TO-DO missing admin check
         # Logic for an admin to remove a post from the database
+        if current_user.role != "admin":
+            flash('You do not have permission to perform this action.', 'danger')
+            return redirect(url_for('admin_dashboard'))
+        
         try:
             result = self.posts_collection.delete_one({'_id': ObjectId(post_id)})
             if result.deleted_count > 0:
@@ -691,7 +695,12 @@ class SeaClearApp:
 
     @login_required
     def edit_beach(self, beach_id):
-        # TO-DO admin check
+        # Logic for an admin to edit a beach in the database
+
+        if current_user.role != "admin":
+            flash('You do not have permission to perform this action.', 'danger')
+            return redirect(url_for('admin_dashboard'))
+        
         # Fetch the existing beach data
         beach_data = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
         beach = Beach.from_db(beach_data)
@@ -748,8 +757,12 @@ class SeaClearApp:
     
     @login_required
     def delete_beach(self, beach_id):
-        # TO-DO admin check
         # Logic for an admin to delete a beach
+
+        if current_user.role != "admin":
+            flash('You do not have permission to perform this action.', 'danger')
+            return redirect(url_for('admin_dashboard'))
+
         try:
             if not ObjectId.is_valid(beach_id):
                 flash('Invalid beach ID.', 'danger')
@@ -766,8 +779,13 @@ class SeaClearApp:
 
     @login_required
     def add_beach(self):
-        # TO-DO add admin check
         # Logic for an admin to add a beach to the db
+
+        # Check if user is an admin
+        if current_user.role != "admin":
+            flash('You do not have permission to perform this action.', 'danger')
+            return redirect(url_for('admin_dashboard'))
+
         if request.method == 'POST':
             # Create new beach data from the form
             new_beach = Beach({
@@ -816,7 +834,12 @@ class SeaClearApp:
     @login_required
     def edit_report(self, report_id):
         # Logic for an admin to edit data in the db
-        # TO-DO admin check
+        
+        # Check if the user is an admin
+        if current_user.role != "admin":
+            flash('You do not have permission to perform this action.', 'danger')
+            return redirect(url_for('admin_dashboard'))
+
         # Fetch the existing beach data
         report_data = self.reports_collection.find_one({"_id": ObjectId(report_id)})
         report = Report.from_db(report_data)
@@ -841,8 +864,13 @@ class SeaClearApp:
     
     @login_required
     def delete_report(self, report_id):
-        # TO-DO admin check
         # Logic for an admin to delete a report from the data base
+
+        # Check if the user is an admin
+        if current_user.role != "admin":
+            flash('You do not have permission to perform this action.', 'danger')
+            return redirect(url_for('admin_dashboard'))
+        
         try:
             if not ObjectId.is_valid(report_id):
                 flash('Invalid report ID.', 'danger')
@@ -859,8 +887,14 @@ class SeaClearApp:
     
     @login_required
     def add_report(self):
-        # TO-DO admin check
         # Logic for an admin to manually create a water quality report from the interface
+
+        # Check if the user is an admin
+        if current_user.role != "admin":
+            flash('You do not have permission to perform this action.', 'danger')
+            return redirect(url_for('admin_dashboard'))
+        
+        # Check if this is a submission of the report
         if request.method == 'POST':
             beach = request.form.get('beach')
             date = request.form.get('date')
