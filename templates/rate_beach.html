@@ -3,50 +3,125 @@
 {% block title %}Rate Beach{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container1">
+  <!-- Heading for the rating form -->
   <h1>Rate {{ beach.name }}</h1>
+
+  <!-- Rating form -->
   <form id="rating-form">
+    <!-- Safety Rating Section -->
     <div class="form-group">
       <label for="safety-rating">Safety Rating:</label>
       <div class="rating">
+        <!-- Generate 5 star elements for safety rating -->
         {% for i in range(1, 6) %}
           <span class="fa fa-star" id="safety-star-{{ i }}" onclick="setRating({{ i }}, 'safety')"></span>
         {% endfor %}
       </div>
     </div>
     
+    <!-- Cleanliness Rating Section -->
     <div class="form-group">
       <label for="clean-rating">Cleanliness Rating:</label>
       <div class="rating">
+        <!-- Generate 5 star elements for cleanliness rating -->
         {% for i in range(1, 6) %}
           <span class="fa fa-star" id="clean-star-{{ i }}" onclick="setRating({{ i }}, 'clean')"></span>
         {% endfor %}
       </div>
     </div>
     
+    <!-- Hidden fields to store the selected ratings -->
     <input type="hidden" id="safety-rating" name="safety_rating" value="0">
     <input type="hidden" id="clean-rating" name="clean_rating" value="0">
     <input type="hidden" name="beach_id" value="{{ beach_id }}">
+    
+    <!-- Submit button for the form -->
     <button type="submit" class="btn btn-primary">Submit Rating</button>
   </form>
 </div>
 {% endblock %}
+
+
 {% block extra_css %}
 <style>
-.rating {
-    font-size: 24px;
-    color: #ddd;
+  /* Container styling */
+  .container1 {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-  .rating .fa-star.checked {
+
+  /* Title styling */
+  .page-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #333;
+  }
+
+  /* Form styling */
+  .rating-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-label {
+    font-size: 1.2rem;
+    color: #555;
+  }
+
+  /* Styling for the rating stars */
+  .rating {
+    display: flex;
+    gap: 5px;
+    font-size: 2rem;
+  }
+
+  .fa-star {
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .fa-star.checked {
     color: #f39c12;
   }
-</style>  
+
+  /* Styling for the submit button */
+  .btn-submit {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .btn-submit:hover {
+    background-color: #0056b3;
+  }
+</style>
 {% endblock %}
+
 {% block extra_js %}
 <script>
+  // Variables to keep track of selected ratings
   let selectedSafetyRating = 0;
   let selectedCleanRating = 0;
 
+  // Function to set the rating and update the star display
   function setRating(rating, type) {
     if (type === 'safety') {
       selectedSafetyRating = rating;
@@ -59,6 +134,7 @@
     }
   }
 
+  // Function to update the star display based on the selected rating
   function updateStarDisplay(rating, type) {
     for (let i = 1; i <= 5; i++) {
       let starElement = document.getElementById(`${type}-star-${i}`);
@@ -70,20 +146,22 @@
     }
   }
 
+  // Handle form submission
   document.getElementById('rating-form').addEventListener('submit', function(event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent the default form submission
     
+    // Check if both ratings have been selected
     if (selectedSafetyRating === 0 || selectedCleanRating === 0) {
       alert('Please select ratings for both categories.');
       return;
     }
     
-    const formData = new FormData(this);
+    const formData = new FormData(this); // Collect form data
     fetch('/submit_rating', {
       method: 'POST',
-      body: formData
+      body: formData // Send form data via POST request
     })
-    .then(response => response.json())
+    .then(response => response.json()) // Parse JSON response
     .then(data => {
       if (data.success) {
         alert('Rating submitted successfully');
@@ -92,7 +170,7 @@
         alert('Failed to submit rating');
       }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => console.error('Error:', error)); // Handle errors
   });
 </script>
 {% endblock %}
