@@ -300,14 +300,10 @@ class SeaClearApp:
     def impact_page(self):
         # TO-DO
         return render_template('impact.html')
-<<<<<<< HEAD
      
     def community_report(self):
         return render_template('add_community_report.html')
 
-=======
-        
->>>>>>> d6592b0f43ad5fb35d090ec0b60ac9a1c67593ac
     def setup_login_manager(self):
     # Login manager to manage users logged into the site
         @self.login_manager.user_loader
