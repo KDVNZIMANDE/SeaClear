@@ -21,7 +21,7 @@
             <option value="">All</option>
             <option value="Restrooms">Restrooms</option>
             <option value="Parking">Parking</option>
-            <option value="Lifeguards">Lifeguards</option>
+            <option value="Lifeguard">Lifeguard</option>
             <option value="Showers">Showers</option>
             <option value="Swimming pools">Swimming pools</option>
         </select>
@@ -61,9 +61,6 @@
                     <!-- Card Content -->
                     <div class="card-content">
                         <h5>{{ favorite_beach.name }} ({{ favorite_beach.location }})</h5>
-                        <strong>Grade:</strong> {{ favorite_beach.get('grade', 'N/A') }}<br />
-                        <strong>Entroccit Count:</strong> {{ favorite_beach.get('enterococcicount','N/A') }}<br />
-                        <strong>Last Updated:</strong> {{ favorite_beach.get('date', 'N/A') }}<br />
                         <!-- Status Indicator -->
                         <div class="status {{ 'status-safe' if favorite_beach.status == 'SAFE' else 'status-unsafe' }}">
                             <i class="fa fa-swimmer"></i> {{ favorite_beach.status }}
@@ -110,9 +107,6 @@
                 <!-- Card Content -->
                 <div class="card-content">
                     <h4>{{ beach.name }} ({{ beach.location }})</h4>
-                    <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
-                    <strong>Entroccit Count:</strong> {{ beach.get('enterococcicount','N/A') }}<br />
-                    <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
                     <!-- Status Indicator -->
                     <div class="status {{ 'status-safe' if beach.status == 'SAFE' else 'status-unsafe' }}">
                         <i class="fa fa-swimmer"></i> {{ beach.status }}

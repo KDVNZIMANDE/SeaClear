@@ -193,6 +193,27 @@
     flex: 1;
     max-width: 350px;
   }
+/* Responsive Styles */
+@media (max-width: 768px) {
+  /* Adjust layout: Map goes under beach cards */
+  .beach-map-container {
+    flex-direction: column; /* Stack vertically */
+  }
+
+  /* Beach cards should also take full width */
+  .beach-card {
+    width: 100%; /* Full width on mobile */
+    height: auto; /* Adjust height */
+  
+}
+
+@media (max-width: 480px) {
+  .beach-map-container {
+    flex-direction: column; /* Stack vertically */
+  }
+}
+
+
 </style>
 {% endblock %}
 
@@ -203,7 +224,7 @@
     <!-- Welcome Message as First Carousel Item -->
     <div class="carousel-item active welcome-slide">
       <div class="jumbotron text-center"> 
-        <h1 class="display-4">Welcome to SeaClear</h1>
+        <h2 class="display-4">Welcome to SeaClear</h2>
         <p class="lead">Explore and contribute to the health of our beaches.</p>
         <hr class="my-4" />
         <p>View beach conditions, leave comments, and help keep our shores clean.</p>
