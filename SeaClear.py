@@ -223,7 +223,7 @@ class CommunityReport:
 class SeaClearApp:
     def __init__(self):
         self.app = Flask(__name__)
-        self.app.config['SECRET_KEY'] = 'your_secret_key'  # TO-DO Change this to a random secret key
+        self.app.config['SECRET_KEY'] = '56b7eb70513750ed351bae46e20b046479202da325ac5adee87cc373fc4edbf7'
 
 
         # MongoDB setup
@@ -305,7 +305,10 @@ class SeaClearApp:
     def community_report(self):
         return render_template('add_community_report.html')
 
+<<<<<<< HEAD
         
+=======
+>>>>>>> 8b64b94bb9d751f50dc0234347b42001caa46a94
     def setup_login_manager(self):
     # Login manager to manage users logged into the site
         @self.login_manager.user_loader
@@ -384,6 +387,24 @@ class SeaClearApp:
         # TO-DO, should be under the report class?
         sorted_reports = sorted(reports, key=lambda report: datetime.strptime(report['date'], '%Y-%m-%d'), reverse=True)
         return sorted_reports
+
+    def get_grade(self, enterococci_count):
+        # Determine the grade based on enterococci count
+        try:
+            count = float(enterococci_count.replace('>', '').strip())
+        except ValueError:
+            return 'N/A'  # Return 'N/A' if the value is not valid
+
+        if count == 0:
+            return '-'
+        elif count < 100:
+            return 'Excellent'
+        elif count < 150:
+            return 'Good'
+        elif count < 185:
+            return 'Sufficient'
+        else:
+            return 'Poor'
 
     def update_weather_data(self):
         # """Fetch and update the weather data for all beaches in the database."""
@@ -510,17 +531,6 @@ class SeaClearApp:
 
         return render_template('all_beaches.html', beaches=beaches, favorite_beaches=favorite_beaches)
 
-    def get_amenity_icon(self, amenity):
-        # Define a mapping of amenities to icon classes
-        # TO-DO should this be here (under SeaClear class)
-        icon_map = {
-            'Restroom': 'fa fa-restroom',  # Example Font Awesome class
-            'Parking': 'fa fa-parking',
-            'Food': 'fa fa-utensils',
-            # Add other amenities and their icons
-        }
-        return icon_map.get(amenity, 'fa fa-question')  # Default icon if not found
-
     def beach_detail(self, beach_id):
         # Use the weather API key to get the weather for the coordinates of a beach
         beach_data = self.beaches_collection.find_one({'_id': ObjectId(beach_id)})
@@ -543,7 +553,15 @@ class SeaClearApp:
         # Grab reports, beach and comments to pass the beach_detail
         reports = self.reports_collection.find({'beach': beach_data.get('name')})
         reports = self.sort_reports_by_date(reports)
-        report_list = [{'date': report.get('date'),'enterococcicount': report.get('enterococcicount')} for report in reports]
+        report_list = []
+        for report in reports:
+            enterococci_count = report.get('enterococcicount')
+            grade = self.get_grade(enterococci_count)
+            report_list.append({
+                'date': report.get('date'),
+                'enterococcicount': enterococci_count,
+                'grade': grade
+            })
         beach = Beach.from_db(beach_data)
         comments = [Post.from_db(post) for post in self.posts_collection.find({'beach_id': ObjectId(beach_id), 'status': 'approved'})]
         return render_template('beach_detail.html', beach=beach, comments=comments, weather=weather_data, reports=report_list) 
