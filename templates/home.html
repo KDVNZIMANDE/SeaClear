@@ -193,25 +193,41 @@
     flex: 1;
     max-width: 350px;
   }
-/* Responsive Styles */
-@media (max-width: 768px) {
-  /* Adjust layout: Map goes under beach cards */
-  .beach-map-container {
-    flex-direction: column; /* Stack vertically */
+ /* Mobile Styles */
+ @media (max-width: 768px) {
+    .carousel-item.welcome-slide {
+      height: 250px;
+    }
+
+    .carousel-caption h5 {
+      font-size: 1.2rem;
+    }
+
+    .beach-list {
+      order: 2;
+    }
+
+    .col-md-4 {
+      order: 1;
+      margin-bottom: 40px;
+      height: 400px;
+    }
+
+    .all-beaches-btn {
+      font-size: 1rem;
+      padding: 12px;
+    }
+
+    .beach-card {
+      width: 100%;
+      max-width: none;
+    }
+
+    .beach-image {
+      height: 120px;
+    }
   }
 
-  /* Beach cards should also take full width */
-  .beach-card {
-    width: 100%; /* Full width on mobile */
-    height: auto; /* Adjust height */
-  
-}
-
-@media (max-width: 480px) {
-  .beach-map-container {
-    flex-direction: column; /* Stack vertically */
-  }
-}
 
 
 </style>
@@ -258,9 +274,9 @@
 </div>
 
 <!-- Beach Cards and Map Widget -->
-<div class="beach-map-container">
+<div class="row">
   <!-- Popular Beaches -->
-  <div class="beach-list">
+  <div class="col-md-8">
     <h2 class="mb-4">Popular Beaches</h2>
     {% for beach in beaches %}
     <div class="beach-list-item">
@@ -283,7 +299,7 @@
   </div>
 
   <!-- Map Widget -->
-  <div class="map-widget-container">
+  <div class="col-md-4">
     <!-- All Beaches Button -->
     <a href="{{ url_for('all_beaches') }}" class="all-beaches-btn btn btn-primary">View All Beaches</a>
     <div id="map" class="map-widget"></div>
@@ -300,17 +316,29 @@
 {% block extra_js %}
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script>
-  // Initialize and add the map using Leaflet
-  var map = L.map("map").setView([-34.397, 150.644], 10);
+  // Initialize the map centered on Cape Town
+  var map = L.map("map").setView([-33.9249, 18.4241], 11); 
 
+  // Add a tile layer (the background map)
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  L.marker([-34.397, 150.644])
-    .addTo(map)
-    .bindPopup("Example Beach")
-    .openPopup();
+  // Create an array to store markers
+  var markers = [];
+  
+  // Create a marker cluster group to manage markers
+  var markerGroup = L.layerGroup().addTo(map);
+
+  // Add markers dynamically for each beach
+  {% for beach in beaches %}
+    var marker = L.marker([{{ beach.latitude }}, {{ beach.longitude }}])
+      .bindPopup(`<a href="{{ url_for('beach_detail', beach_id=beach.id) }}">{{ beach.name }}</a>`);
+    markers.push({name: "{{ beach.name }}", marker: marker});
+    markerGroup.addLayer(marker);
+  {% endfor %}
 </script>
+
 {% endblock %}
 

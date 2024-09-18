@@ -1,6 +1,7 @@
 from datetime import datetime
 from io import BytesIO
 import io
+import random
 import json
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -268,7 +269,6 @@ class SeaClearApp:
         self.app.add_url_rule('/post', 'post', self.post, methods=['POST'])
         self.app.add_url_rule('/add_reply', 'add_reply', self.add_reply, methods=['POST'])
         self.app.add_url_rule('/like/<post_id>', 'like', self.like)
-        self.app.add_url_rule('/like_reply/<post_id>/<reply_index>', 'like_reply', self.like_reply)
         self.app.add_url_rule('/favorites/<beach_id>/<view>', 'favorites', self.favorites)
         self.app.add_url_rule('/edit_profile','edit_profile', self.edit_profile, methods=['GET', 'POST'])
         self.app.add_url_rule('/admin', 'admin_dashboard', self.admin_dashboard)
@@ -401,9 +401,7 @@ class SeaClearApp:
             count = float(enterococci_count.replace('>', '').strip())
         except ValueError:
             return 'N/A'  # Return 'N/A' if the value is not valid
-        if count == 0:
-            return '-'
-        elif count < 100:
+        if count < 100:
             return 'Excellent'
         elif count < 150:
             return 'Good'
@@ -444,6 +442,8 @@ class SeaClearApp:
     def home(self):
     # Render home page and pass through beaches
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
+
+        beaches = random.sample(beaches, 3) if len(beaches) >= 3 else beaches
     # Updated news_items
         news_items = [
         {
@@ -638,38 +638,6 @@ class SeaClearApp:
         post = Post.from_db(post_data)
         return redirect(url_for('beach_detail', beach_id=post.beach_id))
     
-    @login_required
-    def like_reply(self, post_id, reply_index):
-        # Logic for a user to like a reply on the discussion board of a beach
-        user_id = current_user.id
-        reply_index = int(reply_index)
-        post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
-
-        if not post:
-            flash('Post not found.', 'danger')
-            return redirect(url_for('home'))
-
-        replies = post.get('replies', [])
-        if reply_index >= len(replies):
-            flash('Reply not found.', 'danger')
-            return redirect(url_for('beach_detail', beach_id=post['beach_id']))
-
-        reply = replies[reply_index]
-        
-        if user_id in reply.get('liked_users', []):
-            # Unlike the reply
-            self.posts_collection.update_one(
-                {'_id': ObjectId(post_id)},
-                {'$inc': {'replies.$.likes': -1}, '$pull': {'replies.$.liked_users': user_id}}
-            )
-        else:
-            # Like the reply
-            self.posts_collection.update_one(
-                {'_id': ObjectId(post_id)},
-                {'$inc': {f'replies.{reply_index}.likes': 1}}
-            )
-
-        return redirect(url_for('beach_detail', beach_id=post['beach_id']))
     
     @login_required
     def favorites(self, beach_id, view):
