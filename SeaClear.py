@@ -11,6 +11,7 @@ from flask_login import (LoginManager, UserMixin, current_user, login_required,
 from gridfs import GridFS
 from pymongo import MongoClient
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 
 # User Class
 class User(UserMixin):
@@ -20,6 +21,7 @@ class User(UserMixin):
         self.username = user_data['username']
         self.role = user_data['role']
         self.favorites = user_data.get('favorites', [])
+        self.profile_photo_id = user_data.get('profile_photo_id', None)
 
     @classmethod
     def from_db(cls, user_data):
