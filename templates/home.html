@@ -65,7 +65,7 @@
   /* All Beaches Button Styling */
   .all-beaches-btn {
     display: block;
-    font-size: 1.2rem; 
+    font-size: 1.0rem; 
     font-weight: bold;
     padding: 15px 20px; 
     text-align: center;
@@ -115,7 +115,7 @@
   /* Leaflet CSS */
   #map {
     width: 100%;
-    height: 90%;
+    height: 480px;
     border-radius: 15px;
   }
 
@@ -153,7 +153,7 @@
   }
 
   .carousel-control-prev, .carousel-control-next {
-    display: none;
+    display:flex;
   }
 
   /* Beach List Styles */
@@ -227,6 +227,29 @@
       height: 120px;
     }
   }
+  .beach-card {
+  display: flex;
+  flex-direction: row; /* Aligns the image and content side by side */
+  width: 100%;
+  max-width: 700px;
+  height: auto; /* Adjusts based on content */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.beach-image {
+  width: 40%; /* Set a fixed width for the image */
+  height: 100%;
+  object-fit: cover;
+  border-right: 1px solid #ddd; /* Optional: add a border between image and content */
+}
+
+.card-body {
+  flex: 1; /* Allow the body to take up remaining space */
+  padding: 10px;
+}
+
 
 
 
@@ -280,16 +303,15 @@
     <h2 class="mb-4">Popular Beaches</h2>
     {% for beach in beaches %}
     <div class="beach-list-item">
-      <div class="card beach-card">
-        <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" class="card-img-top beach-image" alt="{{ beach.get('Location', 'Beach') }}" />
+      <div class="card beach-card d-flex flex-row">
+        <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" class="beach-image" alt="{{ beach.get('Location', 'Beach') }}" />
         <div class="card-body">
-          <h5 class="card-title">{{ beach.get('name', 'Unknown Beach') }}</h5>
+          <h5 class="card-title">{{ beach.get('name', 'Unknown Beach') }} ({{beach.get('location')}})</h5>
           <p class="card-text">
             <strong>Status:</strong>
-            <span class="badge {{ 'status-open' if beach.get('status') == 'OPEN' else 'status-closed' }}">
+            <span class="badge {{ 'status-open' if beach.get('status') == 'SAFE' else 'status-closed' }}">
               {{ beach.get('status', 'Unknown') }}
             </span>
-            <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}
           </p>
           <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">Show Details</a>
         </div>

@@ -76,7 +76,9 @@ input[type="search"] {
     padding: 10px;
     border-radius: 30px;
     border: 1px solid #ccc;
-    margin-bottom: 15px;
+    margin-top: 8px;
+    margin-bottom: 7px;
+    box-sizing: border-box; /* Ensures padding is included in width */
 }
 
 button[type="submit"] {
@@ -86,6 +88,7 @@ button[type="submit"] {
     border: none;
     border-radius: 30px;
     cursor: pointer;
+    font-size: small;
 }
 
 button[type="submit"]:hover {
@@ -140,3 +143,4 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
