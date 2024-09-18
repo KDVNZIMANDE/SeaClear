@@ -211,6 +211,7 @@ class CommunityReport:
         self.user_id = community_report_data['user_id']
         self.beach = community_report_data['beach']
         self.date= community_report_data['date']
+
     @classmethod
     def from_db(cls, community_report_data):
         return cls(community_report_data)
@@ -282,6 +283,8 @@ class SeaClearApp:
         self.app.add_url_rule('/admin/edit_report/<report_id>', 'edit_report', self.edit_report, methods=['GET', 'POST'])
         self.app.add_url_rule('/admin/delete_report/<report_id>', 'delete_report', self.delete_report)
         self.app.add_url_rule('/admin/add_report', 'add_report', self.add_report, methods=['GET', 'POST'])
+        self.app.add_url_rule('/admin/manage-community-reports','manage_community_reports', self.manage_community_reports)
+        self.app.add_url_rule('/export_community_reports', 'export_community_reports', self.export_community_reports)
         self.app.add_url_rule('/sign_up', 'sign_up', self.sign_up, methods=['GET', 'POST'])
         self.app.add_url_rule('/login', 'login', self.login, methods=['GET', 'POST'])
         self.app.add_url_rule('/logout', 'logout', self.logout)
@@ -308,6 +311,7 @@ class SeaClearApp:
         return render_template('impact.html')
      
     def community_report(self):
+        # TO-DO this can be with the other community report definition??
         return render_template('add_community_report.html')
 
     def setup_login_manager(self):
@@ -1079,6 +1083,14 @@ class SeaClearApp:
             self.reports_collection.insert_one(new_report)  # Assuming you are using MongoDB
             return redirect(url_for('manage_reports'))
         return render_template('add_report.html')
+    
+    @login_required
+    def manage_community_reports(self):
+        community_reports = [CommunityReport.from_db(community_report) for community_report in self.community_reports_collection.find()]
+        return render_template('manage_community_reports.html', reports = community_reports)
+    
+    def export_community_reports(self):
+        return render_template(url_for('admin/manage-community-reports'))
    
     @login_required
     def community_report(self):
