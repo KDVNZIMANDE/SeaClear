@@ -1,70 +1,53 @@
 {% extends "base.html" %}
 
-{% block title %}Water Quality{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/water.css') }}">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-{% endblock %}
+{% block title %}Educational Content{% endblock %}
 
 {% block content %}
 <main>
-    <div id="waterCarousel" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-            <li data-target="#waterCarousel" data-slide-to="0" class="active"></li>
-            <li data-target="#waterCarousel" data-slide-to="1"></li>
-            <li data-target="#waterCarousel" data-slide-to="2"></li>
-            <li data-target="#waterCarousel" data-slide-to="3"></li>
-        </ol>
-        <div class="carousel-inner">
-            <!-- New First Item for Explaining Features -->
-            <div class="carousel-item active">
-                <img src="{{ url_for('static', filename='images/bg.jpg') }}" class="d-block w-100" alt="Website Features">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Understanding Website Features</h5>
-                    <p>Get familiar with the words, symbols, and user affordances on our website to enhance your experience.</p>
-                </div>
-            </div>
-            <!-- Updated "News" Item with Link -->
-            <div class="carousel-item">
-                <a href="{{ url_for('news_page') }}"> 
-                    <img src="{{ url_for('static', filename='images/news.jfif') }}" class="d-block w-100" alt="News">
-                </a>
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>News</h5>
-                    <p>Stay updated with the latest news and updates related to water quality and environmental protection.</p>
-                </div>
-            </div>
-            <!-- Existing Items -->
-            <div class="carousel-item">
-                <a href="{{ url_for('impact_page') }}"> 
-                <img src="{{ url_for('static', filename='images/image3.jfif') }}" class="d-block w-100" alt="Reducing Your Impact">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Reducing Your Impact</h5>
-                    <p>Learn how to reduce your impact on water quality with simple actions and responsible behavior.</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='images/image2.jfif') }}" class="d-block w-100" alt="Impact on Wildlife">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Impact on Wildlife</h5>
-                    <p>Understand how poor water quality affects local wildlife and the environment.</p>
-                </div>
-            </div>
-        </div>
-        <a class="carousel-control-prev" href="#waterCarousel" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#waterCarousel" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
-</main>
+  <div class="container">
+    <h1 class="text-center mb-4">Educational Content</h1>
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Introduction to Water Quality -->
+    <section class="intro-section mb-4">
+      <h2>Introduction to Water Quality</h2>
+      <p>Water quality refers to the condition of water based on its physical, chemical, and biological characteristics. It is essential for maintaining a healthy environment and ensuring the safety of water for human use and aquatic life.</p>
+    </section>
+
+    <!-- Why It's Important -->
+    <section class="importance-section mb-4">
+      <h2>Why It's Important</h2>
+      <p>Understanding and maintaining water quality is crucial for several reasons. Poor water quality can lead to <a href="{{ url_for('impact_quiz') }}"> illnesses</a>, affect the ecosystem, and impact various  <a href="{{ url_for('impact_page') }} "> economic </a> activities. Learn more about the <a href="{{ url_for('impact_page') }}">impacts</a> of water quality.</p>
+    </section>
+
+    <!-- Words and Symbols Used on the Website -->
+    <section class="words-symbols-section mb-4">
+      <h2>Words and Symbols Used on the Website</h2>
+      <p>Our website uses specific terms and symbols to represent different aspects of water quality and beach conditions. Here’s a guide to help you understand them:</p>
+      <!-- Add explanations here -->
+    </section>
+
+    <!-- Video on Water Quality -->
+    <section class="video-section mb-4">
+      <h2>Video: What is Water Quality?</h2>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/OTerH6SgwO8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </section>
+
+    <!-- Video on Measuring Water Quality -->
+    <section class="video-section mb-4">
+      <h2>Video: How is Water Quality Measured?</h2>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/kuFa_M52488" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </section>
+
+    <!-- Get Involved Section -->
+    <section class="get-involved-section mb-4">
+      <h2>Get Involved</h2>
+      <p>There are several ways you can contribute to improving water quality:</p>
+      <ul>
+        <li><a href="https://greencoast.org/ways-to-reduce-water-pollution/#:~:text=16%20ways%20to%20reduce%20water%20pollution%20and%20help,Avoid%20using%20a%20garbage%20disposal%20...%20More%20items" target="_blank">Reduce your impact</a></li>
+        <li><a href="https://olympianwatertesting.com/the-contributions-of-ngos-in-strengthening-water-testing-and-monitoring-for-improved-water-quality/" target="_blank">Importance of NGOs</a></li>
+        <li><a href="https://www.advocacy-website.com" target="_blank">Advocate</a></li>
+      </ul>
+    </section>
+  </div>
+</main>
 {% endblock %}

@@ -1,36 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}Reducing Your Impact{% endblock %}
+{% block title %}Understanding the Economic effects of poor Water Quality{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/impact.css') }}" />
+<style>
+  .infographic-section {
+    position: relative;
+  }
+
+  .watermark {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 10;
+  }
+
+  .watermark a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .watermark a:hover {
+    text-decoration: underline;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
 <main>
-  <div class="container">
-    <h1 class="text-center mb-4">Reducing Your Impact on Polluted Waters</h1>
-    
-    <!-- Content Section -->
-    <section class="impact-content">
-      <p>Polluted waters can have significant effects on both the environment and human health. It’s crucial to adopt practices that help reduce the impact on water quality. Here are some steps you can take:</p>
+  <div class="container text-center">
+    <h1 class="mb-4">Understanding the economic effects economic of poor Water Quality</h1>
 
-      <ul>
-        <li><strong>Minimize Chemical Use:</strong> Avoid using pesticides, fertilizers, and cleaning agents that can run off into water sources. Opt for eco-friendly products whenever possible.</li>
-        <li><strong>Proper Waste Disposal:</strong> Dispose of waste properly, including hazardous materials. Do not dump waste into drains or water bodies.</li>
-        <li><strong>Reduce Plastic Use:</strong> Reduce single-use plastics and support initiatives that promote plastic-free environments.</li>
-        <li><strong>Participate in Clean-Up Efforts:</strong> Engage in local clean-up activities to help remove litter from water sources and surrounding areas.</li>
-        <li><strong>Educate and Advocate:</strong> Spread awareness about water pollution and advocate for better water management policies.</li>
-      </ul>
-
-      <p>By adopting these practices, you contribute to maintaining the quality of water resources and protecting aquatic ecosystems.</p>
-    </section>
-
-    <!-- Take the Quiz Section -->
-    <section class="quiz-section text-center mt-5">
-      <h2>Think You're Making a Difference?</h2>
-      <p>Test your knowledge and see how much you're contributing to a cleaner environment.</p>
-      <a href="{{ url_for('impact_quiz') }}" class="btn btn-primary">Take Our Quiz</a>
+    <!-- Infographic Section -->
+    <section class="infographic-section position-relative">
+      <img src="{{ url_for('static', filename='images/impact.png') }}" alt="Understanding the effects of poor Water Quality" class="img-fluid">
+      <div class="watermark">
+        <a href="https://greencoast.org/ways-to-reduce-water-pollution/#:~:text=16%20ways%20to%20reduce%20water%20pollution%20and%20help,Avoid%20using%20a%20garbage%20disposal%20...%20More%20items" target="_blank">GreenCoast.org</a>
+      </div>
     </section>
   </div>
 </main>

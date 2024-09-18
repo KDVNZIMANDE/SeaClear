@@ -1,124 +1,289 @@
-{% extends "base.html" %} {% block title %}SeaClear - Home{% endblock %} {%
-block extra_css %}
+{% extends "base.html" %}
+
+{% block title %}SeaClear - Home{% endblock %}
+
+{% block extra_css %}
 <style>
+  /* Background Image for Welcome Slide */
+  .carousel-item.welcome-slide {
+    background-image: url('{{ url_for('static', filename='images/beach_red.jfif') }}'); 
+    background-size: cover;
+    background-position: center;
+    height: 300px; 
+    color: #fff;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-item.welcome-slide .jumbotron {
+    background-color: transparent;  /* Set the background to transparent */
+    border-radius: 10px;  /* Keep the rounded corners if needed */
+    padding: 20px;  /* Optional: Adjust padding as needed */
+}
+
+
+  /* Popular Beaches Title */
+  .beach-list h2 {
+    font-size: 2rem; 
+    font-weight: bold; 
+    color: #007bff; 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+    margin-bottom: 30px; 
+    border-bottom: 3px solid #0056b3; 
+    padding-bottom: 10px; 
+  }
+
+  body {
+    font-family: 'Arial', sans-serif; 
+    font-size: 1rem; 
+    line-height: 1.6; 
+    color: #333; 
+  }
+
+  /* Card Title Styling */
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333; 
+  }
+
+  /* Card Text Styling */
+  .card-text {
+    font-size: 1rem;
+    color: #555; 
+  }
+
+  /* Button Styling */
+  .btn-primary {
+    font-size: 1rem; /* More readable button text */
+    font-weight: bold;
+    padding: 10px 20px; /* Larger padding for better clickability */
+  }
+
+  /* All Beaches Button Styling */
+  .all-beaches-btn {
+    display: block;
+    font-size: 1.2rem; 
+    font-weight: bold;
+    padding: 15px 20px; 
+    text-align: center;
+    margin-bottom: 30px; /* Adjusted margin to add space between button and map */
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .all-beaches-btn:hover {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+  }
+
   .beach-card {
     transition: transform 0.3s ease-in-out;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 700px;
+    height: 230px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
   }
+
   .beach-card:hover {
     transform: scale(1.05);
   }
+
   .beach-image {
-    height: 200px;
+    height: 80px;
     object-fit: cover;
   }
+
   .news-widget {
-    margin-bottom: 30px;
+    margin-bottom: 100px;
   }
+
   .map-widget {
-    height: 400px;
-    margin-bottom: 30px;
+    height: 250px;
+    border-radius: 15px;
+    overflow: hidden;
   }
 
   /* Leaflet CSS */
   #map {
     width: 100%;
-    height: 400px;
+    height: 90%;
+    border-radius: 15px;
+  }
+
+  /* Carousel Styles */
+  .carousel-item {
+    position: relative;
+    height: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    bottom: 20px;
+    left: 15px;
+    right: 15px;
+  }
+
+  .carousel-caption h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .carousel-caption p {
+    font-size: 1rem;
+  }
+
+  .carousel-control-prev, .carousel-control-next {
+    display: none;
+  }
+
+  /* Beach List Styles */
+  .beach-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .status-open {
+    background-color: #28a745;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  .status-closed {
+    background-color: #dc3545;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  /* Container for Beach Cards and Map */
+  .beach-map-container {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+  }
+
+  .beach-list {
+    flex: 2;
+  }
+
+  .map-widget-container {
+    flex: 1;
+    max-width: 350px;
   }
 </style>
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-/>
-{% endblock %} {% block content %}
-<div class="jumbotron">
-  <h1 class="display-4">Welcome to SeaClear</h1>
-  <p class="lead">Explore and contribute to the health of our beaches.</p>
-  <hr class="my-4" />
-  <p>View beach conditions, leave comments, and help keep our shores clean.</p>
+{% endblock %}
+
+{% block content %}
+<!-- Welcome and News Carousel -->
+<div id="carouselWelcome" class="carousel slide news-widget" data-ride="carousel" data-interval="3000">
+  <div class="carousel-inner">
+    <!-- Welcome Message as First Carousel Item -->
+    <div class="carousel-item active welcome-slide">
+      <div class="jumbotron text-center"> 
+        <h1 class="display-4">Welcome to SeaClear</h1>
+        <p class="lead">Explore and contribute to the health of our beaches.</p>
+        <hr class="my-4" />
+        <p>View beach conditions, leave comments, and help keep our shores clean.</p>
+      </div> 
+    </div>
+
+    <!-- News Carousel Items -->
+    {% for news in news_items[:3] %}
+    <div class="carousel-item">
+      <a href="{{ news.link }}" target="_blank">
+        <img src="{{ url_for('static', filename='images/' + news.image) }}" class="d-block w-100" alt="{{ news.title }}" />
+        <div class="carousel-caption d-none d-md-block">
+          <h5>{{ news.title }}</h5>
+          <p>{{ news.content }}</p>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+
+    <!-- Link to Full News Page -->
+    <div class="carousel-item">
+      <a href="{{ url_for('news_page') }}">
+        <img src="{{ url_for('static', filename='images/news2.jfif') }}" class="d-block w-100" alt="More News" />
+        <div class="carousel-caption d-none d-md-block">
+          <h5>More News</h5>
+          <p>See all the latest news and updates on our dedicated news page.</p>
+        </div>
+      </a>
+    </div>
+  </div>
 </div>
 
-<!-- News Widget -->
-<div id="newsCarousel" class="carousel slide news-widget" data-ride="carousel">
-  <div class="carousel-inner">
-    {% for news in news_items %}
-    <div class="carousel-item {% if loop.first %}active{% endif %}">
-      <h3>{{ news.title }}</h3>
-      <p>{{ news.content }}</p>
+<!-- Beach Cards and Map Widget -->
+<div class="beach-map-container">
+  <!-- Popular Beaches -->
+  <div class="beach-list">
+    <h2 class="mb-4">Popular Beaches</h2>
+    {% for beach in beaches %}
+    <div class="beach-list-item">
+      <div class="card beach-card">
+        <img src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}" class="card-img-top beach-image" alt="{{ beach.get('Location', 'Beach') }}" />
+        <div class="card-body">
+          <h5 class="card-title">{{ beach.get('name', 'Unknown Beach') }}</h5>
+          <p class="card-text">
+            <strong>Status:</strong>
+            <span class="badge {{ 'status-open' if beach.get('status') == 'OPEN' else 'status-closed' }}">
+              {{ beach.get('status', 'Unknown') }}
+            </span>
+            <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}
+          </p>
+          <a href="{{ url_for('beach_detail', beach_id=beach.id) }}" class="btn btn-primary">Show Details</a>
+        </div>
+      </div>
     </div>
     {% endfor %}
   </div>
-  <a
-    class="carousel-control-prev"
-    href="#newsCarousel"
-    role="button"
-    data-slide="prev"
-  >
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a
-    class="carousel-control-next"
-    href="#newsCarousel"
-    role="button"
-    data-slide="next"
-  >
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
-</div>
 
-<!-- Map Widget -->
-<div id="map" class="map-widget"></div>
-
-<h2 class="mb-4">Popular Beaches</h2>
-
-<div class="row">
-  {% for beach in beaches %}
-  <div class="col-md-4 mb-4">
-    <div class="card beach-card">
-      <img
-        src="{{ url_for('static', filename='images/' + beach.get('image', 'default_beach.jpg')) }}"
-        class="card-img-top beach-image"
-        alt="{{ beach.get('Location', 'Beach') }}"
-      />
-      <div class="card-body">
-        <h5 class="card-title">{{ beach.get('name', 'Unknown Beach') }}</h5>
-        <p class="card-text">
-          <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
-          <strong>Entroccit Count:</strong> {{ beach.get('enterococcicount',
-          'N/A') }}<br />
-          <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
-          <strong>Status:</strong>
-          <span
-            class="badge badge-{{ 'success' if beach.get('status') == 'SAFE' else 'danger' }}"
-          >
-            {{ beach.get('status', 'Unknown') }}
-          </span>
-        </p>
-        <a
-          href="{{ url_for('beach_detail', beach_id=beach.id) }}"
-          class="btn btn-primary"
-          >View Details</a
-        >
-      </div>
-    </div>
+  <!-- Map Widget -->
+  <div class="map-widget-container">
+    <!-- All Beaches Button -->
+    <a href="{{ url_for('all_beaches') }}" class="all-beaches-btn btn btn-primary">View All Beaches</a>
+    <div id="map" class="map-widget"></div>
   </div>
-  {% endfor %}
 </div>
 
 {% if not beaches %}
 <div class="alert alert-info" role="alert">
   No beaches found. Check back later for updates!
 </div>
-{% endif %} {% endblock %} {% block extra_js %}
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script>
   // Initialize and add the map using Leaflet
   var map = L.map("map").setView([-34.397, 150.644], 10);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
   L.marker([-34.397, 150.644])
@@ -127,3 +292,4 @@ block extra_css %}
     .openPopup();
 </script>
 {% endblock %}
+

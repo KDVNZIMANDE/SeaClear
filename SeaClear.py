@@ -4,8 +4,8 @@ from io import BytesIO
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 from bson.objectid import ObjectId
-from flask import (Flask, Response, flash, redirect, render_template, request,
-                   send_file, session, url_for, jsonify)
+from flask import (Flask, Response, flash, jsonify, redirect, render_template,
+                   request, send_file, session, url_for)
 from flask_login import (LoginManager, UserMixin, current_user, login_required,
                          login_user, logout_user)
 from gridfs import GridFS
@@ -196,6 +196,28 @@ class Report:
             'enterococcicount' : self.enterococcicount,
             'category' : self.category
         }
+        
+class CommunityReport:
+    def __init__(self, community_report_data):
+        self.id = str(community_report_data['_id'])
+        self.problem_type = community_report_data['problem_type']
+        self.problem_description = community_report_data.get['problem_description']
+        self.user_id = community_report_data['user_id']
+        self.beach = community_report_data['beach']
+        self.date= community_report_data['date']
+    @classmethod
+    def from_db(cls, community_report_data):
+        return cls(community_report_data)
+    
+    def to_dict(self):
+        return {
+            'problem_type': self.problem_type,
+            'problem_description': self.problem_description,
+            'user_id': self.user_id,
+            'beach': self.beach,
+            'date' : self.date
+            
+        }
 
 class SeaClearApp:
     def __init__(self):
@@ -210,6 +232,7 @@ class SeaClearApp:
         self.users_collection = self.db['users']
         self.posts_collection = self.db['posts']
         self.reports_collection = self.db['reports']
+        self.community_reports_collection = self.db['community_reports']
         self.fs = GridFS(self.db)   #for images
 
         # Flask-Login setup
@@ -256,10 +279,12 @@ class SeaClearApp:
         self.app.add_url_rule('/login', 'login', self.login, methods=['GET', 'POST'])
         self.app.add_url_rule('/logout', 'logout', self.logout)
         self.app.add_url_rule('/search', 'search', self.search)
-        self.app.add_url_rule('/images/<file_id>', 'get_image', self.get_image)  # Route for serving images
+        self.app.add_url_rule('/images/<file_id>', 'get_image', self.get_image)  
         self.app.add_url_rule('/news', 'news_page', self.news_page)  
         self.app.add_url_rule('/impact', 'impact_page', self.impact_page)
         self.app.add_url_rule('/quiz', 'impact_quiz', self.impact_quiz)
+        self.app.add_url_rule('/community_report','community_report', self.community_report, methods=['GET', 'POST'])
+        
         self.app.add_url_rule('/get_ratings/<beach_id>', 'get_ratings', self.get_ratings, methods=['GET'])
         self.app.add_url_rule('/rate_beach/<beach_id>', 'rate_beach', self.rate_beach, methods=['GET'])
         self.app.add_url_rule('/submit_rating', 'submit_rating', self.submit_rating, methods=['POST'])
@@ -275,7 +300,14 @@ class SeaClearApp:
     def impact_page(self):
         # TO-DO
         return render_template('impact.html')
+<<<<<<< HEAD
+     
+    def community_report(self):
+        return render_template('add_community_report.html')
+
+=======
         
+>>>>>>> d6592b0f43ad5fb35d090ec0b60ac9a1c67593ac
     def setup_login_manager(self):
     # Login manager to manage users logged into the site
         @self.login_manager.user_loader
@@ -403,9 +435,71 @@ class SeaClearApp:
                     )
 
     def home(self):
+    
         # Render home page and pass through beaches
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
-        return render_template('home.html', beaches=beaches)
+    # Updated news_items
+        news_items = [
+        {
+            'title': 'Coastal Water Quality',
+            'content': 'Learn about the quality of coastal water and its importance.',
+            'image': 'beach_red.jfif',
+            'link': 'https://www.capetown.gov.za/Explore%20and%20enjoy/nature-and-outdoors/our-precious-biodiversity/coastal-water-quality'
+        },
+        {
+            'title': 'Waterborne Diseases',
+            'content': 'Explore the impact of waterborne diseases on health.',
+            'image': 'beach_red.jfif',
+            'link': 'https://www.niehs.nih.gov/research/programs/climatechange/health_impacts/waterborne_diseases'
+           
+        },
+        {
+            'title': '‘Red Flag’ Beaches',
+            'content': 'Discover which Cape Town beaches have chronic water quality problems.',
+            'image': 'beach_red.jfif',
+            'link': 'https://www.thesouthafrican.com/news/these-popular-cape-town-beaches-have-chronic-water-quality-problems-breaking-12-december-2023/'
+        },
+        {
+            'title': 'Swimming Related Illnesses',
+            'content': 'Understand the risks of swimming-related illnesses.',
+            'image': 'image1.jfif',
+            'link': 'https://time.com/5631608/swimming-illness-risks/'
+        },
+        {
+           'title': 'Coastal Concerns',
+            'content': 'Read about bacterial infections and the need for effective water quality flags.',
+            'image': 'bacteria.jfif',
+            'link': 'https://www.dailymaverick.co.za/article/2024-01-23-after-bacterial-infections-strand-beachgoers-call-for-effective-city-of-cape-town-water-quality-flag-system/'  
+        },
+        {
+            'title': 'Dangerously High Pollution Levels',
+            'content': 'Latest data on pollution levels in Cape Town\'s vleis.',
+            'image': 'vleis.jfif',
+            'link': 'https://www.dailymaverick.co.za/article/2021-11-08-latest-data-reveals-dangerously-high-pollution-levels-in-cape-towns-vleis/'
+        },
+        {
+            'title': 'Code Red on Water Quality',
+            'content': 'It\'s code red on the water quality of beaches around Cape Town.',
+            'image': 'codered.jfif',
+            'link': 'https://www.dailymaverick.co.za/article/2023-12-04-its-code-red-on-the-water-quality-of-beaches-around-cape-town-ahead-of-peak-holiday-season/'
+        },
+        {
+            'title': 'Water Quality Assurance',
+            'content': 'Assurance through testing and quality control measures.',
+            'image': 'quality.jfif',
+            'link': 'https://resource.capetown.gov.za/documentcentre/Documents/Graphics%20and%20educational%20material/Water%20quality%20-%20assurance%20through%20testing%20.pdf.pdf'
+        },
+        {
+            'title': 'Concerns Over Water Quality',
+            'content': 'Concerns over water quality and safety at popular Strand Beach.',
+            'image': 'illness.jfif',
+            'link': 'https://www.iol.co.za/sunday-tribune/travel/surge-in-illnesses-sparks-concerns-over-water-quality-and-safety-at-popular-strand-beach-f7c7e332-7bb1-46f7-935a-0320f1a5b321'
+        }
+    ]
+        return render_template('home.html', beaches=beaches, news_items=news_items)
+
+
+    
 
     def about(self):
         # Render the about page
@@ -929,7 +1023,54 @@ class SeaClearApp:
             self.reports_collection.insert_one(new_report)  # Assuming you are using MongoDB
             return redirect(url_for('manage_reports'))
         return render_template('add_report.html')
+   
+    @login_required
+    def community_report(self):
+     if request.method == 'POST':
+        problem_type = request.form.get('problem_type')
+        problem_description = request.form.get('problem_description')
+        user_id = request.form.get('user_id')
+        beach  = request.form.get('beach')
+
+        # Validate the input fields
+        if not problem_type or not problem_description or not beach:
+            flash('Please fill out all fields.', 'danger')
+            return redirect(url_for('community_report'))
+
+        # Validate beach_id
+        if not self.beaches_collection.find_one({'_id': ObjectId(beach)}):
+            flash('Invalid beach ID.', 'danger')
+            return redirect(url_for('community_report'))
+
+        # Create a new CommunityReport instance
     
+        new_community_report ={
+            'problem_type': problem_type,
+            'problem_description': problem_description,
+            'user_id': user_id,
+            'beach': beach,
+            'date': datetime.now()
+        }
+        # Insert the report into the database
+    
+        self.community_reports_collection.insert_one(new_community_report)
+
+        flash('Report submitted successfully!', 'success')
+        return redirect(url_for('community_report'))
+
+    # Retrieve the list of beaches and problem types
+     beaches = list(self.beaches_collection.find())
+     problem_types = [
+        'Pollution',
+        'Safety Issue',
+        'Lack of Facilities',
+        'Maintenance',
+        'Other'
+     ]
+     return render_template('community_report.html', beaches=beaches, problem_types=problem_types)
+       
+
+
     def sign_up(self):
         # Logic for a user to create a profile
         if request.method == 'POST':
