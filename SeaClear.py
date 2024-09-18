@@ -712,8 +712,41 @@ class SeaClearApp:
                     favorite_beaches.append(beach_data)
 
         if request.method == 'POST':
-            # This is where we update the profile
-            print("yep")
+            # Update display name
+            new_username = request.form.get('display_name')
+            if new_username and new_username != user.username:
+                self.users_collection.update_one(
+                    {"_id": ObjectId(user_id)},
+                    {"$set": {"username": new_username}}
+                )
+                user.username = new_username
+
+            # Handle profile photo upload
+            if 'profile_photo' in request.files:
+                file = request.files['profile_photo']
+                if file and file.filename != '':
+                    filename = secure_filename(file.filename)
+                    content_type = file.content_type
+
+                    # Use GridFS to store the file
+                    fs = GridFS(self.db)
+                    
+                    # If there's an existing photo, delete it
+                    if user.profile_photo_id:
+                        fs.delete(ObjectId(user.profile_photo_id))
+
+                    # Store the new file
+                    file_id = fs.put(file, filename=filename, content_type=content_type)
+
+                    # Update user document with new file ID
+                    self.users_collection.update_one(
+                        {"_id": ObjectId(user_id)},
+                        {"$set": {"profile_photo_id": str(file_id)}}
+                    )
+                    user.profile_photo_id = str(file_id)
+
+            flash('Profile updated successfully!', 'success')
+            return redirect(url_for('edit_profile'))
 
         return render_template('edit_profile.html',user=user, favorite_beaches=favorite_beaches)
     
