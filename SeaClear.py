@@ -1,8 +1,10 @@
 from datetime import datetime
 from io import BytesIO
-
+import io
+import json
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
+from bson import json_util
 from bson.objectid import ObjectId
 from flask import (Flask, Response, flash, jsonify, redirect, render_template,
                    request, send_file, session, url_for)
@@ -1086,11 +1088,44 @@ class SeaClearApp:
     
     @login_required
     def manage_community_reports(self):
+
+        if current_user.role != "admin":
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('home'))
+        
         community_reports = [CommunityReport.from_db(community_report) for community_report in self.community_reports_collection.find()]
         return render_template('manage_community_reports.html', reports = community_reports)
     
     def export_community_reports(self):
-        return render_template(url_for('admin/manage-community-reports'))
+
+        if current_user.role != "admin":
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('home'))
+        
+        community_reports = self.community_reports_collection.find()
+    
+        # Convert MongoDB cursor to list of dictionaries
+        reports_list = list(community_reports)
+        
+        # Convert ObjectId to string for JSON serialization
+        for report in reports_list:
+            report['_id'] = str(report['_id'])
+        
+        # Create JSON string
+        json_data = json.dumps(reports_list, default=json_util.default, indent=2)
+        
+        # Create in-memory file
+        mem_file = io.BytesIO()
+        mem_file.write(json_data.encode())
+        mem_file.seek(0)
+        
+        # Send file to user
+        return send_file(
+            mem_file,
+            as_attachment=True,
+            download_name='community_reports.json',
+            mimetype='application/json'
+        )
    
     @login_required
     def community_report(self):

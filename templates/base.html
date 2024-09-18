@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}SeaClear{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
     {% block extra_css %}{% endblock %}
-</head>
-<body>
+  </head>
+  <body>
     <header class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
         <a class="navbar-brand" href="{{ url_for('home') }}">
@@ -36,30 +48,49 @@
               <a class="nav-link" href="{{ url_for('about') }}">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('educational') }}">Educational</a>
+              <a class="nav-link" href="{{ url_for('educational') }}"
+                >Educational</a
+              >
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('map') }}">Map</a>
             </li>
-            {% if current_user.is_authenticated %}
-              {% if current_user.role == 'admin' %}
-              <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
-              </li>
-              {% endif %}
-            {% endif %}
+            {% if current_user.is_authenticated %} {% if current_user.role ==
+            'admin' %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('admin_dashboard') }}"
+                >Admin Dashboard</a
+              >
+            </li>
+            {% endif %} {% endif %}
           </ul>
-          <form class="form-inline my-2 my-lg-0 mr-3" action="{{ url_for('search') }}" method="get">
-            <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search..." aria-label="Search" />
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <form
+            class="form-inline my-2 my-lg-0 mr-3"
+            action="{{ url_for('search') }}"
+            method="get"
+          >
+            <input
+              class="form-control mr-sm-2"
+              type="search"
+              name="query"
+              placeholder="Search..."
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+              Search
+            </button>
           </form>
           <ul class="navbar-nav">
             {% if current_user.is_authenticated %}
             <li class="nav-item">
-              <span class="nav-link"><i class="fas fa-user"></i> Profile</span>
+              <a href="{{ url_for('edit_profile') }}" class="nav-link">
+                <i class="fas fa-user"></i> Profile
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+              <a class="nav-link" href="{{ url_for('logout') }}"
+                ><i class="fas fa-sign-out-alt"></i> Logout</a
+              >
             </li>
             {% else %}
             <li class="nav-item">
@@ -75,19 +106,23 @@
     </header>
 
     <main class="container mt-4">
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-              {{ message }}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
-      {% block content %}{% endblock %}
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
     </main>
 
     <footer class="footer mt-auto py-3 bg-light">
@@ -101,7 +136,19 @@
       </div>
     </footer>
 
-    <button onclick="window.history.back()" class="btn btn-primary btn-lg rounded-circle" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: all 0.3s ease;">
+    <button
+      onclick="window.history.back()"
+      class="btn btn-primary btn-lg rounded-circle"
+      style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      "
+    >
       <i class="fas fa-arrow-left"></i>
     </button>
 
