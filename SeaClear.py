@@ -21,6 +21,10 @@ class User(UserMixin):
         self.role = user_data['role']
         self.favorites = user_data.get('favorites', [])
 
+    @classmethod
+    def from_db(cls, user_data):
+        return cls(user_data)
+
 # Beach Class
 class Beach:
     def __init__(self, beach_data):
@@ -261,6 +265,7 @@ class SeaClearApp:
         self.app.add_url_rule('/like/<post_id>', 'like', self.like)
         self.app.add_url_rule('/like_reply/<post_id>/<reply_index>', 'like_reply', self.like_reply)
         self.app.add_url_rule('/favorites/<beach_id>/<view>', 'favorites', self.favorites)
+        self.app.add_url_rule('/edit_profile','edit_profile', self.edit_profile, methods=['GET', 'POST'])
         self.app.add_url_rule('/admin', 'admin_dashboard', self.admin_dashboard)
         self.app.add_url_rule('/admin/manage-posts','manage_posts', self.manage_posts)
         self.app.add_url_rule('/admin/manage-beaches','manage_beaches', self.manage_beaches)
@@ -284,7 +289,6 @@ class SeaClearApp:
         self.app.add_url_rule('/impact', 'impact_page', self.impact_page)
         self.app.add_url_rule('/quiz', 'impact_quiz', self.impact_quiz)
         self.app.add_url_rule('/community_report','community_report', self.community_report, methods=['GET', 'POST'])
-        
         self.app.add_url_rule('/get_ratings/<beach_id>', 'get_ratings', self.get_ratings, methods=['GET'])
         self.app.add_url_rule('/rate_beach/<beach_id>', 'rate_beach', self.rate_beach, methods=['GET'])
         self.app.add_url_rule('/submit_rating', 'submit_rating', self.submit_rating, methods=['POST'])
@@ -389,7 +393,6 @@ class SeaClearApp:
             count = float(enterococci_count.replace('>', '').strip())
         except ValueError:
             return 'N/A'  # Return 'N/A' if the value is not valid
-
         if count == 0:
             return '-'
         elif count < 100:
@@ -431,8 +434,7 @@ class SeaClearApp:
                     )
 
     def home(self):
-    
-        # Render home page and pass through beaches
+    # Render home page and pass through beaches
         beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
     # Updated news_items
         news_items = [
@@ -690,8 +692,31 @@ class SeaClearApp:
             return redirect(url_for('map'))
         elif view == "search":
             return redirect(url_for('search'))
- 
+        elif view == "edit_profile":
+            return redirect(url_for('edit_profile'))
         return redirect(url_for('beach_detail', beach_id=beach_id))
+    
+    @login_required
+    def edit_profile(self):
+        if current_user.is_authenticated:
+            user_id = current_user.id
+            user_data = self.users_collection.find_one({"_id": ObjectId(user_id)})
+            user = User.from_db(user_data)
+            favorite_beaches = []
+
+            # Fetch each favorite beach from the user's favorites
+            for favorite in user.favorites:
+                beach_data = self.beaches_collection.find_one({'_id': ObjectId(favorite)})
+                if beach_data:
+                    beach_data['id'] = str(beach_data['_id'])
+                    favorite_beaches.append(beach_data)
+
+        if request.method == 'POST':
+            # This is where we update the profile
+            print("yep")
+
+        return render_template('edit_profile.html',user=user, favorite_beaches=favorite_beaches)
+    
 
     @login_required
     def admin_dashboard(self):
