@@ -1,65 +1,163 @@
-{% extends "base.html" %} {% block title %}About Us{% endblock %} {% block
-content %}
+{% extends "base.html" %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<style>
+  /* General Styles */
+  main {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+  }
+
+  section {
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    color: #0077cc;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  /* Team Section */
+  #team {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  .team-member {
+    margin: 20px;
+  }
+
+  .team-member img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .team-member h3 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 5px;
+  }
+
+  .team-member p {
+    font-size: 1rem;
+    color: #555;
+  }
+
+  /* Special Thanks Section */
+  #special-thanks ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  #special-thanks ul li {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+
+  #special-thanks ul li a {
+    color: #0077cc;
+    text-decoration: none;
+  }
+
+  #special-thanks ul li a:hover {
+    text-decoration: underline;
+  }
+
+  /* Contact Section */
+  #contact a {
+    color: #0077cc;
+    text-decoration: none;
+  }
+
+  #contact a:hover {
+    text-decoration: underline;
+  }
+
+  /* Call to Action */
+  #call-to-action {
+    text-align: center;
+  }
+
+  #call-to-action a {
+    color: #0077cc;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  #call-to-action a:hover {
+    text-decoration: underline;
+  }
+
+  /* Media Queries */
+  @media (max-width: 768px) {
+    .team-member img {
+      width: 120px;
+      height: 120px;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+</style>
+
 <main>
   <section id="introduction">
     <h2>Welcome to SeaClear</h2>
     <p>
-      Cape Town’s stunning beaches are a major attraction for both residents and
-      visitors. The city's beautiful coastline and mild Mediterranean climate
-      offer the perfect setting for various seaside activities. However, issues
-      with water quality, particularly during busy times, pose significant
-      health risks. Despite concerns, many beachgoers are unaware of the poor
-      water quality due to inadequate communication methods. Reports have
-      highlighted high levels of pollutants at some beaches, leading to serious
-      health issues for swimmers.
+      Cape Town’s stunning beaches are a major attraction for both residents and visitors. The city's beautiful coastline and mild Mediterranean climate offer the perfect setting for various seaside activities. However, issues with water quality, particularly during busy times, pose significant health risks. Despite concerns, many beachgoers are unaware of the poor water quality due to inadequate communication methods. Reports have highlighted high levels of pollutants at some beaches, leading to serious health issues for swimmers.
     </p>
   </section>
 
   <section id="mission">
     <h2>Our Mission</h2>
     <p>
-      The purpose of the SeaClear project is to provide Capetonians and tourists
-      with real-time, accurate water quality information for local beaches
-      through a mobile-friendly website. By offering this crucial data, the
-      platform aims to enhance public health and safety, empowering users to
-      make informed decisions about where to swim.
+      The purpose of the SeaClear project is to provide Capetonians and tourists with real-time, accurate water quality information for local beaches through a mobile-friendly website. By offering this crucial data, the platform aims to enhance public health and safety, empowering users to make informed decisions about where to swim.
     </p>
   </section>
 
   <section id="vision">
     <h2>Our Vision</h2>
     <p>
-      We envision a future where every beachgoer in Cape Town has easy access to
-      up-to-date information on water quality, ensuring a safer and more
-      enjoyable beach experience. Our goal is to foster a well-informed
-      community that values both the beauty of Cape Town's beaches and the
-      importance of maintaining their health and safety.
+      We envision a future where every beachgoer in Cape Town has easy access to up-to-date information on water quality, ensuring a safer and more enjoyable beach experience. Our goal is to foster a well-informed community that values both the beauty of Cape Town's beaches and the importance of maintaining their health and safety.
     </p>
   </section>
 
   <section id="team">
     <h2>Meet the Team</h2>
     <div class="team-member">
-      <img
-        src="{{ url_for('static', filename='team-member3.jpg') }}"
-        alt="Brandon Leonard"
-      />
+      <img src="{{ url_for('static', filename='team-member3.jpg') }}" alt="Brandon Leonard" />
       <h3>Brandon Leonard</h3>
       <p>Team Leader</p>
     </div>
     <div class="team-member">
-      <img
-        src="{{ url_for('static', filename='team-member1.jpg') }}"
-        alt="Kwanele Nzimande"
-      />
+      <img src="{{ url_for('static', filename='team-member1.jpg') }}" alt="Kwanele Nzimande" />
       <h3>Kwanele Nzimande</h3>
       <p>Architect</p>
     </div>
     <div class="team-member">
-      <img
-        src="{{ url_for('static', filename='team-member2.jpg') }}"
-        alt="Luthando Mbuyane"
-      />
+      <img src="{{ url_for('static', filename='team-member2.jpg') }}" alt="Luthando Mbuyane" />
       <h3>Luthando Mbuyane</h3>
       <p>Communications</p>
     </div>
@@ -68,34 +166,20 @@ content %}
   <section id="special-thanks">
     <h2>Special Thanks</h2>
     <p>
-      We extend our heartfelt thanks to the following individuals whose honors
-      project work has significantly contributed to the SeaClear project:
+      We extend our heartfelt thanks to the following individuals whose honors project work has significantly contributed to the SeaClear project:
     </p>
     <ul>
-      <li>
-        Kane Gibson -
-        <a href="mailto:GBSKAN001@myuct.ac.za">GBSKAN001@myuct.ac.za</a>
-      </li>
-      <li>
-        Chris McHardy -
-        <a href="mailto:MCHCHR009@myuct.ac.za">MCHCHR009@myuct.ac.za</a>
-      </li>
-      <li>
-        Kyler Rienderhoff -
-        <a href="mailto:RNDKYL001@myuct.ac.za">RNDKYL001@myuct.ac.za</a>
-      </li>
-      <li>
-        Willem Van Ryswyck -
-        <a href="mailto:VRYWIL006@myuct.ac.za">VRYWIL006@myuct.ac.za</a>
-      </li>
+      <li>Kane Gibson - <a href="mailto:GBSKAN001@myuct.ac.za">GBSKAN001@myuct.ac.za</a></li>
+      <li>Chris McHardy - <a href="mailto:MCHCHR009@myuct.ac.za">MCHCHR009@myuct.ac.za</a></li>
+      <li>Kyler Rienderhoff - <a href="mailto:RNDKYL001@myuct.ac.za">RNDKYL001@myuct.ac.za</a></li>
+      <li>Willem Van Ryswyck - <a href="mailto:VRYWIL006@myuct.ac.za">VRYWIL006@myuct.ac.za</a></li>
     </ul>
   </section>
 
   <section id="contact">
     <h2>Contact Us</h2>
     <p>
-      Have questions or want to get in touch? Feel free to reach out to our
-      Communicator at:
+      Have questions or want to get in touch? Feel free to reach out to our Communicator at:
       <a href="mailto:mbylut003@myuct.ac.za">mbylut003@myuct.ac.za</a>
     </p>
   </section>
@@ -103,9 +187,7 @@ content %}
   <section id="call-to-action">
     <h2>Learn More</h2>
     <p>
-      Want to support our mission or learn more? Check out our
-      <a href="{{ url_for('educational') }}">educational page</a> for more
-      information and resources.
+      Want to learn more? Check out our <a href="{{ url_for('educational') }}">educational page</a> for more information and resources.
     </p>
   </section>
 </main>

@@ -12,6 +12,7 @@ from gridfs import GridFS
 from pymongo import MongoClient
 from werkzeug.security import check_password_hash, generate_password_hash
 
+
 # User Class
 class User(UserMixin):
     def __init__(self, user_data):
@@ -282,7 +283,7 @@ class SeaClearApp:
         self.app.add_url_rule('/images/<file_id>', 'get_image', self.get_image)  
         self.app.add_url_rule('/news', 'news_page', self.news_page)  
         self.app.add_url_rule('/impact', 'impact_page', self.impact_page)
-        self.app.add_url_rule('/quiz', 'impact_quiz', self.impact_quiz)
+        self.app.add_url_rule('/Waterborne', 'Waterborne', self.Waterborne)
         self.app.add_url_rule('/community_report','community_report', self.community_report, methods=['GET', 'POST'])
         
         self.app.add_url_rule('/get_ratings/<beach_id>', 'get_ratings', self.get_ratings, methods=['GET'])
@@ -290,9 +291,9 @@ class SeaClearApp:
         self.app.add_url_rule('/submit_rating', 'submit_rating', self.submit_rating, methods=['POST'])
         
 
-    def impact_quiz(self):
+    def Waterborne(self):
         # TO-DO
-        return render_template('impact_quiz.html')
+        return render_template('Waterborne.html')
     
     def news_page(self):
         return render_template('news.html')
@@ -300,14 +301,11 @@ class SeaClearApp:
     def impact_page(self):
         # TO-DO
         return render_template('impact.html')
-<<<<<<< HEAD
      
     def community_report(self):
         return render_template('add_community_report.html')
 
-=======
         
->>>>>>> d6592b0f43ad5fb35d090ec0b60ac9a1c67593ac
     def setup_login_manager(self):
     # Login manager to manage users logged into the site
         @self.login_manager.user_loader

@@ -2,6 +2,10 @@
 
 {% block title %}Educational Content{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/educational.css') }}" />
+{% endblock %}
+
 {% block content %}
 <main>
   <div class="container">
@@ -13,23 +17,24 @@
       <p>Water quality refers to the condition of water based on its physical, chemical, and biological characteristics. It is essential for maintaining a healthy environment and ensuring the safety of water for human use and aquatic life.</p>
     </section>
 
+    <!-- Video on Water Quality -->
+    <section class="video-section mb-4">
+      <h2>Video: What is Water Quality?</h2>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/OTerH6SgwO8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </section>
+
     <!-- Why It's Important -->
     <section class="importance-section mb-4">
       <h2>Why It's Important</h2>
-      <p>Understanding and maintaining water quality is crucial for several reasons. Poor water quality can lead to <a href="{{ url_for('impact_quiz') }}"> illnesses</a>, affect the ecosystem, and impact various  <a href="{{ url_for('impact_page') }} "> economic </a> activities. Learn more about the <a href="{{ url_for('impact_page') }}">impacts</a> of water quality.</p>
+      <p>Understanding and maintaining water quality is crucial for several reasons. Poor water quality can lead to <a href="{{ url_for('Waterborne') }}">illnesses</a>, affect the ecosystem, and impact various <a href="{{ url_for('impact_page') }}">economic</a> activities. Learn more about the <a href="{{ url_for('impact_page') }}">impacts</a> of water quality.</p>
     </section>
 
     <!-- Words and Symbols Used on the Website -->
     <section class="words-symbols-section mb-4">
       <h2>Words and Symbols Used on the Website</h2>
-      <p>Our website uses specific terms and symbols to represent different aspects of water quality and beach conditions. Here’s a guide to help you understand them:</p>
-      <!-- Add explanations here -->
-    </section>
-
-    <!-- Video on Water Quality -->
-    <section class="video-section mb-4">
-      <h2>Video: What is Water Quality?</h2>
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/OTerH6SgwO8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <p>Our website uses specific terms and Grade symbols to represent ratings of water quality and beach conditions. Here’s a guide to help you understand them:</p>
+      <img src="{{ url_for('static', filename='images/grading.jpeg') }}" alt="water quality grades infographic" />
+      <p class="citation">Information source: <a href="https://www.dffe.gov.za/sites/default/files/legislation/2023-09/waterqualityguideline2022.pdf">Department of Forestry, Fisheries and the Environment</a></p>
     </section>
 
     <!-- Video on Measuring Water Quality -->
@@ -45,7 +50,7 @@
       <ul>
         <li><a href="https://greencoast.org/ways-to-reduce-water-pollution/#:~:text=16%20ways%20to%20reduce%20water%20pollution%20and%20help,Avoid%20using%20a%20garbage%20disposal%20...%20More%20items" target="_blank">Reduce your impact</a></li>
         <li><a href="https://olympianwatertesting.com/the-contributions-of-ngos-in-strengthening-water-testing-and-monitoring-for-improved-water-quality/" target="_blank">Importance of NGOs</a></li>
-        <li><a href="https://www.advocacy-website.com" target="_blank">Advocate</a></li>
+        <li><a href="https://watercan.org.za/get-involved/" target="_blank">Advocate for Water Quality Awareness</a></li>
       </ul>
     </section>
   </div>
