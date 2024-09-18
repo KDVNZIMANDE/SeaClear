@@ -39,7 +39,7 @@ class Beach:
         self.longitude = beach_data.get('longitude', None)
         self.latitude = beach_data.get('latitude', None)
         self.date = beach_data['date']
-        self.description = beach_data.get('description')
+        self.description = beach_data['description']
         self.enterococcicount = beach_data.get('enterococcicount')
         self.grade = beach_data['grade']
         self.temperature = beach_data['temperature']
