@@ -1,7 +1,7 @@
 /* Styling for Educational Content Page */
 
 /* Container */
-.container {
+.container_e {
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
@@ -46,9 +46,9 @@ ul li {
 /* Infographic Image */
 .infographic-image {
     display: block;
-    margin: 20px auto; 
-    max-width: 70%; 
-    height: auto; /* Maintains aspect ratio */
+    margin: 20px auto;
+    max-width: 100%; /* Ensure it scales with the screen size */
+    height: auto; /* Maintain aspect ratio */
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
@@ -99,5 +99,9 @@ ul li {
 
     .video-section iframe {
         max-width: 100%;
+    }
+    /* Ensure the image remains responsive on smaller screens */
+    .infographic-image {
+        max-width: 100%; /* Let the image fill the container */
     }
 }
