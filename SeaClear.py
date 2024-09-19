@@ -1,8 +1,14 @@
 from datetime import datetime
 from io import BytesIO
-
+import io
+import requests
+from requests.exceptions import RequestException
+from pymongo.errors import PyMongoError
+import random
+import json
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
+from bson import json_util
 from bson.objectid import ObjectId
 from flask import (Flask, Response, flash, jsonify, redirect, render_template,
                    request, send_file, session, url_for)
@@ -11,6 +17,7 @@ from flask_login import (LoginManager, UserMixin, current_user, login_required,
 from gridfs import GridFS
 from pymongo import MongoClient
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 
 
 # User Class
@@ -21,6 +28,11 @@ class User(UserMixin):
         self.username = user_data['username']
         self.role = user_data['role']
         self.favorites = user_data.get('favorites', [])
+        self.profile_photo_id = user_data.get('profile_photo_id', None)
+
+    @classmethod
+    def from_db(cls, user_data):
+        return cls(user_data)
 
 # Beach Class
 class Beach:
@@ -35,8 +47,8 @@ class Beach:
         self.description = beach_data['description']
         self.enterococcicount = beach_data.get('enterococcicount')
         self.grade = beach_data['grade']
-        self.temperature = beach_data['temperature']
-        self.wind_speed = beach_data['wind_speed']
+        self.temperature = beach_data.get('temperature', 0)
+        self.wind_speed = beach_data.get('wind_speed', 0)
         self.weather_description = beach_data.get('weather_description',None)
         self.status = beach_data['status']
         self.map_image = beach_data.get('map_image', 'default_beach.jpg')
@@ -206,6 +218,7 @@ class CommunityReport:
         self.user_id = community_report_data['user_id']
         self.beach = community_report_data['beach']
         self.date= community_report_data['date']
+
     @classmethod
     def from_db(cls, community_report_data):
         return cls(community_report_data)
@@ -260,8 +273,8 @@ class SeaClearApp:
         self.app.add_url_rule('/post', 'post', self.post, methods=['POST'])
         self.app.add_url_rule('/add_reply', 'add_reply', self.add_reply, methods=['POST'])
         self.app.add_url_rule('/like/<post_id>', 'like', self.like)
-        self.app.add_url_rule('/like_reply/<post_id>/<reply_index>', 'like_reply', self.like_reply)
         self.app.add_url_rule('/favorites/<beach_id>/<view>', 'favorites', self.favorites)
+        self.app.add_url_rule('/edit_profile','edit_profile', self.edit_profile, methods=['GET', 'POST'])
         self.app.add_url_rule('/admin', 'admin_dashboard', self.admin_dashboard)
         self.app.add_url_rule('/admin/manage-posts','manage_posts', self.manage_posts)
         self.app.add_url_rule('/admin/manage-beaches','manage_beaches', self.manage_beaches)
@@ -276,6 +289,8 @@ class SeaClearApp:
         self.app.add_url_rule('/admin/edit_report/<report_id>', 'edit_report', self.edit_report, methods=['GET', 'POST'])
         self.app.add_url_rule('/admin/delete_report/<report_id>', 'delete_report', self.delete_report)
         self.app.add_url_rule('/admin/add_report', 'add_report', self.add_report, methods=['GET', 'POST'])
+        self.app.add_url_rule('/admin/manage-community-reports','manage_community_reports', self.manage_community_reports)
+        self.app.add_url_rule('/export_community_reports', 'export_community_reports', self.export_community_reports)
         self.app.add_url_rule('/sign_up', 'sign_up', self.sign_up, methods=['GET', 'POST'])
         self.app.add_url_rule('/login', 'login', self.login, methods=['GET', 'POST'])
         self.app.add_url_rule('/logout', 'logout', self.logout)
@@ -285,11 +300,12 @@ class SeaClearApp:
         self.app.add_url_rule('/impact', 'impact_page', self.impact_page)
         self.app.add_url_rule('/Waterborne', 'Waterborne', self.Waterborne)
         self.app.add_url_rule('/community_report','community_report', self.community_report, methods=['GET', 'POST'])
-        
         self.app.add_url_rule('/get_ratings/<beach_id>', 'get_ratings', self.get_ratings, methods=['GET'])
         self.app.add_url_rule('/rate_beach/<beach_id>', 'rate_beach', self.rate_beach, methods=['GET'])
         self.app.add_url_rule('/submit_rating', 'submit_rating', self.submit_rating, methods=['POST'])
         
+    def get_app(self):
+        return self.app
 
     def Waterborne(self):
         # TO-DO
@@ -303,12 +319,9 @@ class SeaClearApp:
         return render_template('impact.html')
      
     def community_report(self):
+        # TO-DO this can be with the other community report definition??
         return render_template('add_community_report.html')
 
-<<<<<<< HEAD
-        
-=======
->>>>>>> 8b64b94bb9d751f50dc0234347b42001caa46a94
     def setup_login_manager(self):
     # Login manager to manage users logged into the site
         @self.login_manager.user_loader
@@ -394,10 +407,7 @@ class SeaClearApp:
             count = float(enterococci_count.replace('>', '').strip())
         except ValueError:
             return 'N/A'  # Return 'N/A' if the value is not valid
-
-        if count == 0:
-            return '-'
-        elif count < 100:
+        if count < 100:
             return 'Excellent'
         elif count < 150:
             return 'Good'
@@ -414,31 +424,52 @@ class SeaClearApp:
         for beach in beaches:
             latitude = beach.get('latitude')
             longitude = beach.get('longitude')
+
             if latitude and longitude:
-                weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={weather_api_key}"
+                try:
+                    # Build the API URL
+                    weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={weather_api_key}"
 
-                weather_data = requests.get(weather_url).json()
-                if weather_data:
-                    temperature = weather_data['main']['temp']
-                    wind_speed = weather_data['wind']['speed']
-                    weather_description = weather_data['weather'][0]['description']
+                    # Make the API request
+                    response = requests.get(weather_url)
+                    response.raise_for_status()  # Raise an error for bad status codes
+                    weather_data = response.json()
 
-                    # Update the beach document in MongoDB
-                    self.beaches_collection.update_one(
-                        {'_id': beach['_id']},
-                        {
-                            '$set': {
-                                'temperature': temperature,
-                                'wind_speed': wind_speed,
-                                'weather_description': weather_description,
-                            }
-                        }
-                    )
+                    # Extract weather data if available
+                    if weather_data:
+                        temperature = weather_data['main']['temp']
+                        wind_speed = weather_data['wind']['speed']
+                        weather_description = weather_data['weather'][0]['description']
+
+                        # Update the beach document in MongoDB
+                        try:
+                            self.beaches_collection.update_one(
+                                {'_id': beach['_id']},
+                                {
+                                    '$set': {
+                                        'temperature': temperature,
+                                        'wind_speed': wind_speed,
+                                        'weather_description': weather_description,
+                                    }
+                                }
+                            )
+                        except PyMongoError as db_error:
+                            # Handle any MongoDB-specific errors
+                            print(f"Database update failed for beach {beach.get('name')}: {db_error}")
+
+                except RequestException as api_error:
+                    # Handle API request errors like connection issues or timeouts
+                    print(f"Failed to retrieve weather data for beach {beach.get('name')}: {api_error}")
+
+                except KeyError as key_error:
+                    # Handle missing keys in the API response
+                    print(f"KeyError while processing weather data for beach {beach.get('name')}: {key_error}")
 
     def home(self):
-    
-        # Render home page and pass through beaches
-        beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
+    # Render home page and pass through beaches
+        beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find({'status': 'SAFE'})]
+
+        beaches = random.sample(beaches, 3) if len(beaches) >= 3 else beaches
     # Updated news_items
         news_items = [
         {
@@ -633,38 +664,6 @@ class SeaClearApp:
         post = Post.from_db(post_data)
         return redirect(url_for('beach_detail', beach_id=post.beach_id))
     
-    @login_required
-    def like_reply(self, post_id, reply_index):
-        # Logic for a user to like a reply on the discussion board of a beach
-        user_id = current_user.id
-        reply_index = int(reply_index)
-        post = self.posts_collection.find_one({'_id': ObjectId(post_id)})
-
-        if not post:
-            flash('Post not found.', 'danger')
-            return redirect(url_for('home'))
-
-        replies = post.get('replies', [])
-        if reply_index >= len(replies):
-            flash('Reply not found.', 'danger')
-            return redirect(url_for('beach_detail', beach_id=post['beach_id']))
-
-        reply = replies[reply_index]
-        
-        if user_id in reply.get('liked_users', []):
-            # Unlike the reply
-            self.posts_collection.update_one(
-                {'_id': ObjectId(post_id)},
-                {'$inc': {'replies.$.likes': -1}, '$pull': {'replies.$.liked_users': user_id}}
-            )
-        else:
-            # Like the reply
-            self.posts_collection.update_one(
-                {'_id': ObjectId(post_id)},
-                {'$inc': {f'replies.{reply_index}.likes': 1}}
-            )
-
-        return redirect(url_for('beach_detail', beach_id=post['beach_id']))
     
     @login_required
     def favorites(self, beach_id, view):
@@ -695,8 +694,64 @@ class SeaClearApp:
             return redirect(url_for('map'))
         elif view == "search":
             return redirect(url_for('search'))
- 
+        elif view == "edit_profile":
+            return redirect(url_for('edit_profile'))
         return redirect(url_for('beach_detail', beach_id=beach_id))
+    
+    @login_required
+    def edit_profile(self):
+        if current_user.is_authenticated:
+            user_id = current_user.id
+            user_data = self.users_collection.find_one({"_id": ObjectId(user_id)})
+            user = User.from_db(user_data)
+            favorite_beaches = []
+
+            # Fetch each favorite beach from the user's favorites
+            for favorite in user.favorites:
+                beach_data = self.beaches_collection.find_one({'_id': ObjectId(favorite)})
+                if beach_data:
+                    beach_data['id'] = str(beach_data['_id'])
+                    favorite_beaches.append(beach_data)
+
+        if request.method == 'POST':
+            # Update display name
+            new_username = request.form.get('display_name')
+            if new_username and new_username != user.username:
+                self.users_collection.update_one(
+                    {"_id": ObjectId(user_id)},
+                    {"$set": {"username": new_username}}
+                )
+                user.username = new_username
+
+            # Handle profile photo upload
+            if 'profile_photo' in request.files:
+                file = request.files['profile_photo']
+                if file and file.filename != '':
+                    filename = secure_filename(file.filename)
+                    content_type = file.content_type
+
+                    # Use GridFS to store the file
+                    fs = GridFS(self.db)
+                    
+                    # If there's an existing photo, delete it
+                    if user.profile_photo_id:
+                        fs.delete(ObjectId(user.profile_photo_id))
+
+                    # Store the new file
+                    file_id = fs.put(file, filename=filename, content_type=content_type)
+
+                    # Update user document with new file ID
+                    self.users_collection.update_one(
+                        {"_id": ObjectId(user_id)},
+                        {"$set": {"profile_photo_id": str(file_id)}}
+                    )
+                    user.profile_photo_id = str(file_id)
+
+            flash('Profile updated successfully!', 'success')
+            return redirect(url_for('edit_profile'))
+
+        return render_template('edit_profile.html',user=user, favorite_beaches=favorite_beaches)
+    
 
     @login_required
     def admin_dashboard(self):
@@ -1024,6 +1079,47 @@ class SeaClearApp:
             self.reports_collection.insert_one(new_report)  # Assuming you are using MongoDB
             return redirect(url_for('manage_reports'))
         return render_template('add_report.html')
+    
+    @login_required
+    def manage_community_reports(self):
+
+        if current_user.role != "admin":
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('home'))
+        
+        community_reports = [CommunityReport.from_db(community_report) for community_report in self.community_reports_collection.find()]
+        return render_template('manage_community_reports.html', reports = community_reports)
+    
+    def export_community_reports(self):
+
+        if current_user.role != "admin":
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('home'))
+        
+        community_reports = self.community_reports_collection.find()
+    
+        # Convert MongoDB cursor to list of dictionaries
+        reports_list = list(community_reports)
+        
+        # Convert ObjectId to string for JSON serialization
+        for report in reports_list:
+            report['_id'] = str(report['_id'])
+        
+        # Create JSON string
+        json_data = json.dumps(reports_list, default=json_util.default, indent=2)
+        
+        # Create in-memory file
+        mem_file = io.BytesIO()
+        mem_file.write(json_data.encode())
+        mem_file.seek(0)
+        
+        # Send file to user
+        return send_file(
+            mem_file,
+            as_attachment=True,
+            download_name='community_reports.json',
+            mimetype='application/json'
+        )
    
     @login_required
     def community_report(self):
@@ -1141,8 +1237,12 @@ class SeaClearApp:
             return redirect(url_for('home'))
 
     def run(self):
-        self.app.run(debug=True)
+        self.app.run(host='0.0.0.0', port=5000) #host='0.0.0.0' tells flask to listen on all public I.Ps
+
+# Create an instance of SeaClearApp
+app_instance = SeaClearApp()
+# Expose the Flask app instance as a module-level variable
+app = app_instance.get_app()
 
 if __name__ == '__main__':
-    app = SeaClearApp()
     app.run()

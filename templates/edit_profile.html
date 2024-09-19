@@ -1,0 +1,147 @@
+{% extends "base.html" %} {% block title %}Edit Profile{% endblock %} {% block
+content %}
+
+{% block extra_css %}
+<style>
+  /* General container styling */
+  .container .profile {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  form {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+  }
+
+  .form-control {
+    border-radius: 5px;
+    padding: 10px;
+  }
+
+
+  /* Profile Photo Styling */
+  .img-thumbnail {
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Favorite Beaches Styling */
+  h3 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .list-group-item {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .list-group-item button {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    background-color: #dc3545;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .list-group-item button:hover {
+    background-color: #c82333;
+  }
+
+</style>
+{% endblock %}
+
+<div class="container mt-4 profile">
+  <h2>Edit Profile</h2>
+
+  <form
+    action="{{ url_for('edit_profile') }}"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <!-- Display Name -->
+    <div class="mb-3">
+      <label for="display_name" class="form-label">Display Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="display_name"
+        name="display_name"
+        value="{{ current_user.username }}"
+        required
+      />
+    </div>
+
+    <!-- Profile Photo Upload -->
+    <div class="mb-3">
+      <label for="profile_photo" class="form-label">Profile Photo</label>
+      <input
+        type="file"
+        class="form-control"
+        id="profile_photo"
+        name="profile_photo"
+        accept="image/*"
+      />
+    </div>
+
+    {% if current_user.profile_photo %}
+    <div class="mb-3">
+      <img
+        src="{{ url_for('static', filename='profile_photos/' + current_user.profile_photo) }}"
+        alt="Current Profile Photo"
+        class="img-thumbnail"
+        style="max-width: 200px"
+      />
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+  </form>
+
+  <hr />
+
+  <h3 class="mt-4">Favorite Beaches</h3>
+  {% if favorite_beaches %}
+  <ul class="list-group">
+    {% for beach in favorite_beaches %}
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      {{ beach.name }}
+      <form
+        action="{{ url_for('favorites', beach_id=beach.id, view = 'edit_profile') }}"
+        style="display: inline"
+      >
+        <button type="submit" class="btn btn-sm btn-danger">Unfavorite</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>You haven't favorited any beaches yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

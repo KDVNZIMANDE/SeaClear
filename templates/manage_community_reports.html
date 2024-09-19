@@ -1,0 +1,91 @@
+{% extends "base.html" %} {% block title %}Manage Community Reports{% endblock
+%} {% block content %}
+<h2>Manage Community Reports</h2>
+<p>Welcome, Admin!</p>
+
+<!-- Back Button -->
+<a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary mb-3"
+  >Back to Main Admin</a
+>
+
+<!-- Reports Management -->
+<div class="mt-4">
+  <h3>Community Reports</h3>
+  <!-- Export Button -->
+  <a
+    href="{{ url_for('export_community_reports') }}"
+    class="btn btn-primary mb-3"
+    onclick="return confirm('Are you sure you want to download the community reports?');"
+    >Export Reports</a
+  >
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered" id="communityReportsTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Problem Type</th>
+        <th>Problem Description</th>
+        <th>Beach</th>
+        <th>
+          Date
+          <button onclick="sortTable()" class="btn btn-sm btn-outline-primary">
+            Sort
+          </button>
+        </th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for report in community_reports %}
+      <tr>
+        <td>{{ report.id }}</td>
+        <td>{{ report.problem_type }}</td>
+        <td>{{ report.problem_description }}</td>
+        <td>{{ report.beach }}</td>
+        <td data-date="{{ report.date }}">{{ report.date }}</td>
+        <td>
+          <a
+            href="{{ url_for('view_community_report', report_id=report.id) }}"
+            class="btn btn-info btn-sm"
+            >View</a
+          >
+          <a
+            href="{{ url_for('delete_community_report', report_id=report.id) }}"
+            class="btn btn-danger btn-sm"
+            onclick="return confirm('Are you sure you want to delete this community report?');"
+            >Delete</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  let sortAscending = true;
+
+  function sortTable() {
+    const table = document.getElementById("communityReportsTable");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    rows.sort((a, b) => {
+      const dateA = new Date(
+        a.querySelector("td[data-date]").getAttribute("data-date")
+      );
+      const dateB = new Date(
+        b.querySelector("td[data-date]").getAttribute("data-date")
+      );
+      return sortAscending ? dateA - dateB : dateB - dateA;
+    });
+
+    sortAscending = !sortAscending;
+
+    tbody.innerHTML = "";
+    rows.forEach((row) => tbody.appendChild(row));
+  }
+</script>
+{% endblock %}

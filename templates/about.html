@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}About Us{% endblock %}
@@ -121,7 +122,10 @@
     }
   }
 </style>
+{% endblock %}
 
+{% block
+content %}
 <main>
   <section id="introduction">
     <h2>Welcome to SeaClear</h2>
@@ -147,6 +151,7 @@
   <section id="team">
     <h2>Meet the Team</h2>
     <div class="team-member">
+
       <img src="{{ url_for('static', filename='team-member3.jpg') }}" alt="Brandon Leonard" />
       <h3>Brandon Leonard</h3>
       <p>Team Leader</p>
@@ -160,6 +165,7 @@
       <img src="{{ url_for('static', filename='team-member2.jpg') }}" alt="Luthando Mbuyane" />
       <h3>Luthando Mbuyane</h3>
       <p>Communications</p>
+
     </div>
   </section>
 

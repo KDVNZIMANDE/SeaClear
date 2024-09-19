@@ -48,9 +48,6 @@
                         <!-- Card Content -->
                         <div class="card-content">
                             <h5>{{ beach.name }} ({{ beach.location }})</h5>
-                            <strong>Grade:</strong> {{ beach.get('grade', 'N/A') }}<br />
-                            <strong>Enterococci Count:</strong> {{ beach.get('enterococcicount', 'N/A') }}<br />
-                            <strong>Last Updated:</strong> {{ beach.get('date', 'N/A') }}<br />
                             
                             <!-- Status Indicator -->
                             <div class="status {{ 'status-safe' if beach.status == 'SAFE' else 'status-unsafe' }}">
@@ -166,6 +163,7 @@
         margin-bottom: 20px;
         padding: 0px;
         width: 90%;
+        height: 220px;
     }
 
     /* Status Indicator */
@@ -248,6 +246,7 @@
         width: 100%;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        height: 120px;
     }
 
     /* Beach card hover effect */
@@ -277,6 +276,76 @@
       .weather-info .btn-primary:hover {
           background-color: #186fbf; /* Darker color on hover */
       }
+      /* General responsiveness adjustments */
+.container-fluid {
+    padding: 15px;
+}
+
+.map-container, #beach-list-container {
+    margin-top: 10px;
+}
+
+/* Responsive adjustments for screens smaller than 768px (tablets and phones) */
+@media (max-width: 768px) {
+    .map-container {
+        height: 400px; /* Adjust map height for smaller screens */
+    }
+
+    /* Stack the map and beach list vertically */
+    .row {
+        flex-direction: column;
+    }
+
+    .col-md-8, .col-md-4 {
+        width: 100%;
+        padding: 10px;
+    }
+
+    #beach-list-container {
+        height: auto;
+        max-height: 300px; /* Adjust beach list container height */
+    }
+
+    /* Adjust beach card for smaller screens */
+    .beach-card {
+        width: 100%; /* Full width for smaller screens */
+        margin: 10px 0; /* Spacing between cards */
+    }
+
+    .btn-primary {
+        font-size: 14px;
+    }
+
+    /* Adjust search bar for smaller screens */
+    .search-bar {
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .search-bar input[type="text"] {
+        width: 90%; /* Make search bar more compact */
+        margin: 0 auto; /* Center search bar */
+    }
+}
+
+/* Further adjustments for very small screens (phones under 576px) */
+@media (max-width: 576px) {
+    .map-container {
+        height: 400px;
+    }
+
+    #beach-list-container {
+        max-height: 300px; /* Further reduce list container height */
+    }
+    
+    .beach-card, .card {
+    height: auto; /* Automatically adjust height */
+    padding: 5px; /* Reduce padding */
+    margin-bottom: 30px; /* Adjust margin for spacing */
+    }
+
+}
+
 </style>
 {% endblock %}
 

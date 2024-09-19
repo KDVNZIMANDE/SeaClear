@@ -1,62 +1,45 @@
+/* Custom Header Background */
+.custom-header {
+    background-color: #0080ff; /* Change this to any color you like */
+    padding: 10px 0; /* Adjust padding to your preference */
+    border-radius: 0 0 15px 15px; /* Adds a curve at the bottom */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow for depth */
+    color: #1b63b6;
+}
+/* Optional: Style for the logo inside the header */
+.logo {
+    color: #15559e; /* Adjust text color for contrast */
+    font-size: 2.0rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Optional: Style for navbar links */
+.custom-header .navbar-nav .nav-link {
+    color: #15559e;
+    padding: 10px 15px;
+}
+
+.custom-header .navbar-nav .nav-link:hover {
+    color: #1b63b6; /* Hover color for links */
+}
+
+
+/* Body and Heading Styles */
 body, h1 {
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
 }
 
-body{
+body {
     font-family: Arial, Helvetica, sans-serif;
-    
 }
 
-h1{
+h1 {
     text-align: center;
     color: #333;
     background-color: #f0f0f0;
     padding: 20px;
-}
-
-.context{
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-form{
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-form p{
-    margin: 10px 0;
-}
-
-label{
-    font-weight: bold;
-}
-
-input[type="text"]{
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-input[type="radio"]{
-    margin-right: 5px;
-}
-
-button{
-    background-color: green;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover{
-    background-color: greenyellow;
 }
 
 /* Main Content Styling */
@@ -64,10 +47,52 @@ main {
     padding: 20px;
 }
 
-/* Section Headers */
-h1, h2 {
-    color: #333;
-    margin-bottom: 10px;
+.context {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Form Styling */
+.form-inline {
+    background-color: #0446fa00;
+    padding: 0px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border:2px solid #1d5fc400;
+}
+
+form p {
+    margin: 10px 0;
+}
+
+label {
+    font-weight: bold;
+}
+
+/* Enhanced Search Bar Styling with Bootstrap */
+input[type="search"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 30px;
+    border: 1px solid #ccc;
+    margin-top: 8px;
+    margin-bottom: 7px;
+    box-sizing: border-box; /* Ensures padding is included in width */
+}
+
+button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: small;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838;
 }
 
 /* Section Styling */
@@ -76,7 +101,13 @@ section {
     padding: 20px;
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Headers */
+h1, h2 {
+    color: #333;
+    margin-bottom: 10px;
 }
 
 /* Team Member Styling */
@@ -112,3 +143,4 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
