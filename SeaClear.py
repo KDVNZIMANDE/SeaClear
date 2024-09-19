@@ -300,6 +300,8 @@ class SeaClearApp:
         self.app.add_url_rule('/rate_beach/<beach_id>', 'rate_beach', self.rate_beach, methods=['GET'])
         self.app.add_url_rule('/submit_rating', 'submit_rating', self.submit_rating, methods=['POST'])
         
+    def get_app(self):
+        return self.app
 
     def impact_quiz(self):
         # TO-DO
@@ -1211,8 +1213,12 @@ class SeaClearApp:
             return redirect(url_for('home'))
 
     def run(self):
-        self.app.run(host='0.0.0.0', port=5000, debug=True) #host='0.0.0.0' tells flask to listen on all public I.Ps
+        self.app.run(host='0.0.0.0', port=5000) #host='0.0.0.0' tells flask to listen on all public I.Ps
+
+# Create an instance of SeaClearApp
+app_instance = SeaClearApp()
+# Expose the Flask app instance as a module-level variable
+app = app_instance.get_app()
 
 if __name__ == '__main__':
-    app = SeaClearApp()
     app.run()
