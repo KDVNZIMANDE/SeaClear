@@ -156,7 +156,7 @@ text-decoration: none;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: space-between; /* Even spacing between items */
+    justify-content:left ; /* Even spacing between items */
 }
 
 /* Beach card styling */

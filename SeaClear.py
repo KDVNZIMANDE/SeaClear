@@ -1,6 +1,9 @@
 from datetime import datetime
 from io import BytesIO
 import io
+import requests
+from requests.exceptions import RequestException
+from pymongo.errors import PyMongoError
 import random
 import json
 import requests
@@ -43,8 +46,8 @@ class Beach:
         self.description = beach_data['description']
         self.enterococcicount = beach_data.get('enterococcicount')
         self.grade = beach_data['grade']
-        self.temperature = beach_data['temperature']
-        self.wind_speed = beach_data['wind_speed']
+        self.temperature = beach_data.get('temperature', 0)
+        self.wind_speed = beach_data.get('wind_speed', 0)
         self.weather_description = beach_data.get('weather_description',None)
         self.status = beach_data['status']
         self.map_image = beach_data.get('map_image', 'default_beach.jpg')
@@ -420,30 +423,50 @@ class SeaClearApp:
         for beach in beaches:
             latitude = beach.get('latitude')
             longitude = beach.get('longitude')
+
             if latitude and longitude:
-                weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={weather_api_key}"
+                try:
+                    # Build the API URL
+                    weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={weather_api_key}"
 
-                weather_data = requests.get(weather_url).json()
-                if weather_data:
-                    temperature = weather_data['main']['temp']
-                    wind_speed = weather_data['wind']['speed']
-                    weather_description = weather_data['weather'][0]['description']
+                    # Make the API request
+                    response = requests.get(weather_url)
+                    response.raise_for_status()  # Raise an error for bad status codes
+                    weather_data = response.json()
 
-                    # Update the beach document in MongoDB
-                    self.beaches_collection.update_one(
-                        {'_id': beach['_id']},
-                        {
-                            '$set': {
-                                'temperature': temperature,
-                                'wind_speed': wind_speed,
-                                'weather_description': weather_description,
-                            }
-                        }
-                    )
+                    # Extract weather data if available
+                    if weather_data:
+                        temperature = weather_data['main']['temp']
+                        wind_speed = weather_data['wind']['speed']
+                        weather_description = weather_data['weather'][0]['description']
+
+                        # Update the beach document in MongoDB
+                        try:
+                            self.beaches_collection.update_one(
+                                {'_id': beach['_id']},
+                                {
+                                    '$set': {
+                                        'temperature': temperature,
+                                        'wind_speed': wind_speed,
+                                        'weather_description': weather_description,
+                                    }
+                                }
+                            )
+                        except PyMongoError as db_error:
+                            # Handle any MongoDB-specific errors
+                            print(f"Database update failed for beach {beach.get('name')}: {db_error}")
+
+                except RequestException as api_error:
+                    # Handle API request errors like connection issues or timeouts
+                    print(f"Failed to retrieve weather data for beach {beach.get('name')}: {api_error}")
+
+                except KeyError as key_error:
+                    # Handle missing keys in the API response
+                    print(f"KeyError while processing weather data for beach {beach.get('name')}: {key_error}")
 
     def home(self):
     # Render home page and pass through beaches
-        beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find()]
+        beaches = [Beach.from_db(beach) for beach in self.beaches_collection.find({'status': 'SAFE'})]
 
         beaches = random.sample(beaches, 3) if len(beaches) >= 3 else beaches
     # Updated news_items
