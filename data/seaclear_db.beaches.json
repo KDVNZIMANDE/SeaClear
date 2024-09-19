@@ -212,7 +212,7 @@
         "temperature": "N/A",
         "wind_speed": "N/A",
         "status": "UNSAFE",
-        "map_image": "Bikini Beacht.jpg",
+        "map_image": "Bikini Beach.jpg",
         "has_amenities": true,
         "amenities": ["Parking", "Scenic Views", "Snorkelling"],
         "safety_rating": 0,
