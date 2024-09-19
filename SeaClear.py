@@ -19,6 +19,7 @@ from pymongo import MongoClient
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
+
 # User Class
 class User(UserMixin):
     def __init__(self, user_data):
@@ -297,7 +298,7 @@ class SeaClearApp:
         self.app.add_url_rule('/images/<file_id>', 'get_image', self.get_image)  
         self.app.add_url_rule('/news', 'news_page', self.news_page)  
         self.app.add_url_rule('/impact', 'impact_page', self.impact_page)
-        self.app.add_url_rule('/quiz', 'impact_quiz', self.impact_quiz)
+        self.app.add_url_rule('/Waterborne', 'Waterborne', self.Waterborne)
         self.app.add_url_rule('/community_report','community_report', self.community_report, methods=['GET', 'POST'])
         self.app.add_url_rule('/get_ratings/<beach_id>', 'get_ratings', self.get_ratings, methods=['GET'])
         self.app.add_url_rule('/rate_beach/<beach_id>', 'rate_beach', self.rate_beach, methods=['GET'])
@@ -306,9 +307,9 @@ class SeaClearApp:
     def get_app(self):
         return self.app
 
-    def impact_quiz(self):
+    def Waterborne(self):
         # TO-DO
-        return render_template('impact_quiz.html')
+        return render_template('Waterborne.html')
     
     def news_page(self):
         return render_template('news.html')
