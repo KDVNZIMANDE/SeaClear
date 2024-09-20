@@ -4,7 +4,7 @@
   <h2>Edit Beach</h2>
   <form action="{{ url_for('edit_beach', beach_id=beach.id) }}" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="id" value="{{ beach.id }}">
-    <div class="form-group">
+    <div class="form-group mt-3">
       <label for="name">Beach Name</label>
       <input type="text" class="form-control" id="name" name="name" value="{{ beach.name }}" required>
     </div>
@@ -12,13 +12,17 @@
       <label for="location">Location</label>
       <input type="text" class="form-control" id="location" name="location" value="{{ beach.location }}" required>
     </div>
+    <div class="form-group mt-3"></div>
+      <label for="location_code">Location Code</label>
+      <input type="text" class="form-control" id="location_code" name="location_code" value="{{ beach.location_code }}" required>
+    </div>
     <div class="form-group mt-3">
       <label for="latitude">Latitude</label>
-      <input type="number" step="any" class="form-control" id="latitude" name="latitude" value="{{ beach.latitude }}" required>
+      <input type="text" class="form-control" id="latitude" name="latitude" value="{{ beach.latitude }}" required>
     </div>
     <div class="form-group mt-3">
       <label for="longitude">Longitude</label>
-      <input type="number" step="any" class="form-control" id="longitude" name="longitude" value="{{ beach.longitude }}" required>
+      <input type="text" class="form-control" id="longitude" name="longitude" value="{{ beach.longitude }}" required>
     </div>
     <div class="form-group mt-3">
       <label for="date">Date</label>
@@ -54,6 +58,18 @@
         <option value="SAFE" {% if beach.status == 'SAFE' %}selected{% endif %}>SAFE</option>
         <option value="UNSAFE" {% if beach.status == 'UNSAFE' %}selected{% endif %}>UNSAFE</option>
       </select>
+    </div>
+    <div class="form-group mt-3"></div>
+      <label for="safety_rating">Safety Rating</label>
+      <input type="number" class="form-control" id="safety_rating" name="safety_rating" value="{{ beach.safety_rating }}" required>
+    </div>
+    <div class="form-group mt-3"></div>
+      <label for="clean_rating">Clean Rating</label>
+      <input type="number" class="form-control" id="clean_rating" name="clean_rating" value="{{ beach.clean_rating }}" required>
+    </div>
+    <div class="form-group mt-3"></div>
+      <label for="num_ratings">Number of Ratings</label>
+      <input type="number" class="form-control" id="num_ratings" name="num_ratings" value="{{ beach.num_ratings }}" required>
     </div>
     <div class="form-group mt-3">
       <label for="map_image">Map Image</label>

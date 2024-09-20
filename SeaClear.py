@@ -881,8 +881,9 @@ class SeaClearApp:
                 "_id": ObjectId(beach_id),
                 "name": request.form['name'],
                 "location": request.form['location'],
-                "longitude": float(request.form['longitude']),
-                "latitude": float(request.form['latitude']),
+                "location_code": request.form['location_code'],
+                "longitude": request.form['longitude'],
+                "latitude": request.form['latitude'],
                 "date": request.form['date'],
                 "description": request.form['description'],
                 "enterococcicount": request.form['enterococcicount'],
@@ -893,7 +894,10 @@ class SeaClearApp:
                 "status": request.form['status'],
                 "map_image": beach.map_image,  # Use existing image unless updated
                 "has_amenities": request.form.get('has_amenities') == 'on',
-                "amenities": amenities
+                "amenities": amenities,
+                "safety_rating": int(request.form.get("safety_rating")),
+                "clean_rating": int(request.form.get("clean_rating")),
+                "num_ratings": int(request.form.get("num_ratings"))
             })
 
             # Check if a new image is uploaded
