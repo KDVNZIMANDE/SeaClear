@@ -966,7 +966,10 @@ class SeaClearApp:
                 "wind_speed": request.form['wind_speed'],
                 "weather_description": request.form['weather_description'],
                 "status": request.form['status'],
-                "map_image": None  # Initialize with no image
+                "map_image": None,  # Initialize with no image
+                "safety_rating": 0,
+                "clean_rating": 0,
+                "num_rating": 0
             })
 
             # Handle image upload
