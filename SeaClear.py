@@ -90,6 +90,7 @@ class Beach:
         return getattr(self, attr, default)
     
     def add_amenity(self, amenity):
+        # Add amenity to Beach Object
         if amenity not in self.amenities:
             self.amenities.append(amenity)
             self.has_amenities = True
@@ -1017,7 +1018,8 @@ class SeaClearApp:
                 "_id": ObjectId(report_id),
                 "beach": request.form['beach'],
                 "date": request.form['date'],
-                "enterococcicount": request.form['enterococcicount']
+                "enterococcicount": request.form['enterococcicount'],
+                "category": request.form['category']
 
             })
 
