@@ -12,7 +12,7 @@
       <label for="location">Location</label>
       <input type="text" class="form-control" id="location" name="location" value="{{ beach.location }}" required>
     </div>
-    <div class="form-group mt-3"></div>
+    <div class="form-group mt-3">
       <label for="location_code">Location Code</label>
       <input type="text" class="form-control" id="location_code" name="location_code" value="{{ beach.location_code }}" required>
     </div>
@@ -59,15 +59,15 @@
         <option value="UNSAFE" {% if beach.status == 'UNSAFE' %}selected{% endif %}>UNSAFE</option>
       </select>
     </div>
-    <div class="form-group mt-3"></div>
+    <div class="form-group mt-3">
       <label for="safety_rating">Safety Rating</label>
       <input type="number" class="form-control" id="safety_rating" name="safety_rating" value="{{ beach.safety_rating }}" required>
     </div>
-    <div class="form-group mt-3"></div>
+    <div class="form-group mt-3">
       <label for="clean_rating">Clean Rating</label>
       <input type="number" class="form-control" id="clean_rating" name="clean_rating" value="{{ beach.clean_rating }}" required>
     </div>
-    <div class="form-group mt-3"></div>
+    <div class="form-group mt-3">
       <label for="num_ratings">Number of Ratings</label>
       <input type="number" class="form-control" id="num_ratings" name="num_ratings" value="{{ beach.num_ratings }}" required>
     </div>

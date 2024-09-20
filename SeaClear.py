@@ -895,8 +895,8 @@ class SeaClearApp:
                 "map_image": beach.map_image,  # Use existing image unless updated
                 "has_amenities": request.form.get('has_amenities') == 'on',
                 "amenities": amenities,
-                "safety_rating": int(request.form.get("safety_rating")),
-                "clean_rating": int(request.form.get("clean_rating")),
+                "safety_rating": float(request.form.get("safety_rating")),
+                "clean_rating": float(request.form.get("clean_rating")),
                 "num_ratings": int(request.form.get("num_ratings"))
             })
 
