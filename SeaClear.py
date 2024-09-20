@@ -305,6 +305,7 @@ class SeaClearApp:
         self.app.add_url_rule('/submit_rating', 'submit_rating', self.submit_rating, methods=['POST'])
         
     def get_app(self):
+        # return the app for gunicorn to access
         return self.app
 
     def Waterborne(self):
@@ -317,10 +318,6 @@ class SeaClearApp:
     def impact_page(self):
         # TO-DO
         return render_template('impact.html')
-     
-    def community_report(self):
-        # TO-DO this can be with the other community report definition??
-        return render_template('add_community_report.html')
 
     def setup_login_manager(self):
     # Login manager to manage users logged into the site
@@ -1130,7 +1127,7 @@ class SeaClearApp:
      if request.method == 'POST':
         problem_type = request.form.get('problem_type')
         problem_description = request.form.get('problem_description')
-        user_id = request.form.get('user_id')
+        user_id = current_user.id
         beach  = request.form.get('beach')
 
         # Validate the input fields
@@ -1158,6 +1155,7 @@ class SeaClearApp:
 
         flash('Report submitted successfully!', 'success')
         return redirect(url_for('community_report'))
+     return render_template('add_community_report.html')
 
     # Retrieve the list of beaches and problem types
      beaches = list(self.beaches_collection.find())
