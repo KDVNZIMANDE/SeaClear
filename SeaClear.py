@@ -39,7 +39,7 @@ class Beach:
     def __init__(self, beach_data):
         self.id = str(beach_data['_id'])
         self.name = beach_data['name']
-        self.location = beach_data.get('location', 'Unknown Location')  #TO-DO maybe change all to use get (this is a form of error handling)
+        self.location = beach_data.get('location', 'Unknown Location')
         self.location_code = beach_data.get('location_code', '2a4a3941719942132f9ed4f71b5feadec34a454fbf3b03789def2d719b4b2e92')
         self.longitude = beach_data.get('longitude', None)
         self.latitude = beach_data.get('latitude', None)
@@ -291,7 +291,7 @@ class SeaClearApp:
         self.app.add_url_rule('/admin/add_report', 'add_report', self.add_report, methods=['GET', 'POST'])
         self.app.add_url_rule('/admin/manage-community-reports','manage_community_reports', self.manage_community_reports)
         self.app.add_url_rule('/export_community_reports', 'export_community_reports', self.export_community_reports)
-        self.app.add_url_rule('/delete_community_report','delete_community_report', self.delete_community_report)
+        self.app.add_url_rule('/delete_community_report<report_id>','delete_community_report', self.delete_community_report)
         self.app.add_url_rule('/sign_up', 'sign_up', self.sign_up, methods=['GET', 'POST'])
         self.app.add_url_rule('/login', 'login', self.login, methods=['GET', 'POST'])
         self.app.add_url_rule('/logout', 'logout', self.logout)
@@ -310,14 +310,12 @@ class SeaClearApp:
         return self.app
 
     def Waterborne(self):
-        # TO-DO
         return render_template('Waterborne.html')
     
     def news_page(self):
         return render_template('news.html')
     
     def impact_page(self):
-        # TO-DO
         return render_template('impact.html')
 
     def setup_login_manager(self):
@@ -336,7 +334,6 @@ class SeaClearApp:
         return render_template('rate_beach.html', beach=beach, beach_id=beach_id)
 
     def submit_rating(self):
-        # TO-DO move under rate_beach
         try:
             # Get data from the request
             beach_id = request.form.get('beach_id')
@@ -383,7 +380,6 @@ class SeaClearApp:
 
     def get_ratings(self, beach_id):
         # Get ratings for the beach_details
-        # TO-DO, should be under the beach class?
         beach = self.beaches_collection.find_one({"_id": ObjectId(beach_id)})
         if beach:
             return jsonify({
@@ -395,7 +391,6 @@ class SeaClearApp:
 
     def sort_reports_by_date(self, reports):
         # Sort reports by date in descending order (most recent first)
-        # TO-DO, should be under the report class?
         sorted_reports = sorted(reports, key=lambda report: datetime.strptime(report['date'], '%Y-%m-%d'), reverse=True)
         return sorted_reports
 
@@ -1125,13 +1120,22 @@ class SeaClearApp:
     
     @login_required
     def delete_community_report(self, report_id):
-    #TO-DO
         if current_user.role != "admin":
             flash('You do not have permission to access this page.', 'danger')
             return redirect(url_for('home'))
-        
-        community_reports = [CommunityReport.from_db(community_report) for community_report in self.community_reports_collection.find()]
-        return render_template('manage_community_reports.html', community_reports=community_reports)
+        try:
+            if not ObjectId.is_valid(report_id):
+                flash('Invalid report ID.', 'danger')
+                return redirect(url_for('manage_community_reports'))
+            report_id = ObjectId(report_id)
+            result = self.community_reports_collection.delete_one({"_id": report_id})
+            if result.deleted_count > 0:
+                flash('Report deleted successfully!', 'success')
+            else:
+                flash('Report not found.', 'danger')
+        except Exception as e:
+            flash(f'An error occurred: {str(e)}', 'danger')
+        return redirect(url_for('manage_community_reports'))
    
     @login_required
     def community_report(self):
