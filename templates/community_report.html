@@ -1,37 +1,45 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div class="container">
-    <h2>Community Report</h2>
-    <form method="post" action="{{ url_for('community_report') }}">
-        <div class="form-group">
-            <label for="beach">Select Beach:</label>
-            <select id="beach" name="beach" class="form-control" required>
-                {% for beach in beaches %}
-                    <option value="{{ beach['_id'] }}">{{ beach['name'] }}</option>
-                {% endfor %}
-            </select>
-        </div>
+  <h2>Community Report</h2>
+  <form method="post" action="{{ url_for('community_report') }}">
+    <div class="form-group">
+      <label for="beach">Select Beach:</label>
+      <select id="beach" name="beach" class="form-control" required>
+        {% for beach in beaches %}
+        <option value="{{ beach['_id'] }}">{{ beach['name'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-        <div class="form-group">
-            <label for="problem_type">Problem Type:</label>
-            <select id="problem_type" name="problem_type" class="form-control" required>
-                <option value="">Select Problem Type</option>
-                <option value="Pollution">Pollution</option>
-                <option value="Safety Issue">Safety Issue</option>
-                <option value="Lack of Facilities">Lack of Facilities</option>
-                <option value="Maintenance">Maintenance</option>
-                <option value="Other">Other</option>
-            </select>
-        </div>
+    <div class="form-group">
+      <label for="problem_type">Problem Type:</label>
+      <select
+        id="problem_type"
+        name="problem_type"
+        class="form-control"
+        required
+      >
+        <option value="">Select Problem Type</option>
+        <option value="Pollution">Pollution</option>
+        <option value="Safety Issue">Safety Issue</option>
+        <option value="Lack of Facilities">Lack of Facilities</option>
+        <option value="Maintenance">Maintenance</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
 
-        <div class="form-group">
-            <label for="problem_description">Problem Description:</label>
-            <textarea id="problem_description" name="problem_description" class="form-control" rows="4" required></textarea>
-        </div>
+    <div class="form-group">
+      <label for="problem_description">Problem Description:</label>
+      <textarea
+        id="problem_description"
+        name="problem_description"
+        class="form-control"
+        rows="4"
+        required
+      ></textarea>
+    </div>
 
-        <button type="submit" class="btn btn-primary">Submit Report</button>
-    </form>
+    <button type="submit" class="btn btn-primary">Submit Report</button>
+  </form>
 </div>
 {% endblock %}
-

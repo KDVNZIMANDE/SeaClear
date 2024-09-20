@@ -214,7 +214,7 @@ class CommunityReport:
     def __init__(self, community_report_data):
         self.id = str(community_report_data['_id'])
         self.problem_type = community_report_data['problem_type']
-        self.problem_description = community_report_data.get['problem_description']
+        self.problem_description = community_report_data['problem_description']
         self.user_id = community_report_data['user_id']
         self.beach = community_report_data['beach']
         self.date= community_report_data['date']
@@ -291,6 +291,7 @@ class SeaClearApp:
         self.app.add_url_rule('/admin/add_report', 'add_report', self.add_report, methods=['GET', 'POST'])
         self.app.add_url_rule('/admin/manage-community-reports','manage_community_reports', self.manage_community_reports)
         self.app.add_url_rule('/export_community_reports', 'export_community_reports', self.export_community_reports)
+        self.app.add_url_rule('/delete_community_report','delete_community_report', self.delete_community_report)
         self.app.add_url_rule('/sign_up', 'sign_up', self.sign_up, methods=['GET', 'POST'])
         self.app.add_url_rule('/login', 'login', self.login, methods=['GET', 'POST'])
         self.app.add_url_rule('/logout', 'logout', self.logout)
@@ -1089,7 +1090,7 @@ class SeaClearApp:
             return redirect(url_for('home'))
         
         community_reports = [CommunityReport.from_db(community_report) for community_report in self.community_reports_collection.find()]
-        return render_template('manage_community_reports.html', reports = community_reports)
+        return render_template('manage_community_reports.html', community_reports=community_reports)
     
     def export_community_reports(self):
 
@@ -1121,6 +1122,16 @@ class SeaClearApp:
             download_name='community_reports.json',
             mimetype='application/json'
         )
+    
+    @login_required
+    def delete_community_report(self, report_id):
+    #TO-DO
+        if current_user.role != "admin":
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('home'))
+        
+        community_reports = [CommunityReport.from_db(community_report) for community_report in self.community_reports_collection.find()]
+        return render_template('manage_community_reports.html', community_reports=community_reports)
    
     @login_required
     def community_report(self):
@@ -1138,6 +1149,12 @@ class SeaClearApp:
         if not self.beaches_collection.find_one({'_id': ObjectId(beach)}):
             flash('Invalid beach ID.', 'danger')
             return redirect(url_for('community_report'))
+        
+        # Convert string ID to ObjectId
+        object_id = ObjectId(beach)
+    
+        # Query the database
+        beach_full = self.beaches_collection.find_one({'_id': object_id})
 
         # Create a new CommunityReport instance
     
@@ -1145,8 +1162,8 @@ class SeaClearApp:
             'problem_type': problem_type,
             'problem_description': problem_description,
             'user_id': current_user.id,
-            'beach': beach,
-            'date': datetime.now()
+            'beach': beach_full['name'],
+            'date': datetime.now().strftime("%Y-%m-%d %H:%M")
         }
         # Insert the report into the database
     
@@ -1238,7 +1255,7 @@ class SeaClearApp:
             return redirect(url_for('home'))
 
     def run(self):
-        self.app.run(host='0.0.0.0', port=5000) #host='0.0.0.0' tells flask to listen on all public I.Ps
+        self.app.run(host='0.0.0.0', port=5000, debug = True) #host='0.0.0.0' tells flask to listen on all public I.Ps
 
 # Create an instance of SeaClearApp
 app_instance = SeaClearApp()
