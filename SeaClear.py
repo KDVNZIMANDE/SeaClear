@@ -1127,7 +1127,6 @@ class SeaClearApp:
      if request.method == 'POST':
         problem_type = request.form.get('problem_type')
         problem_description = request.form.get('problem_description')
-        user_id = current_user.id
         beach  = request.form.get('beach')
 
         # Validate the input fields
@@ -1145,7 +1144,7 @@ class SeaClearApp:
         new_community_report ={
             'problem_type': problem_type,
             'problem_description': problem_description,
-            'user_id': user_id,
+            'user_id': current_user.id,
             'beach': beach,
             'date': datetime.now()
         }
@@ -1155,7 +1154,6 @@ class SeaClearApp:
 
         flash('Report submitted successfully!', 'success')
         return redirect(url_for('community_report'))
-     return render_template('add_community_report.html')
 
     # Retrieve the list of beaches and problem types
      beaches = list(self.beaches_collection.find())
@@ -1167,6 +1165,7 @@ class SeaClearApp:
         'Other'
      ]
      return render_template('community_report.html', beaches=beaches, problem_types=problem_types)
+     
        
 
 
