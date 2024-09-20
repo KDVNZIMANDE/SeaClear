@@ -53,6 +53,15 @@
     color: #000000;
 }
 
+.description {
+  font-size: 1.2rem;
+  color: #333;
+  background-color: #f0f8ff00; /* Light blue background for the description */
+  padding: 3px;
+  border-radius: 5px;
+  line-height: 1.5;
+}
+
 /* Status Indicator */
 .status {
     position: absolute;
