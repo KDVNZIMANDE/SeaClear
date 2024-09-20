@@ -38,7 +38,9 @@
 
                 <!-- Card Content: Beach Info -->
                 <div class="card-content">
-                    <h2>{{ beach.name }} ({{ beach.location }})</h2>     
+                    <h2>{{ beach.name }} ({{ beach.location }})</h2> 
+                    <strong class="description-heading">Description:</strong> 
+                    <p class="description">{{ beach.description }}</p>
                     <!-- Display the most recent report data -->
                     {% if reports|length > 0 %}
                         <strong>Grade:</strong> {{ reports[0].grade }}<br />
